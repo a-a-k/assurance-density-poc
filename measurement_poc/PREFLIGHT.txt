@@ -91,3 +91,11 @@ and a subset of false-alarm task IDs, not just equal counts. The better-result
 branch retains the specified counts criterion but discloses gained/lost task IDs
 per seed. Incomplete runs cannot win by dropping missing tasks. Cheap controls
 with equal/better external quality and lower costs defeat a positive claim.
+
+Actual screen outcome (Actions 39982065417): author examples detect 23/24 with
+zero false alarms; the selectable-pool ceiling detects the SAME 23. Both agents
+therefore NO-GO the full HumanEvalFix comparison. Pilot 39981312608 was cancelled;
+its one completed structured assessment has a format failure, not a quality
+result. b11838 server-common.cpp expects response_format.json_schema.schema;
+the README's flat schema example was incompatible and silently ignored. This
+transport bug is corrected in the runner without rerunning the rejected study.

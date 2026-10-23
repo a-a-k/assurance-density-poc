@@ -228,7 +228,9 @@ def assess(arm, common, signals, seed, task_index):
     for attempt in range(2):
         body = {"messages": messages, "temperature": 0.2, "seed": seed, "max_tokens": 1200,
                 "cache_prompt": False, "chat_template_kwargs": {"enable_thinking": False},
-                "response_format": {"type": "json_schema", "schema": schema(arm == "direct", 32, len(common["clauses"]))}}
+                "response_format": {"type": "json_schema", "json_schema": {
+                    "name": "assessment", "strict": True,
+                    "schema": schema(arm == "direct", 32, len(common["clauses"]))}}}
         call_start = time.perf_counter()
         request = urllib.request.Request("http://127.0.0.1:8080/v1/chat/completions",
                                          data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})

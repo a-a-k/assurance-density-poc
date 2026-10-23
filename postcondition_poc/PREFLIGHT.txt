@@ -198,3 +198,16 @@ download or inference. An existing permanent sys.path insertion redirected the
 new test's later sibling imports; scope that helper import with try/finally.
 Root and skeptic reviewed this infrastructure-only fix and GO for repeating
 post_format. Preserve the failed run and its CI time as development overhead.
+
+2026-10-23 18:38 UTC: 40004214644 passed code invariants but Qwen4B failed the
+first shuffled assigned-label case: candidate 1 received clauses [4] rather
+than the supplied [0,2]. The current model/interface gate is NOT passed. Root
+and skeptic NO-GO on full semantic inference for this implementation.
+Root and skeptic GO on completing the independent audit once: reuse the exact
+checksum-verified failed seed11/matrix response, execute the remaining assigned
+seed/direct cases and tokenize unchanged archived inputs. Collect errors only
+in this diagnostic mode; exit failure if ANY case failed. The normal research
+path remains fail-fast. Do not retry the failed case to select a better answer.
+No model migration is yet approved. Any variant needs the same original quality,
+full-cost and strong-baseline criterion, plus an independent availability/cost
+review and the same instrument gate. Old negative outcomes remain unchanged.

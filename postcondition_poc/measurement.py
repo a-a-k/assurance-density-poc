@@ -171,7 +171,7 @@ def assigned_format_case(seed):
     return assignments, expected, direct
 
 
-def format_smoke(seed):
+def format_smoke(seed, *, collect_errors=False, reused=None):
     """Check both output interfaces; charge each method only its own interface."""
     assignments, expected, direct_ids = assigned_format_case(seed)
     costs = {}
@@ -185,17 +185,33 @@ def format_smoke(seed):
                 "chat_template_kwargs": {"enable_thinking": False},
                 "response_format": {"type": "json_schema", "json_schema": {
                     "name": "transport", "strict": True, "schema": make_schema(direct, 5)}}}
-        http = urllib.request.Request("http://127.0.0.1:8080/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(http, timeout=180) as response:
-            result = json.load(response)
-        elapsed = time.perf_counter() - start
         label = "direct" if direct else "matrix"
-        save(OUT / f"format_smoke_{seed}_{label}.json", {"request": body, "response": result, "seconds": elapsed})
-        parsed = parse_prediction(result["choices"][0]["message"]["content"], direct, 5)
-        target = {"selected": sorted(direct_ids)} if direct else expected
-        if parsed != target:
-            raise RuntimeError(f"Assigned ID/status/clause transport failed for seed {seed} {label}")
-        costs[label] = {"seconds": time.perf_counter() - start, "tokens": result["usage"]["total_tokens"]}
+        previous = (reused or {}).get(label)
+        if previous:
+            if previous["request"] != body:
+                raise ValueError("The reused format request differs from the assigned case")
+            result, elapsed = previous["response"], previous["seconds"]
+        else:
+            http = urllib.request.Request("http://127.0.0.1:8080/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(http, timeout=180) as response:
+                result = json.load(response)
+            elapsed = time.perf_counter() - start
+        trace = {"request": body, "response": result, "seconds": elapsed, "reused": bool(previous)}
+        save(OUT / f"format_smoke_{seed}_{label}.json", trace)
+        error = None
+        try:
+            parsed = parse_prediction(result["choices"][0]["message"]["content"], direct, 5)
+            target = {"selected": sorted(direct_ids)} if direct else expected
+            if parsed != target:
+                raise ValueError("Assigned ID/status/clause values do not match")
+        except (KeyError, TypeError, ValueError) as exc:
+            error = str(exc)
+        costs[label] = {"seconds": elapsed if previous else time.perf_counter() - start,
+                        "tokens": result["usage"]["total_tokens"], "passed": error is None,
+                        "error": error, "reused": bool(previous)}
+        save(OUT / f"format_smoke_{seed}_{label}.json", {**trace, "validation": costs[label]})
+        if error and not collect_errors:
+            raise RuntimeError(f"Assigned transport failed for seed {seed} {label}: {error}")
     return {arm: costs["direct" if arm == "direct" else "matrix"] for arm in ARMS}
 
 

@@ -15,6 +15,9 @@ from screen import INPUTS, OUT, ROOT, save
 ARCHIVE_URL = ("https://raw.githubusercontent.com/a-a-k/assurance-density-poc/experiment-results/"
                "runs/39993128862-1/seed-47/results.tar.gz")
 ARCHIVE_SHA = "5162ed2893e9109c5edac1d2cf9c3b8c0e97853ae7931bbab9956a4fa29addc0"
+PREVIOUS_URL = ("https://raw.githubusercontent.com/a-a-k/assurance-density-poc/experiment-results/"
+                "runs/40004214644-1/seed-11/results.tar.gz")
+PREVIOUS_SHA = "5ac577ddecf85e92d151146e70783c4ade274c9b9f4e2f002f042ae9af037fea"
 
 
 def server(path, payload):
@@ -34,10 +37,16 @@ def main():
     began = time.perf_counter()
     INPUTS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
+    with urllib.request.urlopen(PREVIOUS_URL, timeout=60) as response:
+        previous_raw = response.read()
+    if hashlib.sha256(previous_raw).hexdigest() != PREVIOUS_SHA:
+        raise ValueError("Previous smoke checksum mismatch")
+    with tarfile.open(fileobj=io.BytesIO(previous_raw), mode="r:gz") as archive:
+        previous = json.load(archive.extractfile("results/measurement/postconditions/format_smoke_11_matrix.json"))
     smoke = {}
     for seed in SEEDS:
-        smoke[seed] = format_smoke(seed)
-        print("Assigned shuffled ID/status/clause records passed:", seed, flush=True)
+        smoke[seed] = format_smoke(seed, collect_errors=True, reused={"matrix": previous} if seed == 11 else None)
+        print("Assigned shuffled records:", seed, {a: c["passed"] for a, c in smoke[seed].items()}, flush=True)
         save(OUT / "format_audit_smokes.json", smoke)
     with urllib.request.urlopen(ARCHIVE_URL, timeout=180) as response:
         raw = response.read()
@@ -78,6 +87,7 @@ def main():
                 for k in ("prompt_tokens", "compact_empty_output_tokens", "illustrative_total_tokens")} for a in ARMS}
     report = {"kind": "assigned-format and tokenizer audit, not semantic research results",
               "source_commit": os.environ["GITHUB_SHA"], "archive_url": ARCHIVE_URL, "archive_sha256": ARCHIVE_SHA,
+              "reused_smoke_url": PREVIOUS_URL, "reused_smoke_sha256": PREVIOUS_SHA,
               "payload_count": len(rows), "tasks": [r["task_id"] for r in rows], "rows": rows, "totals": sums,
               "smoke_costs_per_seed_and_arm": smoke, "audit_seconds": time.perf_counter() - began,
               "cautions": ["Available archived payloads only; not all 24 tasks.",
@@ -90,9 +100,11 @@ def main():
     (ROOT / "results/simple_summary.md").write_text(summary)
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as stream:
         stream.write(summary)
+    print(summary, flush=True)
     if not all(r["arms"][a]["within_context_at_800_output_tokens"] for r in rows for a in ARMS):
         raise RuntimeError("One or more archived payloads exceed the fixed model context")
-    print(summary, flush=True)
+    if not all(c["passed"] for per_seed in smoke.values() for c in per_seed.values()):
+        raise RuntimeError("Assigned-label gate failed; the independent audit is complete, semantic inference prohibited")
 
 
 if __name__ == "__main__":

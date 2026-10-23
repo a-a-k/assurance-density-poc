@@ -1,5 +1,6 @@
 """Guard the observed status/ID transport failure and its cost accounting."""
 import copy
+import io
 import json
 import unittest
 from unittest.mock import patch
@@ -58,6 +59,29 @@ class AddressedAssessment(unittest.TestCase):
         reordered["1"]["clauses"] = [2, 0]
         reordered["6"]["clauses"] = [4, 1, 3]
         self.assertEqual(validate_prediction(reordered, False, 5), expected)
+
+    def test_failed_assigned_values_block_research_but_diagnostic_records_both(self):
+        import measurement
+        _, expected, _ = assigned_format_case(11)
+        wrong = copy.deepcopy(expected)
+        wrong["1"]["clauses"] = [4]
+
+        def response(value):
+            return io.BytesIO(json.dumps({"choices": [{"message": {"content": json.dumps(value)}}],
+                                          "usage": {"total_tokens": 100}}).encode())
+
+        with patch.object(measurement, "save"), patch.object(measurement.urllib.request, "urlopen",
+                return_value=response(wrong)) as api:
+            with self.assertRaisesRegex(RuntimeError, "Assigned transport failed"):
+                measurement.format_smoke(11)
+            self.assertEqual(api.call_count, 1)
+        with patch.object(measurement, "save"), patch.object(measurement.urllib.request, "urlopen",
+                side_effect=[response(wrong), response({"selected": [9, 2, 7]})]) as api:
+            result = measurement.format_smoke(11, collect_errors=True)
+            self.assertFalse(result["structured"]["passed"])
+            self.assertFalse(result["semantic"]["passed"])
+            self.assertTrue(result["direct"]["passed"])
+            self.assertEqual(api.call_count, 2)
 
     def test_setup_costs_are_charged_to_the_applicable_arm(self):
         import measurement

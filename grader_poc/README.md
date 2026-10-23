@@ -34,3 +34,22 @@ distinct optimization advantage of inflation plus density.
 
 Results and diagnostics are always archived on `experiment-results`, including
 failed attempts, because this account's Actions artifact quota is full.
+
+The completed [full comparison](https://github.com/a-a-k/assurance-density-poc/actions/runs/39951582519)
+used 169 grader + 59 behavior calls for AST, and 23 + 9 for boundary probes.
+AST found wind-vector violations; boundary probes found wind-vector and landing
+flag violations. AST found its first confirmed violation in 12 total calls;
+boundary probes took 15. Thus the complete-campaign difference does not establish
+a cheaper first finding. A composite with a cheap unread-field check must also
+be included before claiming lower cost.
+
+The [repair replay](https://github.com/a-a-k/assurance-density-poc/actions/runs/39952513633)
+ran all 68 previously accepted mutants plus formatting, reference and rounding
+controls: 71 actual grader calls. The added contract test rejected all seven
+confirmed mutants (five AST, two boundary), and rejected no other replay case.
+Logs confirm those seven failures occur in the new relation test. This validates
+repair integration; reuse of the adjudicator is not independent confirmation.
+
+Workflow modes: `compare` performs the full comparison; `repair` replays a supplied
+`source_run`; `scoped` performs an exploratory follow-up using automatic policy
+read-set selection and a cheap composite control. All execution stays in Actions.

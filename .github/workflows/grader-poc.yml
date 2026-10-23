@@ -3,6 +3,11 @@ name: Real grader adequacy PoC
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        type: choice
+        description: 'Comparison, repair replay, or policy-scoped probe comparison'
+        options: [compare, repair, scoped]
+        default: compare
       source_run:
         description: 'Optional completed comparison run ID: replay accepted cases against a repaired checker'
         required: false
@@ -50,18 +55,25 @@ jobs:
           docker version > ci-logs/docker.txt
       - name: Compare actual AST audit and generic output probes
         id: experiment
-        if: inputs.source_run == ''
+        if: inputs.mode == 'compare'
         run: python -u grader_poc/run.py 2>&1 | tee ci-logs/grader-run.log
       - name: Verify checker repair against every previously accepted candidate
         id: repair
-        if: inputs.source_run != ''
+        if: inputs.mode == 'repair'
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ inputs.source_run }}
         run: python -u grader_poc/repair.py 2>&1 | tee ci-logs/repair-run.log
+      - name: Compare automatic policy-scoped probes and cheap composite baseline
+        id: scoped
+        if: inputs.mode == 'scoped'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: python -u grader_poc/scoped.py 2>&1 | tee ci-logs/scoped-run.log
       - name: Archive outputs, counterexamples and logs
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-          EXPERIMENT_OUTCOME: ${{ inputs.source_run == '' && steps.experiment.outcome || steps.repair.outcome }}
+          EXPERIMENT_OUTCOME: ${{ inputs.mode == 'compare' && steps.experiment.outcome || inputs.mode == 'repair' && steps.repair.outcome || steps.scoped.outcome }}
         run: python persist_results.py

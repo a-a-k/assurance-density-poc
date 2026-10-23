@@ -53,9 +53,7 @@ def compare_budget(report):
     return comparison
 
 
-def main():
-    assert os.environ.get("GITHUB_ACTIONS") == "true"
-    run_id = os.environ["SOURCE_RUN"]
+def fetch_source(run_id, source):
     assert run_id.isdigit()
     prefix = f"/contents/runs/{run_id}-1/"
     meta = json.loads(base64.b64decode(api(prefix + "archive.json?ref=experiment-results")["content"]))
@@ -66,12 +64,17 @@ def main():
         blob = api("/git/blobs/" + archive_info["sha"])
         raw = base64.b64decode(blob["content"])
     assert hashlib.sha256(raw).hexdigest() == meta["archive_sha256"]
-    repair_out = ROOT / "results/repair"
-    source = repair_out / "source-run"
     source.mkdir(parents=True)
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as tar:
         tar.extractall(source, filter="data")
-    original = source / "results/grader"
+    return source / "results/grader", meta
+
+
+def main():
+    assert os.environ.get("GITHUB_ACTIONS") == "true"
+    run_id = os.environ["SOURCE_RUN"]
+    repair_out = ROOT / "results/repair"
+    original, meta = fetch_source(run_id, repair_out / "source-run")
     comparison = compare_budget(json.loads((original / "report.json").read_text()))
     dump(repair_out / "matched-budget.json", comparison)
     artifacts = [ExportedArtifact("/app/" + p.name, p, False)

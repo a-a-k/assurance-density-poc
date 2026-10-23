@@ -211,3 +211,49 @@ path remains fail-fast. Do not retry the failed case to select a better answer.
 No model migration is yet approved. Any variant needs the same original quality,
 full-cost and strong-baseline criterion, plus an independent availability/cost
 review and the same instrument gate. Old negative outcomes remain unchanged.
+
+23 October 2026: next implementation variant, before code/research inference.
+Root GO and independent skeptic explicit design GO on the ORIGINAL criterion.
+The completed audit 40004981244 preserves the failed 4B seed11 transfer; the
+other matrix seeds and all direct cases pass. On 16 available common payloads,
+structured prompt tokens are 38534 versus direct 34918. Empty compact-output
+illustrations are 40310 versus 34982 total; these are neither actual semantic
+costs nor formal bounds, and do not prove a cost-cap pass/fail.
+
+H and controls are unchanged: structured assessment of existing packages must
+achieve the same external outcome cheaper, or better at the original comparable
+cost caps, against semantic/direct and every cheap control in all three seeds.
+No independent metric-pair or human-review-time claim. The next implementation
+uses one more capable model identically for all model arms and removes repeated
+wording while preserving every instruction; compact JSON is requested equally.
+The causal reasons are the observed assigned-value transfer failure and measured
+input-text overhead. No new task example, semantic hint, repaired checker or
+favorable task selection is introduced. A comparison to the old implementation
+cannot attribute any change specifically to model, wording or encoding.
+
+Concrete model: Qwen/Qwen3-8B-GGUF, revision
+7c41481f57cb95916b40956ab2f0b139b296d974, Qwen3-8B-Q4_K_M.gguf,
+5027783488 bytes, SHA256
+d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785.
+Both agents independently checked publisher metadata. Same pinned llama.cpp
+b11838, CPU, context16384, seed/temperature/output limits. Public ubuntu-24.04
+has 4CPU/16GB; actual startup/memory/speed remain to be checked in Actions.
+https://huggingface.co/Qwen/Qwen3-8B-GGUF/tree/7c41481f57cb95916b40956ab2f0b139b296d974
+https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+
+All preparation, model download/startup, schema checks per applicable arm,
+inference, retries, selection and early stopping costs remain counted. Fixed
+assigned-label cases/seeds must ALL pass for the new model; old 4B responses
+cannot be reused as 8B measurements. Tokenizer audit precedes full-run approval.
+No full semantic execution if the instrument gate fails. Literal preservation
+and implementation receive independent review before CI. The corpus has already
+been inspected: any eventual positive comparison is exploratory within this
+implementation, not independent confirmation on an untouched sample.
+
+Independent final code/literal-obligations review: GO for 8B post_format. Root
+agrees. Shared COMMON preserves direct boundary/ordering/mutation instructions;
+semantic retains counterexamples, scope, weak assertions and critical treatment
+of examples; FORMAT preserves validity/coverage distinctions and unchanged
+selection. This is a review of meaning, not a claim of identical LLM behavior.
+All six assigned-label requests run fresh. Full comparison awaits actual audit
+and runtime/cost review under the existing limits.

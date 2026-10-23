@@ -180,7 +180,7 @@ def format_smoke(seed, *, collect_errors=False, reused=None):
         text = ("Return {\"selected\": the supplied candidate IDs}. Supplied IDs: " + json.dumps(direct_ids)
                 if direct else "Copy the assigned records into an object keyed by candidate ID 0..9, "
                 "each with status and clauses. Preserve labels and explicit clause IDs. Assignments: " + json.dumps(assignments))
-        body = {"messages": [{"role": "user", "content": text + ". No rationale. /no_think"}],
+        body = {"messages": [{"role": "user", "content": text + ". Compact JSON only. No rationale. /no_think"}],
                 "temperature": 0.2, "seed": seed, "max_tokens": 800, "cache_prompt": False,
                 "chat_template_kwargs": {"enable_thinking": False},
                 "response_format": {"type": "json_schema", "json_schema": {

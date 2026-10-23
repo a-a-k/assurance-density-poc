@@ -37,10 +37,10 @@ def main():
         archive, "507e2f4fe3553499b518efe74a4244e35d709154a4e51c67e3affeef228ceb30"))
     with tarfile.open(archive) as tar:
         tar.extractall(root, filter="data")
-    model = root / "Qwen3-4B-Q4_K_M.gguf"
+    model = root / "Qwen3-8B-Q4_K_M.gguf"
     records.append(download(
-        "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/bc640142c66e1fdd12af0bd68f40445458f3869b/Qwen3-4B-Q4_K_M.gguf",
-        model, "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5"))
+        "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf",
+        model, "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785"))
     server = next(root.rglob("llama-server"))
     server.chmod(0o755)
     command = [str(server), "-m", str(model), "--host", "127.0.0.1", "--port", "8080",

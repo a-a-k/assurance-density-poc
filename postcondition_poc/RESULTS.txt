@@ -77,3 +77,18 @@ Checksum-verified archived inputs, model responses, source bindings, actual
 failure witnesses, costs and uncertainties are retained. Generated faulty
 programs are not historical bugs or independent bug classes. No human-time
 saving or independent inflation/density-pair effect was established.
+
+Subsequent instrument audit, not a new semantic experiment:
+Run 40004981244 completed the assigned-value and tokenizer checks after repair.
+The fixed-ID parser passed invariants, but Qwen4B changed candidate1's assigned
+clauses [0,2] to [4] in seed11. This failed response was reused from 40004214644,
+not regenerated to obtain a pass. Matrix seeds29/47 and all direct cases passed.
+The overall instrument gate remains failed; no repaired-4B semantic run started.
+The complete diagnostic is archived at
+https://github.com/a-a-k/assurance-density-poc/blob/experiment-results/runs/40004981244-1/seed-11/SUMMARY.md
+It reports 16 available common payloads, measured prompt tokens and illustrative
+empty-output sizes. Those illustrations are not actual semantic costs or formal
+cost bounds. They establish neither the original outcome nor a cost-cap pass.
+The separately reviewed next implementation uses the same stronger model for all
+arms and shorter equivalent instructions; it must pass the same assigned-label
+gate and original external-outcome/cost comparison. No success is claimed.

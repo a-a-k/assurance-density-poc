@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [post_measure, unit_screen, post_screen, screen, pilot, full]
+        options: [post_measure, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
 
 permissions:
@@ -52,7 +52,7 @@ jobs:
           python -m unittest discover -s measurement_poc -p 'test_*.py' -v
           python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Install finite replay numeric comparator
-        if: inputs.mode == 'post_measure'
+        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only'
         run: python -m pip install numpy==1.26.4
       - name: Start pinned CPU model
         if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure'
@@ -66,7 +66,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = post_measure ]; then
+          if [ "$MODE" = author_only ]; then
+            python -u postcondition_poc/author_only.py 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = post_measure ]; then
             python -u postcondition_poc/measurement.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = unit_screen ]; then
             python -u postcondition_poc/unit_screen.py 2>&1 | tee ci-logs/measurement-run.log

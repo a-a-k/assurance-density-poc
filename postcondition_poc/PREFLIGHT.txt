@@ -138,3 +138,12 @@ Canonical and faulty subjects use the same upstream wrapper; post assertion
 origin, reference failures, failed invocations and complete setup costs checked.
 Invariants run in Actions before inference. Success still requires all seeds,
 both strong controls, cheap dominance review and conservative unknown bounds.
+
+2026-10-23 17:50 UTC: root and separate skeptic GO for completing the EXACT
+existing author_tests control alone in Actions (same evaluate(ids=[]), first24,
+EvalPlus canonical, comparator and faulty programs). This audits futility, not
+a changed research hypothesis. Seed47 after12 tasks has29 known natural and
+zero unknown; only21 natural programs remain. Even ideal continuation gives50,
+whereas the author control already has81. Confirm its full canonical outcomes
+and conservatively upper-bounded costs before any early cancellation. Preserve
+partial archives and distinguish a futility bound from a completed experiment.

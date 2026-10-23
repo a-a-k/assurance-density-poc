@@ -2,6 +2,7 @@
 import ast
 import copy
 import operator
+import time
 
 from screen import contrastive_calls, dedup, doc_calls, execute, extract
 
@@ -57,6 +58,7 @@ def unit_calls(test):
 
 
 def prepare(human, posts):
+    started = time.perf_counter()
     tree = ast.parse(human["prompt"])
     entry = human["entry_point"]
     context = "\n".join(ast.get_source_segment(human["prompt"], n) for n in tree.body
@@ -97,6 +99,8 @@ def prepare(human, posts):
         "contrastive": sorted(nontrivial, key=lambda i: (-contrasts[i]["rejections"], -extracted[i]["dependency_score"], len(extracted[i]["post"]), i))[:1],
     }
     return {"selected": selected, "validation": validations, "contrastive": contrasts,
+            "total_seconds": time.perf_counter() - started,
+            "contrastive_execution_seconds": sum(r["wall_seconds"] for r in contrasts.values()),
             "exact_calls": positive, "tolerance_center_proxies": proxies,
             "doc_unknown": doc_unknown, "unit_unknown": unit_unknown, "unknown": unknown,
             "prompt_context": context}

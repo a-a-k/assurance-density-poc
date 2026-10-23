@@ -25,6 +25,7 @@ def download(url, target, expected):
 def main():
     if os.environ.get("GITHUB_ACTIONS") != "true":
         raise SystemExit("Run model inference in GitHub Actions only")
+    bootstrap_start = time.perf_counter()
     root = Path(os.environ["RUNNER_TEMP"]) / "measurement-model"
     root.mkdir(exist_ok=True)
     logs = Path("ci-logs")
@@ -61,7 +62,8 @@ def main():
     else:
         raise RuntimeError("llama-server startup timeout")
     meta = {"downloads": records, "startup_seconds": time.perf_counter() - start,
-            "command": command, "cpus": os.cpu_count(), "pid": process.pid}
+            "command": command, "cpus": os.cpu_count(), "pid": process.pid,
+            "total_seconds": time.perf_counter() - bootstrap_start}
     (logs / "model-provenance.json").write_text(json.dumps(meta, indent=2))
     print("Pinned CPU model ready; CPUs:", os.cpu_count(), flush=True)
 

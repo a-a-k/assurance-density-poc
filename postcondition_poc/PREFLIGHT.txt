@@ -71,3 +71,70 @@ Direct blank-output doc expressions imply None. Restore exact helpers/imports
 already contained in the public HumanEval prompt; never extract a canonical
 implementation helper. Same first24, same controls/ranking, no quality tuning.
 Root GO and explicit skeptic GO for this cheap extension only. No inference GO.
+
+Measurement protocol approved 2026-10-23 16:49 UTC
+The strengthened screen 39989472669 leaves room: existing author tests detect
+96 natural / 657 artificial faulty programs; sound posts can add 15 / 13.
+No tested cheap selector attains this ceiling without finite-canonical false
+alarms. This is feasibility, not a result for the proposed measurement method.
+
+H: explicit source-to-claim, scope, defeater and checker-adequacy assessment
+selects more useful EXISTING postconditions at comparable full application
+cost, or preserves useful exact fault IDs at lower full application cost.
+The claim is about this concrete automated assessment instrument, not abstract
+metric novelty, pair synergy, human approval, or newly generated checks.
+Root GO; separate skeptic explicit GO for the ORIGINAL agreed criterion.
+Code receives a further skeptic review before execution.
+
+Same first24 tasks, ten unchanged posts each. All packages retain original
+author unit tests and doc examples. Three model arms: structured assessment,
+strong ordinary semantic review with identical output fields/shared greedy
+coverage selection, and direct selection without a matrix. At most three posts;
+none is allowed. Exact public prompt/helpers, original tests, EvalPlus input-only
+contract, source clauses, exact candidate source and cheap validation/probe
+results are common. Domain preconditions cannot earn output-clause coverage.
+Necessary condition validity differs from enforcing a complete source clause.
+Rejecting a permitted output contradicts the contract; accepting a forbidden
+output shows incomplete coverage, not necessarily an invalid necessary condition.
+
+Qwen3-4B and llama.cpp pins from measurement_poc/bootstrap.py. Seeds 11/29/47,
+rotated arm order, no prompt caching, temperature .2, 800 output tokens,
+strict JSON schema, at most one format-only retry. No outcome-based tuning.
+Preserve IDs, unknowns, errors and all seeds. Natural faults are primary;
+explicitly artificial faults reported separately. These are generated programs,
+not historical bugs. No task or faulty-program replacement after outcomes.
+
+Cheaper branch: nonempty useful ID superset, false-alarm ID subset; tokens and
+warm application seconds no higher, at least one strictly lower, with standalone
+costs also reported and no contradictory total-cost increase. Better branch:
+more natural detections, no more false-alarm tasks, tokens <=1.10 and both warm
+and standalone wall <=1.20 against BOTH model controls. Direction must hold for
+each seed. Exact gained/lost IDs remain visible. A cheaper control attaining the
+same or better utility defeats a positive claim. Unknowns cannot create victory.
+Count input construction, cheap validation/probes, inference, retries and
+selection. Report cold download/model setup and standalone totals, plus actual
+checker execution separately; do not amortize against arbitrary mutant counts.
+No unmeasured human-time claim.
+
+External replay: exact upstream wrapper construction, independent unchanged
+wrappers on fresh inputs in stable ID order. Canonical soundness uses all
+finite EvalPlus v0.1.2 inputs AND the original output comparator. Fault witnesses
+require normal wrong output from the unwrapped subject and assertion failure
+from its wrapper on a published bad input. Integration failures are unknown,
+not witnesses. No canonical body enters any faulty-program namespace or model
+input. Evaluation-only replay and its metadata never enter selection.
+
+Code-review cost clarification BEFORE inference: wall limits apply ALSO to
+standalone_with_checker_seconds, which conservatively includes actual selected
+package execution AND research reference-scoring overhead. A favorable assessment
+time cannot excuse a contrary full-total increase. Report all these components;
+do not choose a convenient total after outcomes. Token limits apply to both
+application tokens and total tokens including fixed schema smoke setup. Complete
+bootstrap includes download, verification, extraction and server initialization.
+
+Final code review 2026-10-23 17:09 UTC: root GO and explicit separate skeptic
+GO for CI execution of this post_measure protocol on the ORIGINAL criterion.
+Canonical and faulty subjects use the same upstream wrapper; post assertion
+origin, reference failures, failed invocations and complete setup costs checked.
+Invariants run in Actions before inference. Success still requires all seeds,
+both strong controls, cheap dominance review and conservative unknown bounds.

@@ -16,7 +16,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "measurement_poc"))
-from run import execute, save
+try:
+    from run import execute, save
+finally:
+    # The helper import must not redirect subsequent sibling-module discovery.
+    sys.path.pop(0)
 
 OUT = ROOT / "results/measurement/postconditions"
 INPUTS = ROOT / "inputs/measurement/postconditions"

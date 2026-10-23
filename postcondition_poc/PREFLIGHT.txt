@@ -192,3 +192,9 @@ The unchanged greedy rule is expressed with sets. The interpreter reconciles
 new per-arm setup costs and preserves legacy archived accounting. CI runs all
 invariants plus assigned-output/tokenizer checks. Research inference still
 requires review of the actual overhead; smoke success alone cannot start it.
+
+Instrument-run ledger: 40003877832 failed during test discovery, before model
+download or inference. An existing permanent sys.path insertion redirected the
+new test's later sibling imports; scope that helper import with try/finally.
+Root and skeptic reviewed this infrastructure-only fix and GO for repeating
+post_format. Preserve the failed run and its CI time as development overhead.

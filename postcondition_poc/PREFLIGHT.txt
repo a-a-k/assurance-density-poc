@@ -343,3 +343,59 @@ ordinary specification-based counterexample/PBT search with the same gate,
 information, early stopping and full costs. No new run or positive interpretation
 is authorized on these descriptions. This is not a proof that every future
 instantiation fails; a concrete distinct mechanism is still required before code.
+
+2026-10-23 23:32 UTC: compact warrant-before-decision design, BEFORE code.
+Root GO and separate hypothesis_skeptic explicit GO on the ORIGINAL criterion:
+same useful external result at lower complete cost, or better external result
+at comparable complete cost. This is an exploratory follow-up on the same24
+HumanEval tasks and seeds11/29/47, with previous negative outcomes disclosed.
+
+Hypothesis/mechanism: emitting source clause IDs and a short permitted-boundary
+to checker warrant BEFORE selecting unchanged candidates may prevent unsound
+endorsements without the cost of a complete candidate-by-clause matrix. Output
+is {basis, review, selected}; review requests at most16 words total. It is a
+fallible model assessment, not a proof or executed probe. Candidates remain
+visible throughout; there is no candidate-blind interpretation claim. This
+tests the agreed substantive assessment procedure, not independent metric-pair
+novelty. No examples or task-specific hints from previous failures enter prompts.
+
+Strong controls: ordinary specification-first concise review then selection,
+direct selection of at most3, direct selection of at most1, and all six existing
+cheap controls. Same raw common inputs, Python/domain/wrapper information and
+positive-example eligibility gate for all four model arms. The gate is fallible
+and shared, not the contribution. All candidate sources and validation reasons
+remain visible. Ineligible attempted IDs are logged and deterministically
+removed, without a semantic retry. Duplicate IDs are normalized as sets.
+
+Costs: identical120 output-token ceiling, one format-only retry, same pinned
+8B CPU model/server. Actual field order is validated. Exceeding the16-word
+request alone never triggers retry. Count each method's own smoke, preparation,
+all calls/retries, selection, model/source setup and checker execution. Keep
+1.10 token and1.20 time caps, conservative unknowns, all cheap competition and
+one common success branch per model control across all seeds. No human-time
+claim. Prior research/development runs remain recorded separately.
+
+Execution gate: first run assigned-output copying on the minimum, median and
+maximum UTF-8-byte common payloads among all24 archived8B inputs (size ordering,
+then task ID; upper median), for every arm and seed, in GitHub Actions. Preserve
+real prompts and full contexts; use per-arm assigned formats without padding
+direct controls. Measure actual usage/time, check output/order and compare cost
+ratios. Copying does not measure semantic accuracy or give a mathematical lower
+bound. Both agents review the code and actual full-context gate before any
+semantic comparison. This GO permits the full comparison under these conditions;
+it does not promise a positive result. No local model/benchmark/test execution.
+
+Pre-run implementation review: include wrapper-source download/extraction time
+in all four model arms' cold preparation, since their inputs contain the exact
+wrapper. Cheap selectors do not consume it. Keep legacy defaults/archive costs
+intact. Record retry requests without mutating earlier traces; count complete
+per-arm smoke preparation and validation time. These are accounting/instrument
+corrections before the new run, with root and skeptic agreement.
+
+2026-10-23 23:38 UTC: root and separate skeptic EXECUTION GO for warrant_audit,
+3seeds x3full contexts x4arms, after static code review. Actions invariants run
+first. Both agents must inspect actual audit results before warrant_measure.
+Failed transport/invalid server responses preserve exact requests and received
+traces before aborting; no fabricated zero usage. The previous8B cost reports
+omitted wrapper download/extraction. Their archived arithmetic remains unchanged;
+this corrected component cannot reverse the previous negative result.

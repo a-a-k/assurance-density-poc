@@ -15,6 +15,7 @@ from pathlib import Path
 
 SEEDS = (11, 29, 47)
 MODELS = ("structured", "semantic", "direct")
+PROTOCOLS = {"legacy": MODELS, "warrant": ("warrant", "spec_first", "direct", "direct_top1")}
 CHEAP = ("author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive")
 FIELDS = ("application_tokens", "tokens", "application_seconds", "standalone_assessment_seconds", "standalone_with_checker_seconds")
 LIMITS = (1.10, 1.10, 1.20, 1.20, 1.20)
@@ -97,11 +98,11 @@ def pair(t, b, tc, bc):
             "better_branch": better_quality and comparable_cost, "cheaper_branch": same_all and cheaper_cost}
 
 
-def format_setup_cost(setup, method):
-    if method not in MODELS:
+def format_setup_cost(setup, method, models=MODELS):
+    if method not in models:
         return 0, 0
     smoke = setup["schema_smoke"]
-    if set(smoke) == set(MODELS):
+    if set(smoke) == set(models):
         return smoke[method]["seconds"], smoke[method]["tokens"]
     # Original archived runs included the common smoke time in model_seconds.
     # Keep their accounting intact; do not re-score them using repaired costs.
@@ -111,9 +112,13 @@ def format_setup_cost(setup, method):
 
 
 def audit(summary, rows):
+    models = PROTOCOLS[summary.get("protocol", "legacy")]
+    treatment = models[0]
     expected = {f"HumanEval/{i}" for i in range(24)}
     grouped, limits = {}, {}
-    for method in MODELS + CHEAP:
+    if any(r["method"] not in models + CHEAP for r in rows):
+        raise ValueError("Unexpected method for recorded protocol")
+    for method in models + CHEAP:
         group = [r for r in rows if r["method"] == method]
         if len(group) != 24 or {r["task_id"] for r in group} != expected:
             raise ValueError(f"Incomplete/duplicate task set: seed {summary['seed']} {method}")
@@ -129,8 +134,10 @@ def audit(summary, rows):
         warm = sum(r["cost"]["application_seconds"] for r in group)
         checker = sum(r["outcome"]["execution_seconds"] for r in group)
         cold = setup["author_source_seconds"] if method == "author_tests" else setup["assessment_source_seconds"]
-        cold += setup["model_seconds"] if method in MODELS else 0
-        smoke_seconds, smoke_tokens = format_setup_cost(setup, method)
+        cold += setup["model_seconds"] if method in models else 0
+        if method in models:
+            cold += setup.get("wrapper_source_seconds", 0)
+        smoke_seconds, smoke_tokens = format_setup_cost(setup, method, models)
         cold += smoke_seconds
         expected_costs = {"application_tokens": tokens,
                           "tokens": tokens + smoke_tokens,
@@ -140,11 +147,11 @@ def audit(summary, rows):
             if not math.isclose(s[field], expected_value, rel_tol=1e-12, abs_tol=1e-8):
                 raise ValueError(f"Summary and rows disagree: {method} {field}")
     costs = summary["methods"]
-    controls = {m: pair(limits["structured"], limits[m], costs["structured"], costs[m]) for m in MODELS[1:]}
+    controls = {m: pair(limits[treatment], limits[m], costs[treatment], costs[m]) for m in models[1:]}
     cheap = {}
     for method in CHEAP:
-        c, t = limits[method], limits["structured"]
-        reverse = pair(c, t, costs[method], costs["structured"])
+        c, t = limits[method], limits[treatment]
+        reverse = pair(c, t, costs[method], costs[treatment])
         reverse["exact_id_dominance"] = reverse["same_all_quality"] and reverse["cheaper_cost"]
         reverse["natural_count_competition"] = (len(natural(c["detected"])) >= len(natural(t["possible_detected"]))
                                                 and len(c["possible_fa"]) <= len(t["fa"]) and reverse["cheaper_cost"])
@@ -154,7 +161,7 @@ def audit(summary, rows):
                                                          and len(c["fa"]) <= len(t["possible_fa"]) and reverse["cheaper_cost"])
         cheap[method] = reverse
     serialized = {m: {key: sorted(value) for key, value in b.items()} for m, b in limits.items()}
-    return {"seed": summary["seed"], "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
+    return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
             "model_comparison_pass": all(p["better_branch"] or p["cheaper_branch"] for p in controls.values()),
             "cheap_competition": any(p["exact_id_dominance"] or p["natural_count_competition"] for p in cheap.values()),
             "possible_cheap_competition": any(p["possible_exact_id_dominance"] or p["possible_natural_count_competition"] for p in cheap.values())}
@@ -163,9 +170,12 @@ def audit(summary, rows):
 def consistent_branches(seeds):
     if len(seeds) != len(SEEDS) or {s["seed"] for s in seeds} != set(SEEDS):
         raise ValueError("Consistency requires the complete, unique seed set")
+    controls = tuple(seeds[0]["model_controls"])
+    if any(set(s["model_controls"]) != set(controls) for s in seeds):
+        raise ValueError("Inconsistent control sets across seeds")
     return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
                      for branch in ("better_branch", "cheaper_branch")}
-            for method in MODELS[1:]}
+            for method in controls}
 
 
 def render(result):

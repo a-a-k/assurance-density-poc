@@ -2,6 +2,15 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
+Exploratory follow-up: a compact source-linked boundary/warrant before selection,
+against ordinary specification-first reasoning, direct selection, direct top1,
+and all six cheap controls. The independent skeptic approved the original
+external-result/full-cost criterion. Workflow mode warrant_audit checks format
+and actual inference cost on full minimum/median/maximum inputs; warrant_measure
+runs the24-task comparison only after both agents review that audit. No result
+is established by the new code or a successful instrument audit. Existing negative
+comparisons remain below. See postcondition_poc/PREFLIGHT.txt for the exact scope.
+
 Status: the reviewed Qwen8B comparison at commit c5f41e1 failed the criterion:
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508
 Seeds29 and47 each completed all24 tasks. Structured assessment detected90

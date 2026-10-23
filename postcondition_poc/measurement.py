@@ -274,15 +274,18 @@ def evaluate(h, plus, posts, programs, ids, wrap):
             "execution_seconds": canonical["wall_seconds"] + sum(v["wall_seconds"] for v in outcomes.values())}
 
 
-def report(rows, setup, seed):
+def report(rows, setup, seed, arms=None, protocol="legacy"):
+    arms = ARMS if arms is None else arms
     methods = {}
-    for arm in ARMS + ["author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive"]:
+    for arm in arms + ["author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive"]:
         group = [r for r in rows if r["method"] == arm]
         ids = [(r["task_id"], i) for r in group for i in r["outcome"]["usable_code_ids"]]
         warm = sum(r["cost"]["application_seconds"] for r in group)
         execution = sum(r["outcome"]["execution_seconds"] for r in group)
-        smoke = setup["schema_smoke"][arm] if arm in ARMS else {"seconds": 0, "tokens": 0}
-        cold = (setup["author_source_seconds"] if arm == "author_tests" else setup["assessment_source_seconds"]) + (setup["model_seconds"] if arm in ARMS else 0) + smoke["seconds"]
+        smoke = setup["schema_smoke"][arm] if arm in arms else {"seconds": 0, "tokens": 0}
+        cold = (setup["author_source_seconds"] if arm == "author_tests" else setup["assessment_source_seconds"]) + (setup["model_seconds"] if arm in arms else 0) + smoke["seconds"]
+        if arm in arms:
+            cold += setup.get("wrapper_source_seconds", 0)
         methods[arm] = {"tasks": len(group), "natural": sum(i < 200 for _, i in ids), "artificial": sum(i >= 200 for _, i in ids),
                         "false_alarm_tasks": [r["task_id"] for r in group if r["outcome"]["false_alarm"]],
                         "unknown_ids": [(r["task_id"], i) for r in group for i in r["outcome"]["unknown_code_ids"]],
@@ -291,7 +294,7 @@ def report(rows, setup, seed):
                         "standalone_assessment_seconds": warm + cold, "checker_execution_seconds": execution,
                         "standalone_with_checker_seconds": warm + cold + execution,
                         "format_failures": sum(r["cost"].get("format_failed", False) for r in group)}
-    summary = {"seed": seed, "source_commit": os.environ["GITHUB_SHA"], "setup": setup, "methods": methods}
+    summary = {"seed": seed, "protocol": protocol, "source_commit": os.environ["GITHUB_SHA"], "setup": setup, "methods": methods}
     save(OUT / "measurement_summary.json", summary)
     save(OUT / "measurement_rows.json", rows)
     lines = [f"# Existing-postcondition assessment, seed {seed}", "", "Generated faulty programs; no historical-bug, human-time or independent metric-pair claim.", "",
@@ -342,7 +345,13 @@ def main():
         raise SystemExit("Run this comparison in GitHub Actions")
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, choices=SEEDS, required=True)
+    parser.add_argument("--protocol", choices=("legacy", "warrant"), default="legacy")
     args = parser.parse_args()
+    arms, assessor, selector, smoke = ARMS, assess, select, format_smoke
+    if args.protocol == "warrant":
+        import warrant_protocol
+        arms, assessor, selector, smoke = (warrant_protocol.ARMS, warrant_protocol.assess,
+                                           warrant_protocol.select, warrant_protocol.format_smoke)
     INPUTS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     start = time.perf_counter()
@@ -358,19 +367,23 @@ def main():
         posts[row["task_id"]][row["response_num"]] = row
     plus = {r["task_id"]: r for r in map(json.loads, gzip.decompress(raw_plus).decode().splitlines())}
     setup = {"assessment_source_seconds": time.perf_counter() - start, "author_source_seconds": author_source_seconds}
-    # These sources/inputs never enter model or cheap-selector inputs.
+    # Fault bodies and held-out inputs never enter selector inputs. The wrapper
+    # template/binding rules do enter model inputs and are charged separately.
     dzip, dm = download("nl2postcondition_source_evalplus/code_mutants/distinct_code_mutants.jsonl.zip")
+    began_wrapper_source = time.perf_counter()
     raw_wrap, wm = fetch(BASE + "nl2postcondition_source_evalplus/response_preprocessing.py", "upstream_response_preprocessing.py")
     wrap, wrapper_template = upstream_wrapper(raw_wrap.decode())
+    if args.protocol == "warrant":
+        setup["wrapper_source_seconds"] = time.perf_counter() - began_wrapper_source
     programs = collections.defaultdict(dict)
     for row in jsonlines(dzip, "distinct_code_mutants.jsonl"):
         programs[row["task_id"]][row["response_num"]] = row
     save(INPUTS / "measurement_provenance.json", [hm, em, pm, dm, wm])
     meta = json.loads((ROOT / "ci-logs/model-provenance.json").read_text())
     setup["model_seconds"] = meta["total_seconds"]
-    setup["schema_smoke"] = format_smoke(args.seed)
+    setup["schema_smoke"] = smoke(args.seed)
     rows = []
-    report(rows, setup, args.seed)
+    report(rows, setup, args.seed, arms, args.protocol)
     checkpoint(args.seed)
     for number in range(24):
         task, began = f"HumanEval/{number}", time.perf_counter()
@@ -387,29 +400,31 @@ def main():
                   "validation": {i: {"accepted": r["accepted"], "statuses": r["statuses"]} for i, r in cheap["validation"].items()},
                   "contrastive_rejections": {i: r["rejections"] for i, r in cheap["contrastive"].items()},
                   "cheap_unknowns": cheap["unknown"] + cheap["doc_unknown"] + cheap["unit_unknown"]}
+        if args.protocol == "warrant":
+            common["eligible_ids"] = warrant_protocol.eligible_ids(common)
         common_seconds = time.perf_counter() - began
         save(INPUTS / "model_inputs" / f"{number:02}.json", common)
         save(OUT / "cheap" / f"{number:02}.json", cheap)
-        rotation = (number + SEEDS.index(args.seed)) % 3
-        order = ARMS[rotation:] + ARMS[:rotation] + ["author_tests", *cheap["selected"]]
+        rotation = (number + SEEDS.index(args.seed)) % len(arms)
+        order = arms[rotation:] + arms[:rotation] + ["author_tests", *cheap["selected"]]
         for arm in order:
             cost = {"tokens": 0, "calls": 0, "assessment_seconds": 0, "format_failed": False,
-                    "preparation_seconds": common_seconds if arm in ARMS else (0 if arm == "author_tests" else cheap["total_seconds"] - (0 if arm == "contrastive" else cheap["contrastive_execution_seconds"]))}
-            if arm in ARMS:
-                prediction, measured = assess(arm, common, args.seed, f"{number:02}")
+                    "preparation_seconds": common_seconds if arm in arms else (0 if arm == "author_tests" else cheap["total_seconds"] - (0 if arm == "contrastive" else cheap["contrastive_execution_seconds"]))}
+            if arm in arms:
+                prediction, measured = assessor(arm, common, args.seed, f"{number:02}")
                 cost.update(measured)
             began_selection = time.perf_counter()
-            ids = select(arm, prediction, p) if arm in ARMS else ([] if arm == "author_tests" else cheap["selected"][arm])
+            ids = selector(arm, prediction, p) if arm in arms else ([] if arm == "author_tests" else cheap["selected"][arm])
             cost["selection_seconds"] = time.perf_counter() - began_selection
             cost["application_seconds"] = sum(cost[k] for k in ["preparation_seconds", "assessment_seconds", "selection_seconds"])
             outcome = evaluate(h, plus[task], p, programs[task], ids, wrap)
             rows.append({"task_id": task, "method": arm, "seed": args.seed, "cost": cost, "outcome": outcome})
             print(task, arm, "selected", ids, "natural", sum(i < 200 for i in outcome["usable_code_ids"]),
                   "false_alarm", outcome["false_alarm"], "unknown", len(outcome["unknown_code_ids"]), "assessment_s", round(cost["application_seconds"], 2), flush=True)
-            report(rows, setup, args.seed)
+            report(rows, setup, args.seed, arms, args.protocol)
         checkpoint(args.seed)
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as stream:
-        stream.write(report(rows, setup, args.seed))
+        stream.write(report(rows, setup, args.seed, arms, args.protocol))
 
 
 if __name__ == "__main__":

@@ -257,3 +257,22 @@ of examples; FORMAT preserves validity/coverage distinctions and unchanged
 selection. This is a review of meaning, not a claim of identical LLM behavior.
 All six assigned-label requests run fresh. Full comparison awaits actual audit
 and runtime/cost review under the existing limits.
+
+Final execution review after successful 8B audit 40006203927: root GO and
+independent skeptic explicit GO for FULL post_measure on the ORIGINAL criterion,
+24 tasks, seeds11/29/47, all unchanged strong controls and all original caps.
+All six assigned transfers passed; exact model/server digests and 4CPU startup
+were independently verified. On 16 inputs the illustrative total ratio is
+38118/34630=1.10072. It is not an actual full-comparison cost result or bound;
+real coverage lists and selected IDs differ. The token cap stays 1.10, and an
+actual excess, however small, blocks the claim. Copy-task timing similarly is
+not semantic-assessment timing. No positive outcome is promised.
+
+Keep the agreed futility rule. In particular, a known false alarm on task1
+excludes its46 natural IDs from useful results: global universe116 gives a
+maximum70, below the exact author control96. Confirm actual cost superiority
+before stopping on this bound; archive partial results, never substitute an
+easier task or relax the disputed task's original executable domain. A bad
+intermediate cost ratio alone is not a valid full-run futility certificate.
+After complete results or a valid futility certificate, perform independent
+skeptic audit against the same original criterion before interpreting success.

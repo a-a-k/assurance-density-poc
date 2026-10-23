@@ -53,3 +53,12 @@ example inputs and expected output; it must not be confused with canonical
 post-state validation. The screen reports this limitation. Before any inference
 comparison, replay the actual wrapper and resolve or explicitly retain state
 ambiguity; no advantage claim may rely on a changed checker interpretation.
+
+Feasibility extension, 2026-10-23 16:36 UTC: original HumanEval author unit tests
+are a stronger cheap existing package than doc examples. Run their pinned test
+field unchanged on the same first24 tasks and distinct faulty programs, with
+standard check early stopping and canonical sanity checks. Compare exact IDs
+against docs and the published sound-post ceiling, retaining unknown outcomes.
+Root: GO. Skeptic: explicit GO for this extension only; still no inference GO.
+Any later comparison must make author tests available to all methods. Expanded
+EvalPlus inputs and published faulty programs remain evaluation-only.

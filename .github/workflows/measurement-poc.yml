@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [post_screen, screen, pilot, full]
+        options: [unit_screen, post_screen, screen, pilot, full]
         default: pilot
 
 permissions:
@@ -62,7 +62,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = post_screen ]; then
+          if [ "$MODE" = unit_screen ]; then
+            python -u postcondition_poc/unit_screen.py 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = post_screen ]; then
             python -u postcondition_poc/screen.py 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = screen ]; then
             python -u measurement_poc/screen.py 2>&1 | tee ci-logs/measurement-run.log

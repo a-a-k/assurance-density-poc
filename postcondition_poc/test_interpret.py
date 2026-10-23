@@ -1,6 +1,6 @@
 import unittest
 
-from interpret import FIELDS, MODELS, audit, bounds, pair, format_setup_cost
+from interpret import FIELDS, MODELS, SEEDS, audit, bounds, pair, format_setup_cost, consistent_branches
 
 
 def limits(found=(), unknown=(), fa=(), uncertain=()):
@@ -13,6 +13,26 @@ def cost(value):
 
 
 class InterpretationInvariants(unittest.TestCase):
+    def test_changing_exclusive_branch_between_seeds_is_not_consistent(self):
+        seeds = [{"seed": seed, "model_controls": {
+            "semantic": {"better_branch": seed != 29, "cheaper_branch": seed == 29},
+            "direct": {"better_branch": True, "cheaper_branch": False}}} for seed in SEEDS]
+        result = consistent_branches(seeds)
+        self.assertFalse(any(result["semantic"].values()))
+
+    def test_each_control_can_have_its_own_consistent_success_branch(self):
+        seeds = [{"seed": seed, "model_controls": {
+            "semantic": {"better_branch": True, "cheaper_branch": seed == 29},
+            "direct": {"better_branch": seed == 47, "cheaper_branch": True}}} for seed in SEEDS]
+        result = consistent_branches(seeds)
+        self.assertTrue(result["semantic"]["better_branch"])
+        self.assertTrue(result["direct"]["cheaper_branch"])
+
+    def test_partial_or_duplicate_seeds_cannot_establish_consistency(self):
+        for ids in ((), (11, 29), (11, 11, 47)):
+            with self.assertRaisesRegex(ValueError, "complete, unique"):
+                consistent_branches([{"seed": seed} for seed in ids])
+
     def test_new_per_arm_smoke_preserves_direct_cost_advantage(self):
         setup = {"schema_smoke": {a: {"seconds": 2 if a == "direct" else 20,
                                       "tokens": 5 if a == "direct" else 50} for a in MODELS}}

@@ -160,6 +160,14 @@ def audit(summary, rows):
             "possible_cheap_competition": any(p["possible_exact_id_dominance"] or p["possible_natural_count_competition"] for p in cheap.values())}
 
 
+def consistent_branches(seeds):
+    if len(seeds) != len(SEEDS) or {s["seed"] for s in seeds} != set(SEEDS):
+        raise ValueError("Consistency requires the complete, unique seed set")
+    return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
+                     for branch in ("better_branch", "cheaper_branch")}
+            for method in MODELS[1:]}
+
+
 def render(result):
     lines = ["# Completed comparison: criterion audit", "",
              "This report checks external defect detection and measured machine costs. Natural faulty programs are primary; artificial programs remain in exact-ID preservation checks.", "",
@@ -179,7 +187,10 @@ def render(result):
     for seed in result["seeds"]:
         for method, p in seed["cheap_controls"].items():
             lines.append(f"| {seed['seed']} | {method} | {p['exact_id_dominance']} | {p['natural_count_competition']} | {p['possible_exact_id_dominance']} | {p['possible_natural_count_competition']} |")
-    lines += ["", f"All-seed model comparison criterion: {result['all_seed_model_comparison_pass']}.",
+    lines += ["", "A common success branch must hold across seeds for each control; different controls may have different branches.",
+              f"Consistent branches by control: {json.dumps(result['per_control_consistent_branches'], sort_keys=True)}.",
+              f"Per-pair disjunction in every seed: {result['all_seed_pairwise_pass']}.",
+              f"All-seed model comparison criterion: {result['all_seed_model_comparison_pass']}.",
               f"Any cheaper competing control: {result['any_cheap_competition']}.",
               f"Any possible cheaper competing control (including unresolved outcomes): {result['any_possible_cheap_competition']}.",
               "Exact gained/lost IDs, uncertainty bounds, costs and provenance are in criterion_audit.json. No human-time, historical-bug or independent metric-pair claim follows from these observations."]
@@ -207,7 +218,9 @@ def main():
         raise ValueError("Seeds used different source revisions")
     if len(model_digests) != 1:
         raise ValueError("Seeds used different model/server downloads")
-    result["all_seed_model_comparison_pass"] = all(s["model_comparison_pass"] for s in result["seeds"])
+    result["all_seed_pairwise_pass"] = all(s["model_comparison_pass"] for s in result["seeds"])
+    result["per_control_consistent_branches"] = consistent_branches(result["seeds"])
+    result["all_seed_model_comparison_pass"] = all(any(branches.values()) for branches in result["per_control_consistent_branches"].values())
     result["any_cheap_competition"] = any(s["cheap_competition"] for s in result["seeds"])
     result["any_possible_cheap_competition"] = any(s["possible_cheap_competition"] for s in result["seeds"])
     out = Path("results/interpretation")

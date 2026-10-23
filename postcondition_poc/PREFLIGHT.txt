@@ -276,3 +276,13 @@ easier task or relax the disputed task's original executable domain. A bad
 intermediate cost ratio alone is not a valid full-run futility certificate.
 After complete results or a valid futility certificate, perform independent
 skeptic audit against the same original criterion before interpreting success.
+
+2026-10-23 18:59 UTC, interpretation aggregation clarification before completed
+outcomes: the earlier phrase "Direction must hold for each seed" was ambiguous.
+Root and independent skeptic GO for requiring a common success branch across
+all three seeds SEPARATELY for each model control. A consistently better result
+against semantic and consistently cheaper result against direct is permitted.
+Switching exclusive branches between seeds for the same control does not pass.
+Retain all original per-pair results and the old disjunction as separate fields.
+No thresholds, task selection, costs, or experimental execution are changed.
+Validate this read-only interpretation logic in Actions, not by rerunning data.

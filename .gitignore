@@ -1,6 +1,7 @@
 .venv/
 .tools/
 vendor/
+external/
 results/
 ci-logs/
 github_runs/

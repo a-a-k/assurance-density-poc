@@ -1,0 +1,54 @@
+name: Real grader adequacy PoC
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cargo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    concurrency:
+      group: requests-poc-results
+      cancel-in-progress: false
+    env:
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: harbor-framework/terminal-bench
+          ref: 1dcda8716784493721921c23e4bc7f7d988b4494
+          path: external/terminal-bench
+          sparse-checkout: tasks/cargo-flight-dispatch
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: FikriAlfaraby/oracle-mutants
+          ref: 7c67954b678c4a1c7670174ffacb1e772a8c84a3
+          path: external/oracle-mutants
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Install the real baseline and Harbor
+        run: |
+          mkdir -p ci-logs
+          python -m pip install harbor==0.24.0 ./external/oracle-mutants 2>&1 | tee ci-logs/grader-dependencies.log
+          python -m pip freeze > ci-logs/grader-packages.txt
+          docker version > ci-logs/docker.txt
+      - name: Compare actual AST audit and generic output probes
+        id: experiment
+        run: python -u grader_poc/run.py 2>&1 | tee ci-logs/grader-run.log
+      - name: Archive outputs, counterexamples and logs
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPERIMENT_OUTCOME: ${{ steps.experiment.outcome }}
+        run: python persist_results.py

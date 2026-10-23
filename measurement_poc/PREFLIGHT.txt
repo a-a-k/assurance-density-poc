@@ -1,0 +1,74 @@
+Existing-artifact semantic assessment PoC — 2026-10-23
+
+User-approved contribution: assess and select EXISTING unchanged test artifacts.
+Original criterion: same useful external result for less effort, or a better
+external result for comparable effort. No claim of a separate inflation+density
+effect, new optimizer, human-approved discharge, or generation of better tests.
+
+Hypothesis: contract-grounded, structured assessment of oracle support, adequacy
+and unresolved gaps produces more usable defect-detecting suites than ordinary
+semantic review or direct selection at comparable total application cost.
+Predicted support is fallible, not an externally established discharge.
+
+Corpus: pinned DeCon published GPT-3.5 assertions, published postconditions and
+doc examples; HumanEval contracts/canonical solutions and archived HumanEvalFix
+programs. The faults are benchmark seeded faults, NOT historical real bugs.
+First 24 numeric tasks with >=32 syntactically valid assertions. Per task take
+32 unique assertion strings in SHA-256 order without reading correctness labels.
+All three fixed seeds (11, 29, 47) use the same candidate pools. Infrastructure
+pilot uses first four tasks, seed 11; its results are not a success claim.
+
+Methods: structured semantic-support assessment; ordinary specification-based
+semantic assessment; direct specification-based selection in one call without
+the assessment matrix; DeCon; DeCon plus cheap AST-input diversity; keep-all;
+DeCon and keep-all with exact assertion-expression AST deduplication, retaining
+the shortest existing assertion (stable ID tie). No assertion is rewritten.
+All LLM arms see exactly the same contract, mechanically numbered source clauses,
+examples, unchanged assertions, raw postconditions and doc-validated DeCon signals.
+They may independently reject bad postconditions and reason about boundaries,
+negative cases and expected answers. No canonical/buggy source or gold labels.
+Existing postconditions are shared cached inputs; no fictitious generation cost.
+
+The two assessment arms share output format, model/caps and a downstream greedy
+coverage selector (budget eight, then shortest source and stable ID; stop at zero
+marginal coverage). This is NOT ordinal density. Direct selection is free to
+choose up to eight IDs without producing that matrix. DeCon and keep-all can keep
+more; their actual size/execution cost is reported. DeCon diversity keeps up to
+eight by marginal AST feature coverage, then shortest source and stable ID.
+
+External outcome: a nonempty selected suite passes the canonical solution AND
+rejects the seeded faulty implementation. Report false alarms, valid witnesses,
+discarded valid assertions, exceptions/timeouts and all tasks/seeds, including
+failure. A correct-assertion witness is required: canonical passes; faulty code
+raises an assertion failure or runtime exception (reported separately). Syntax,
+worker failure and timeout do not count. Official tests validate canonical source;
+their faulty-program outcome is reported without changing the cohort. Full suite
+validity matters, not own D/U or flags. This runtime-fault handling was corrected
+in pre-execution code review following the skeptic's recommendation.
+
+Costs: all actual preprocessing/postcondition validation, inference tokens/calls,
+format retries, selection and selected-suite executions. Cache reuse is charged
+to every arm that needs it. No model prompt caching; rotate arm order by task and
+seed. Shared model download/startup and data acquisition are reported separately;
+do not treat them as zero if estimating a cold deployment. No manual case labels
+are added. Development/research time is not measured human application effort.
+Compare quality and costs with every control, including cheap controls. Better
+quality requires no more false-alarm suites, more usable defect-detecting suites,
+<=1.10 total input+output tokens and <=1.20 total application seconds vs each
+relevant control. Same quality/less cost requires both costs no higher and a
+strict reduction in at least one. Any cheaper control attaining equal/better
+quality defeats a positive claim. Report each seed; no significance/generalization
+claim from this small retrospective, potentially memorized benchmark.
+
+Root verdict: GO for an honest test of the original success criterion under the
+user-approved measurement contribution. A positive result is not guaranteed.
+Independent skeptic (/root/hypothesis_skeptic): explicit GO received 2026-10-23
+for this original criterion. Conditions: count full preparation/DeCon validation/
+retries/selection/execution; direct-select and cheap controls cannot be omitted.
+Recheck actual results with skeptic before claiming success. No hypothesis
+substitution or outcome-based task/model/prompt selection after seeing results.
+
+Execution: GitHub Actions only. Qwen3-4B Q4_K_M via pinned llama.cpp CPU server,
+temperature 0.2, max 1200 completion tokens, one JSON-format retry only.
+The model is an executable operationalization of the measurement procedure;
+results cannot establish superiority of the abstract formalism in general.

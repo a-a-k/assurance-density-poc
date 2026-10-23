@@ -29,6 +29,30 @@ def api(path):
         return json.load(response)
 
 
+def compare_budget(report):
+    """Charge each real grading run and each additional behavior run equally."""
+    budget = report["boundary"]["grader_calls"] + report["boundary"]["behavior_calls"]
+    comparison = {"total_container_call_budget": budget, "methods": {}}
+    for method, data in report.items():
+        spent, completed, families, first = 0, 0, set(), None
+        for row in data["results"]:
+            cost = 1 + row["behavior_calls"]
+            if spent + cost > budget:
+                break
+            spent += cost
+            completed += 1
+            faults = row["assessment"]["failures"] if row["assessment"] else []
+            if faults and first is None:
+                first = {"grader_calls": completed, "behavior_calls": spent - completed,
+                         "total_calls": spent}
+            families.update(f["relation"] for f in faults)
+        comparison["methods"][method] = {"spent_calls": spent, "completed_candidates": completed,
+            "confirmed_relation_families": sorted(families), "first_confirmed_cost": first,
+            "first_confirmed_full_campaign": data["first_confirmed_cost"],
+            "full_grader_calls": data["grader_calls"], "full_behavior_calls": data["behavior_calls"]}
+    return comparison
+
+
 def main():
     assert os.environ.get("GITHUB_ACTIONS") == "true"
     run_id = os.environ["SOURCE_RUN"]
@@ -48,6 +72,8 @@ def main():
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as tar:
         tar.extractall(source, filter="data")
     original = source / "results/grader"
+    comparison = compare_budget(json.loads((original / "report.json").read_text()))
+    dump(repair_out / "matched-budget.json", comparison)
     artifacts = [ExportedArtifact("/app/" + p.name, p, False)
                  for p in sorted((original / "reference-artifacts").iterdir()) if p.is_file()]
     assert len(artifacts) == 5
@@ -119,6 +145,17 @@ if __name__ == "__main__":
         f"Previously unconfirmed cases rejected: {unexpected!r}. Every originally accepted AST/boundary candidate "
         "and the formatting control was replayed. The repair adds the same two general relations to the real grader; "
         "no expected output table or mutant-ID checks. These replay calls are separate from discovery cost.\n")
+    summary += ("\n## Discovery at the same actual execution budget\n\n"
+        f"Budget = {comparison['total_container_call_budget']} container calls (grader + behavior calls).\n\n"
+        "| Method | Calls used | Candidates | Confirmed relation families | First confirmed total calls |\n"
+        "|---|---:|---:|---|---:|\n")
+    for method, data in comparison["methods"].items():
+        first = data["first_confirmed_full_campaign"]
+        summary += (f"| {method} | {data['spent_calls']} | {data['completed_candidates']} | "
+            f"{', '.join(data['confirmed_relation_families'])} | {first['total_calls'] if first else 'none'} |\n")
+    summary += ("\nThe baseline may stop at its first finding. Full campaign cost is not required for a first-finding claim. "
+        "Both campaigns use the same two authored semantic relations. The output-boundary adapter is additional implementation; "
+        "direct JSON-field mutation is equivalent. No human-time or metric-pair advantage is inferred.\n")
     (ROOT / "results/summary.md").write_text(summary)
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as stream:
         stream.write(summary)

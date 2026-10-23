@@ -56,14 +56,55 @@ def clauses(prompt, entry):
 
 
 def make_schema(direct, count):
-    fields = {"rationale": {"type": "string"}}
     if direct:
-        fields["selected"] = {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 9}, "maxItems": 3}
+        fields = {"selected": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 9}, "maxItems": 3}}
     else:
-        fields["validity"] = {"type": "string", "pattern": "^[SCU]{10}$"}
-        fields["coverage"] = {"type": "array", "minItems": 10, "maxItems": 10,
-                              "items": {"type": "integer", "minimum": 0, "maximum": (1 << count) - 1}}
+        record = {"type": "object", "properties": {
+            "status": {"type": "string", "enum": ["S", "C", "U"]},
+            "clauses": {"type": "array", "maxItems": count,
+                        "items": {"type": "integer", "minimum": 0, "maximum": max(0, count - 1)}}},
+            "required": ["status", "clauses"], "additionalProperties": False}
+        fields = {str(i): record for i in range(10)}
     return {"type": "object", "properties": fields, "required": list(fields), "additionalProperties": False}
+
+
+def validate_prediction(prediction, direct, count):
+    if not isinstance(prediction, dict):
+        raise ValueError("Expected an object")
+    if direct:
+        if set(prediction) != {"selected"}:
+            raise ValueError("Expected only selected")
+        ids = prediction["selected"]
+        if not isinstance(ids, list) or len(ids) > 3 or any(type(i) != int or i not in range(10) for i in ids):
+            raise ValueError("Invalid selected IDs")
+        return {"selected": sorted(set(ids))}
+    if set(prediction) != {str(i) for i in range(10)}:
+        raise ValueError("Exactly one record for every candidate ID 0..9 is required")
+    for key, record in prediction.items():
+        if not isinstance(record, dict) or set(record) != {"status", "clauses"}:
+            raise ValueError("Invalid record for ID " + key)
+        status, covered = record["status"], record["clauses"]
+        if not isinstance(status, str) or status not in ("S", "C", "U"):
+            raise ValueError("Invalid status for ID " + key)
+        if not isinstance(covered, list) or any(type(i) != int or i not in range(count) for i in covered):
+            raise ValueError("Invalid clause IDs for candidate " + key)
+        if len(set(covered)) != len(covered):
+            raise ValueError("Duplicate clause IDs for candidate " + key)
+        if status != "S" and covered:
+            raise ValueError("C/U requires an empty clause list for candidate " + key)
+    return {key: {"status": record["status"], "clauses": sorted(record["clauses"])}
+            for key, record in prediction.items()}
+
+
+def parse_prediction(raw, direct, count):
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("Duplicate JSON key: " + key)
+            result[key] = value
+        return result
+    return validate_prediction(json.loads(raw, object_pairs_hook=unique_object), direct, count)
 
 
 def assess(arm, common, seed, name):
@@ -86,18 +127,8 @@ def assess(arm, common, seed, name):
             raise
         calls.append({"request": request, "response": result, "seconds": time.perf_counter() - began})
         try:
-            prediction = json.loads(result["choices"][0]["message"]["content"])
-            if arm == "direct":
-                ids = prediction["selected"]
-                if not isinstance(ids, list) or len(ids) > 3 or any(type(i) != int or i not in range(10) for i in ids):
-                    raise ValueError("Invalid selected IDs")
-                prediction["selected"] = sorted(set(ids))
-            else:
-                if not re.fullmatch("[SCU]{10}", prediction["validity"]):
-                    raise ValueError("Invalid validity string")
-                masks = prediction["coverage"]
-                if len(masks) != 10 or any(type(m) != int or not 0 <= m < (1 << len(common["clauses"])) for m in masks):
-                    raise ValueError("Invalid coverage masks")
+            prediction = parse_prediction(result["choices"][0]["message"]["content"],
+                                          arm == "direct", len(common["clauses"]))
             error = None
             break
         except (KeyError, ValueError, TypeError) as exc:
@@ -114,34 +145,58 @@ def select(arm, prediction, posts):
         return []
     if arm == "direct":
         return prediction["selected"]
-    eligible = [i for i, status in enumerate(prediction["validity"]) if status == "S"]
-    chosen, covered = [], 0
+    eligible = [i for i in range(10) if prediction[str(i)]["status"] == "S"]
+    coverage = {i: set(prediction[str(i)]["clauses"]) for i in eligible}
+    chosen, covered = [], set()
     while eligible and len(chosen) < 3:
-        best = min(eligible, key=lambda i: (-(prediction["coverage"][i] & ~covered).bit_count(), len(posts[i]["postcondition_alone"]), i))
-        if not prediction["coverage"][best] & ~covered:
+        best = min(eligible, key=lambda i: (-len(coverage[i] - covered), len(posts[i]["postcondition_alone"]), i))
+        if not coverage[best] - covered:
             break
         chosen.append(best)
-        covered |= prediction["coverage"][best]
+        covered |= coverage[best]
         eligible.remove(best)
     return sorted(chosen)
 
 
-def format_smoke():
-    """Transport/schema check on a fixed JSON object, without research examples."""
-    start = time.perf_counter()
-    body = {"messages": [{"role": "user", "content": 'Return JSON with validity="SSSSSSSSSS", coverage=[1,1,1,1,1,1,1,1,1,1], rationale="format check". /no_think'}],
-            "temperature": 0, "seed": 1, "max_tokens": 200, "cache_prompt": False,
-            "chat_template_kwargs": {"enable_thinking": False},
-            "response_format": {"type": "json_schema", "json_schema": {"name": "transport", "strict": True, "schema": make_schema(False, 1)}}}
-    http = urllib.request.Request("http://127.0.0.1:8080/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(http, timeout=180) as response:
-        result = json.load(response)
-    elapsed = time.perf_counter() - start
-    save(OUT / "format_smoke.json", {"request": body, "response": result, "seconds": elapsed})
-    parsed = json.loads(result["choices"][0]["message"]["content"])
-    if parsed["validity"] != "S" * 10 or parsed["coverage"] != [1] * 10:
-        raise RuntimeError("Model transport/schema check failed before research inference")
-    return {"seconds": elapsed, "tokens": result["usage"]["total_tokens"]}
+def assigned_format_case(seed):
+    """Assigned, heterogeneous labels; no research outcomes or semantic inference."""
+    offset = SEEDS.index(seed)
+    pattern = [("C", []), ("S", [0, 2]), ("U", []), ("S", []), ("S", [4]),
+               ("C", []), ("S", [1, 3, 4]), ("U", []), ("S", [2]), ("S", [])]
+    expected = {str(i): {"status": pattern[(i + offset) % 10][0],
+                         "clauses": pattern[(i + offset) % 10][1]} for i in range(10)}
+    order = [7, 2, 9, 0, 5, 1, 8, 4, 6, 3]
+    assignments = [{"id": i, **expected[str(i)]} for i in order[offset:] + order[:offset]]
+    direct = [[9, 2, 7], [], [8, 0]][offset]
+    return assignments, expected, direct
+
+
+def format_smoke(seed):
+    """Check both output interfaces; charge each method only its own interface."""
+    assignments, expected, direct_ids = assigned_format_case(seed)
+    costs = {}
+    for direct in (False, True):
+        start = time.perf_counter()
+        text = ("Return {\"selected\": the supplied candidate IDs}. Supplied IDs: " + json.dumps(direct_ids)
+                if direct else "Copy the assigned records into an object keyed by candidate ID 0..9, "
+                "each with status and clauses. Preserve labels and explicit clause IDs. Assignments: " + json.dumps(assignments))
+        body = {"messages": [{"role": "user", "content": text + ". No rationale. /no_think"}],
+                "temperature": 0.2, "seed": seed, "max_tokens": 800, "cache_prompt": False,
+                "chat_template_kwargs": {"enable_thinking": False},
+                "response_format": {"type": "json_schema", "json_schema": {
+                    "name": "transport", "strict": True, "schema": make_schema(direct, 5)}}}
+        http = urllib.request.Request("http://127.0.0.1:8080/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(http, timeout=180) as response:
+            result = json.load(response)
+        elapsed = time.perf_counter() - start
+        label = "direct" if direct else "matrix"
+        save(OUT / f"format_smoke_{seed}_{label}.json", {"request": body, "response": result, "seconds": elapsed})
+        parsed = parse_prediction(result["choices"][0]["message"]["content"], direct, 5)
+        target = {"selected": sorted(direct_ids)} if direct else expected
+        if parsed != target:
+            raise RuntimeError(f"Assigned ID/status/clause transport failed for seed {seed} {label}")
+        costs[label] = {"seconds": time.perf_counter() - start, "tokens": result["usage"]["total_tokens"]}
+    return {arm: costs["direct" if arm == "direct" else "matrix"] for arm in ARMS}
 
 
 def replay(request):
@@ -210,12 +265,13 @@ def report(rows, setup, seed):
         ids = [(r["task_id"], i) for r in group for i in r["outcome"]["usable_code_ids"]]
         warm = sum(r["cost"]["application_seconds"] for r in group)
         execution = sum(r["outcome"]["execution_seconds"] for r in group)
-        cold = (setup["author_source_seconds"] if arm == "author_tests" else setup["assessment_source_seconds"]) + (setup["model_seconds"] if arm in ARMS else 0)
+        smoke = setup["schema_smoke"][arm] if arm in ARMS else {"seconds": 0, "tokens": 0}
+        cold = (setup["author_source_seconds"] if arm == "author_tests" else setup["assessment_source_seconds"]) + (setup["model_seconds"] if arm in ARMS else 0) + smoke["seconds"]
         methods[arm] = {"tasks": len(group), "natural": sum(i < 200 for _, i in ids), "artificial": sum(i >= 200 for _, i in ids),
                         "false_alarm_tasks": [r["task_id"] for r in group if r["outcome"]["false_alarm"]],
                         "unknown_ids": [(r["task_id"], i) for r in group for i in r["outcome"]["unknown_code_ids"]],
                         "detected_ids": ids, "application_tokens": sum(r["cost"]["tokens"] for r in group),
-                        "tokens": sum(r["cost"]["tokens"] for r in group) + (setup["schema_smoke"]["tokens"] if arm in ARMS else 0), "application_seconds": warm,
+                        "tokens": sum(r["cost"]["tokens"] for r in group) + smoke["tokens"], "application_seconds": warm,
                         "standalone_assessment_seconds": warm + cold, "checker_execution_seconds": execution,
                         "standalone_with_checker_seconds": warm + cold + execution,
                         "format_failures": sum(r["cost"].get("format_failed", False) for r in group)}
@@ -296,8 +352,7 @@ def main():
     save(INPUTS / "measurement_provenance.json", [hm, em, pm, dm, wm])
     meta = json.loads((ROOT / "ci-logs/model-provenance.json").read_text())
     setup["model_seconds"] = meta["total_seconds"]
-    setup["schema_smoke"] = format_smoke()
-    setup["model_seconds"] += setup["schema_smoke"]["seconds"]
+    setup["schema_smoke"] = format_smoke(args.seed)
     rows = []
     report(rows, setup, args.seed)
     checkpoint(args.seed)

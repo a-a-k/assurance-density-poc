@@ -1,6 +1,6 @@
 import unittest
 
-from interpret import FIELDS, audit, bounds, pair
+from interpret import FIELDS, MODELS, audit, bounds, pair, format_setup_cost
 
 
 def limits(found=(), unknown=(), fa=(), uncertain=()):
@@ -13,6 +13,18 @@ def cost(value):
 
 
 class InterpretationInvariants(unittest.TestCase):
+    def test_new_per_arm_smoke_preserves_direct_cost_advantage(self):
+        setup = {"schema_smoke": {a: {"seconds": 2 if a == "direct" else 20,
+                                      "tokens": 5 if a == "direct" else 50} for a in MODELS}}
+        self.assertEqual(format_setup_cost(setup, "direct"), (2, 5))
+        self.assertEqual(format_setup_cost(setup, "structured"), (20, 50))
+        self.assertEqual(format_setup_cost(setup, "author_tests"), (0, 0))
+
+    def test_archived_common_smoke_time_is_not_double_counted(self):
+        setup = {"schema_smoke": {"seconds": 20, "tokens": 50}, "model_seconds": 100}
+        self.assertEqual(format_setup_cost(setup, "direct"), (0, 50))
+        self.assertEqual(format_setup_cost(setup, "structured"), (0, 50))
+
     def test_baseline_unknown_prevents_apparent_detection_win(self):
         result = pair(limits([("A", 1), ("A", 2)]), limits([("A", 1)], [("A", 2)]), cost(100), cost(100))
         self.assertFalse(result["better_branch"])

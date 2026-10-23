@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [post_measure, author_only, unit_screen, post_screen, screen, pilot, full]
+        options: [post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
 
 permissions:
@@ -55,7 +55,7 @@ jobs:
         if: inputs.mode == 'post_measure' || inputs.mode == 'author_only'
         run: python -m pip install numpy==1.26.4
       - name: Start pinned CPU model
-        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure'
+        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format'
         run: python -u measurement_poc/bootstrap.py
       - name: Assess unchanged published assertions
         id: experiment
@@ -66,7 +66,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = author_only ]; then
+          if [ "$MODE" = post_format ]; then
+            python -u postcondition_poc/format_audit.py 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = author_only ]; then
             python -u postcondition_poc/author_only.py 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = post_measure ]; then
             python -u postcondition_poc/measurement.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log

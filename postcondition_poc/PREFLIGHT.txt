@@ -147,3 +147,48 @@ zero unknown; only21 natural programs remain. Even ideal continuation gives50,
 whereas the author control already has81. Confirm its full canonical outcomes
 and conservatively upper-bounded costs before any early cancellation. Preserve
 partial archives and distinguish a futility bound from a completed experiment.
+
+2026-10-23 18:23 UTC: instrument repair and repeat comparison.
+Root GO; separate skeptic explicitly GO on the ORIGINAL same-result/lower-cost
+or better-result/comparable-cost criterion, including the full 24-task, three-
+seed comparison after mandatory representation and cost checks. This is not
+merely permission for a format smoke or a narrower demonstration.
+
+Reason: the archived HumanEval/8 assessments call post 0 invalid in prose but
+mark its positional status S and give it coverage. Replace positional strings
+and bitmasks with required, explicit per-ID status/clause records identically
+in structured and semantic arms. Remove the free-text rationale from ALL three
+arms. Do not change the substantive prompts, selector, corpus, tasks, model,
+seeds, controls, margins or external outcomes. This repairs an identified
+assessment interface; it does not assume that boundary/scope mistakes disappear.
+
+The same raw facts remain available to structured, semantic and direct; direct
+does not have to construct our register. All author/cheap controls remain.
+Requiring a novel automatic operator would add a condition the user did not
+request; the skeptic explicitly withdrew that earlier restriction. The empirical
+effect of the structured assessment still has to beat ALL original controls.
+
+Before research inference: shuffled assigned-label transport cases with mixed
+S/C/U, empty and multiple clause sets, and all three seeds; explicit ID, range,
+uniqueness, C/U-empty checks; separate direct-format checks. Charge standalone
+format setup per applicable arm, not the matrix-format cost to direct. Audit
+token floors with the pinned tokenizer and identical available archived common
+payloads; disclose this subset. These checks establish instrument feasibility,
+not semantic quality or success. No automatic full run on smoke success.
+
+All application preparation, inference, retries, early stops, schema setup and
+cold costs remain counted. Repair and research-development overhead are logged
+separately; human working time is not measured and no human-effort saving can
+be claimed. Old exploratory runs and their costs stay archived. The old negative
+result is unchanged. Do not tune prompts, exclude cases, choose favorable seeds
+or relax the criterion after observing the repeat. Use the existing exact
+author-control bound to stop an impossible repeat promptly. Code and actual
+results require another independent skeptic check before execution/success.
+
+2026-10-23 18:30 UTC: root and skeptic code-review GO for post_format CI.
+Clause lists are validated then order-normalized; duplicate keys, missing IDs,
+unsupported coverage, noninteger/out-of-range/duplicate clauses are rejected.
+The unchanged greedy rule is expressed with sets. The interpreter reconciles
+new per-arm setup costs and preserves legacy archived accounting. CI runs all
+invariants plus assigned-output/tokenizer checks. Research inference still
+requires review of the actual overhead; smoke success alone cannot start it.

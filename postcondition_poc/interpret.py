@@ -97,6 +97,19 @@ def pair(t, b, tc, bc):
             "better_branch": better_quality and comparable_cost, "cheaper_branch": same_all and cheaper_cost}
 
 
+def format_setup_cost(setup, method):
+    if method not in MODELS:
+        return 0, 0
+    smoke = setup["schema_smoke"]
+    if set(smoke) == set(MODELS):
+        return smoke[method]["seconds"], smoke[method]["tokens"]
+    # Original archived runs included the common smoke time in model_seconds.
+    # Keep their accounting intact; do not re-score them using repaired costs.
+    if set(smoke) == {"seconds", "tokens"}:
+        return 0, smoke["tokens"]
+    raise ValueError("Unknown schema-smoke cost layout")
+
+
 def audit(summary, rows):
     expected = {f"HumanEval/{i}" for i in range(24)}
     grouped, limits = {}, {}
@@ -117,8 +130,10 @@ def audit(summary, rows):
         checker = sum(r["outcome"]["execution_seconds"] for r in group)
         cold = setup["author_source_seconds"] if method == "author_tests" else setup["assessment_source_seconds"]
         cold += setup["model_seconds"] if method in MODELS else 0
+        smoke_seconds, smoke_tokens = format_setup_cost(setup, method)
+        cold += smoke_seconds
         expected_costs = {"application_tokens": tokens,
-                          "tokens": tokens + (setup["schema_smoke"]["tokens"] if method in MODELS else 0),
+                          "tokens": tokens + smoke_tokens,
                           "application_seconds": warm, "checker_execution_seconds": checker,
                           "standalone_assessment_seconds": warm + cold, "standalone_with_checker_seconds": warm + cold + checker}
         for field, expected_value in expected_costs.items():

@@ -2,10 +2,16 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
-Status: the reviewed Qwen8B comparison is running at commit c5f41e1:
+Status: the reviewed Qwen8B comparison at commit c5f41e1 failed the criterion:
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508
-Its assigned-format audit passed all six cases in run 40006203927. This verifies
-the instrument interface, not comparative usefulness; no positive result yet.
+Seeds29 and47 each completed all24 tasks. Structured assessment detected90
+natural faulty programs with5 known false-alarm tasks; ordinary semantic review
+detected91 with4, the shortest-check control92 with4, and author tests96 with0.
+Structured assessment was also substantially costlier than direct selection
+and both cheap controls. Independent archive/cost review confirmed failure.
+Seed11 was cancelled because it could not reverse the required all-seed outcome;
+its partial archive was saved successfully. This is NOT a completed three-seed
+comparison or the requested positive PoC. See postcondition_poc/RESULTS.txt.
 
 The previous automated assessment at commit 932f6b7 failed the usefulness criterion.
 Run 39993128862 was stopped after a verified bound showed that even ideal results

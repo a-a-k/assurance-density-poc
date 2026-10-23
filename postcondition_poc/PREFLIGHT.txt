@@ -296,3 +296,50 @@ purity restriction proves the proposed union bound; repeated observations would
 not prove it either. No implementation or run was started. Continue using the
 safe raw remaining-program bound and actual completed outcomes. This rejection
 does not change the research hypothesis, controls, thresholds or current run.
+
+2026-10-23 20:00 UTC: root and independent skeptic design GO for parameterizing
+the existing exact author-only futility audit by comparison run-attempt, full
+source SHA and comparison seed. Keep evaluate(ids=[]), all24 tasks, pinned
+inputs, conservative unknowns, strict baseline_count > treatment_final_upper
+and every actual cost check unchanged. Validate and preserve the exact checkpoint
+blob and distinguish the audit job's seed from the comparison seed. No singleton
+union is used. Code review precedes dispatch; execute once only when a safe raw
+bound or a completed losing seed warrants it. This audits the ORIGINAL criterion
+and does not introduce another research hypothesis or infer success from failure.
+
+Interpretation check while run40007059508 is incomplete: the T/S intervention
+is the assessment instruction, with shared input, format and greedy selection.
+An exact tie with savings consisting only of the 22-token prompt-length gap is
+not evidence of the proposed procedure's utility. Inspect actual first/retry
+predictions, selected checkers, external witnesses and component costs. Material
+quality or package-work differences still must satisfy every original control,
+seed and cost condition. Retain arithmetic cheaper flags even if their source
+does not support a substantive claim; do not change thresholds after the run.
+
+2026-10-23 23:07 UTC / 24 October02:07 Moscow: completed-results review.
+Root and independent skeptic confirm NO-GO on a success claim for run40007059508.
+Completed seeds29/47 each have T90 natural detections and5 known false alarms
+(one more canonical unknown), S91/4, shortest92/4, author96/0. Row sums, complete
+costs, archive/source/model identity and unknown bounds were independently
+reconciled. Against S neither original branch passes; against direct the cost
+caps fail; both cheap controls compete on natural counts at much lower cost.
+Both agents GO to cancel remaining seed11, because it cannot repair an all-seed
+criterion. Cancellation and its always-archive step completed successfully.
+Preserve two completed comparisons and one partial, not a full three-seed claim.
+
+The prepared author_only parameterization is withdrawn without execution or
+publication: completed control rows already provide the exact comparison. No
+additional baseline run or new hypothesis is needed for this negative decision.
+Do not relabel interface normalization or adding a cheap failure filter as a
+positive PoC; they do not address the observed comparative assessment failure.
+
+Post-result hypothesis review, before any new implementation: root and skeptic
+NO-GO on format normalization alone, a hard example-failure filter alone, or
+adding generic empty-input probes alone as the next claimed useful PoC. These
+are interface/validation operations available equally to strong simple controls.
+The broader proposed chain, source-scoped diagnostic probes followed by a
+mandatory evidence gate, also has no specified operational difference from
+ordinary specification-based counterexample/PBT search with the same gate,
+information, early stopping and full costs. No new run or positive interpretation
+is authorized on these descriptions. This is not a proof that every future
+instantiation fails; a concrete distinct mechanism is still required before code.

@@ -1,4 +1,82 @@
-Observed result, 23 October 2026
+Latest result, 24 October 2026 (Europe/Moscow)
+
+The repaired Qwen8B comparison also FAILS the original usefulness criterion.
+Run40007059508, source c5f41e1b1fcf70319477c36ffed9e37a36311d56:
+seeds29 and47 completed all24 tasks; the results agree on natural detections.
+
+Method                         Natural detections   Known false-alarm tasks
+Structured assessment                         90                         5
+Ordinary semantic review                      91                         4
+Direct selection                              41                         7
+Shortest accepted checker                     92                         4
+Original author tests                         96                         0
+
+Structured, semantic and shortest also have one unresolved canonical outcome,
+task15 (execution timeout). Direct has two, tasks13 and15. Structured has zero
+unknown natural detections; author
+tests have one unknown natural outcome. Unknowns count AGAINST a claimed gain,
+so structured's false-alarm upper bound is6. These are generated faulty programs,
+not historical bugs or independent defect classes.
+
+Full measured machine cost, including preparation, inference and checker replay:
+                          seed29 seconds    seed47 seconds    total tokens29/47
+Structured                      3311.71           3145.92          65830/65850
+Semantic                        3687.43           3444.46          72637/72626
+Direct                          1733.48           1600.62          51602/51605
+Shortest                          32.51             25.74                  0/0
+Author tests                      29.56             23.31                  0/0
+
+Structured is cheaper than semantic but has fewer natural detections and more
+false alarms; neither original success branch applies. It detects more than
+direct, but seed47 has1.276x total tokens and1.971x warm application time,
+exceeding the unchanged1.10/1.20 comparable-cost caps (seed29 also fails).
+Both author tests and shortest supply cheaper natural-count competition.
+They do not necessarily preserve identical detected ID sets; no exact-set
+dominance is claimed. Lower cost alone does not rescue worse external results.
+
+Root and the separate skeptic independently verified both tar SHA256/lengths,
+source/seed identities, model/server digests, all216 rows per seed and every
+reported cost field against row sums and per-arm setup. No discrepancy was
+found. Since success was required across all seeds, these completed failures
+cannot be reversed by seed11. It was cancelled after this review; its always-
+archive step succeeded. Do not call this a completed three-seed experiment.
+No additional author-only run was needed and no benchmark ran locally.
+
+Concrete assessment failures, verified from exact archived inputs and responses:
+- Task17: structured marks post0 supported despite the supplied example failure.
+  Its music-token formula double-counts 'o' inside 'o|'; semantic rejects it
+  and selects post4, whose original source accounts for that overlap.
+- Task20: structured again admits a checker that already failed supplied examples.
+  Its pair enumeration excludes equal VALUES, thereby missing distinct elements
+  with the same value. The archived permitted input contains two2.0 elements.
+  Semantic selects post4, which enumerates distinct positions instead.
+- Task6: all three model methods choose a checker that rejects allowed empty
+  input. Structured's chosen assertion compares output length with split(' '),
+  which counts one empty fragment. Task18 uses an unescaped substring as regex.
+- Task11: structured correctly avoids the int('',2) checker selected by semantic.
+  This is a real local difference, but the complete comparison remains negative;
+  direct selection and the author-test control already detect that natural fault.
+
+The interface also wastes effort. In seed47, structured makes27 calls (3 retries),
+semantic29 (5 retries), direct24. Repeated calls mostly clear coverage fields
+of already-rejected/unresolved candidates; those fields do not affect selection.
+Semantic task12 also repeats clause IDs and remains format-invalid, selecting
+no extra checker. Correcting this would be an interface repair, available equally
+to controls. It does not remove structured's substantive task17/task20 mistakes
+or establish the requested benefit. No further research run is approved merely
+on this repair, a hard example filter, or a hand-picked successful task.
+
+Evidence:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508
+https://github.com/a-a-k/assurance-density-poc/tree/experiment-results/runs/40007059508-1/seed-47
+https://github.com/a-a-k/assurance-density-poc/tree/experiment-results/runs/40007059508-1/seed-29
+https://github.com/a-a-k/assurance-density-poc/tree/experiment-results/runs/40007059508-1/seed-11
+
+The assigned-format audit passed before this run; that was interface validation,
+not evidence of useful semantic assessment. No positive PoC, human-time saving,
+or independent inflation/density-pair benefit is established. Paper unchanged.
+
+Earlier result, 23 October 2026
 
 The current automated assessment instrument failed the agreed criterion:
 same useful external result at lower effort, or better at comparable effort.

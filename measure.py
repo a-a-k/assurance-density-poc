@@ -127,6 +127,7 @@ def main():
     parser.add_argument("--version",required=True)
     parser.add_argument("--package-root")
     parser.add_argument("--reference",action="store_true")
+    parser.add_argument("--case-ids",help="JSON list of candidate case IDs to profile")
     args = parser.parse_args()
     measurement_started = time.perf_counter()
     if args.package_root:
@@ -134,6 +135,10 @@ def main():
     import requests
     assert requests.__version__ == args.version, requests.__version__
     cases = load_cases()
+    if args.case_ids:
+        selected_ids=set(json.loads(Path(args.case_ids).read_text(encoding="utf-8")))
+        cases=[c for c in cases if c["id"] in selected_ids]
+        assert {c["id"] for c in cases}==selected_ids
     output = ROOT / "results"
     output.mkdir(exist_ok=True)
     result = {"version":args.version,"requests_file_sha256":hashlib.sha256(

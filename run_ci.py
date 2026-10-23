@@ -69,7 +69,8 @@ def main():
         assert digest(ROOT/"inputs/cases.json")==protocol["cases_sha256"]
         save()
         stage("00-four-packages","simple_poc.py","prepare")
-        stage("01-reference","measure.py","--version","2.20.1","--reference")
+        reference_args=["--case-ids","results/simple_case_ids.json"] if args.simple_only else []
+        stage("01-reference","measure.py","--version","2.20.1","--reference",*reference_args)
         for method in ("structural","density","fast_structural"):
             stage("01-simple-"+method,"simple_poc.py",method)
         stage("01-materialized-reference","simple_poc.py","execute","--version","2.20.1")

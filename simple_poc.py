@@ -6,7 +6,7 @@ import json
 import time
 from pathlib import Path
 
-from measure import execute, load_cases
+from measure import execute, generate_mutants, load_cases
 
 ROOT=Path(__file__).resolve().parent
 OUT=ROOT/"results"
@@ -39,11 +39,12 @@ def render(ids,layout,copies=1):
 def prepare():
     cases=load_cases()
     by_id={c["id"]:c for c in cases}
-    # A checks five same-host HTTPS -> HTTP redirects, one per destination port.
-    a=["C100","C102","C104","C106","C108"]
-    assert all(by_id[i]["requirement"]=="HTTPS_DOWNGRADE" for i in a)
-    specs={"A":(a,"explicit",1),"B":(a,"explicit",4),
-           "C":(sorted(by_id),"explicit",1),"D":(sorted(by_id),"parameterized",1)}
+    # Reuse the earlier observed five-case structural reduction. This example
+    # is deliberately constructed from known outcomes, not a blind evaluation.
+    a=["C001","C002","C004","C034","C044"]
+    extended=sorted(a+["C100"])
+    specs={"A":(a,"parameterized",1),"B":(a,"parameterized",4),
+           "C":(extended,"explicit",1),"D":(extended,"parameterized",1)}
     directory=OUT/"simple_packages"; directory.mkdir(exist_ok=True)
     packages={}
     for name,(ids,layout,copies) in specs.items():
@@ -65,6 +66,7 @@ def prepare():
             "automated_edit_seconds":maintenance_seconds,
             "source_sha256":hashlib.sha256(source.encode()).hexdigest()}
     save("simple_packages.json",packages)
+    save("simple_case_ids.json",extended)
     print(json.dumps(packages,indent=2))
 
 
@@ -95,6 +97,72 @@ def structural(a,b):
     return all(x>=y for x,y in zip(aq,bq)) and no_more_cost(a,b) and (aq,costs(a))!=(bq,costs(b))
 
 
+def lean_structural(packages,cases):
+    """Profile shared cases once; stop each mutant at its first killing test.
+
+    Only A and D survive safe cost/containment pruning. Their case sets are
+    nested. A kill therefore also establishes a D kill. Coverage is measured
+    independently here, without reading the instrumented baseline's matrix.
+    """
+    import inspect
+    import requests
+    from coverage import Coverage
+    assert requests.__version__=="2.20.1"
+    initial=frontier(packages,lambda a,b:set(a["selected"])>=set(b["selected"])
+                     and no_more_cost(a,b) and costs(a)!=costs(b))
+    assert initial["retained"]==["A","D"]
+    small=set(packages["A"]["selected"])
+    large=set(packages["D"]["selected"])
+    assert small<large
+    selected_cases=[c for c in cases if c["id"] in large]
+    source=str(Path(requests.sessions.__file__).resolve())
+    cov=Coverage(data_file=None,branch=True,include=[source])
+    cov.start()
+    calls=0
+    for case in selected_cases:
+        cov.switch_context(case["id"])
+        assert execute(requests,case)==case["expected_retain"]
+        calls+=1
+    cov.stop()
+    cov.json_report(outfile=str(OUT/"simple_fast_coverage.json"))
+    coverage_report=read("simple_fast_coverage.json")
+    original=requests.sessions.SessionRedirectMixin.should_strip_auth
+    start=inspect.getsourcelines(original)[1]
+    end=start+len(inspect.getsourcelines(original)[0])
+    target={tuple(a) for f in coverage_report["files"].values() for a in f["executed_branches"] if start<=a[0]<end}
+    reporter=cov._get_file_reporter(source)
+    for name in ("A","D"):
+        data=cov.get_data()
+        data.set_query_contexts(["^"+i+"$" for i in packages[name]["selected"]])
+        packages[name]["branches"]=len(set(reporter.translate_arcs(data.arcs(source) or [])) & target)
+        packages[name]["mutants"]=0
+    mutants=generate_mutants(original)
+    try:
+        for mutant in mutants:
+            requests.sessions.SessionRedirectMixin.should_strip_auth=mutant["function"]
+            killed_small=False
+            for case in selected_cases:
+                if case["id"] not in small: continue
+                calls+=1
+                if execute(requests,case)!=case["expected_retain"]:
+                    killed_small=True
+                    break
+            killed_large=killed_small
+            if not killed_small:
+                for case in selected_cases:
+                    if case["id"] in small: continue
+                    calls+=1
+                    if execute(requests,case)!=case["expected_retain"]:
+                        killed_large=True
+                        break
+            packages["A"]["mutants"]+=int(killed_small)
+            packages["D"]["mutants"]+=int(killed_large)
+    finally:
+        requests.sessions.SessionRedirectMixin.should_strip_auth=original
+    remaining={name:packages[name] for name in ("A","D")}
+    return frontier(remaining,structural),calls,len(mutants)
+
+
 def run_method(method):
     started=time.perf_counter()
     packages=read("simple_packages.json")
@@ -112,18 +180,20 @@ def run_method(method):
     else:
         import requests
         assert requests.__version__=="2.20.1"
-        outcomes={}
-        for c in cases:
-            outcomes[c["id"]]=execute(requests,c)==c["expected_retain"]
-            calls+=1
-        assert all(outcomes.values())
         if method=="density":
+            outcomes={}
+            needed={i for p in packages.values() for i in p["selected"]}
+            for c in cases:
+                if c["id"] not in needed: continue
+                outcomes[c["id"]]=execute(requests,c)==c["expected_retain"]
+                calls+=1
+            assert all(outcomes.values())
             groups={r:{c["id"] for c in cases if c["requirement"]==r}
                     for r in {c["requirement"] for c in cases}}
             for p in packages.values():
                 checked={i for i in p["selected"] if outcomes[i]}
                 p["D"]=sorted(r for r,scope in groups.items() if scope<=checked)
-                p["U"]=sorted(set(outcomes)-checked)
+                p["U"]=sorted({c["id"] for c in cases}-checked)
             inflation={b:next((a for a in packages if packages[a]["N"]<packages[b]["N"]
                 and packages[a]["D"]==packages[b]["D"]
                 and set(packages[a]["U"])<=set(packages[b]["U"])
@@ -135,15 +205,9 @@ def run_method(method):
             details={"density_only":density_only,
                      "same_selection_without_inflation":density_only["retained"]==selected["retained"]}
         else:
-            # Safe shortcut for this baseline: greater coverage cannot be lost
-            # by retaining a superset of the same current, passing observations.
-            selected=frontier(packages,lambda a,b:
-                set(a["selected"])>=set(b["selected"]) and no_more_cost(a,b) and costs(a)!=costs(b))
-            remaining={name:packages[name] for name in selected["retained"]}
-            # A cost antichain proves no remaining pair can dominate, regardless
-            # of its coverage/mutation values; expensive profiling is unnecessary.
-            assert not any(no_more_cost(a,b) for an,a in remaining.items() for bn,b in remaining.items() if an!=bn)
-            details={"shortcut":"case-set containment followed by cost antichain; no instrumentation required"}
+            selected,calls,mutants=lean_structural(packages,cases)
+            details={"shortcut":"safe containment pruning, shared coverage, first-kill mutation stopping",
+                     "mutants_generated":mutants}
         details.update(additional_reference_case_executions=calls,upstream_reference_case_executions=0)
     result={"method":method,"selection":selected,"details":details,
             "packages":packages,"selection_and_measurement_seconds":time.perf_counter()-started}
@@ -212,11 +276,24 @@ def report():
         selected=data["selection"]["retained"]
         calls=data["details"]["additional_reference_case_executions"]+data["details"]["upstream_reference_case_executions"]
         seconds=stage_seconds["01-simple-"+method]+(reference_seconds if method=="structural" else 0)
+        # Common delivery operation for EVERY method: union retained case IDs,
+        # deduplicate them, and put them in one parameterized harness.
+        delivered=sorted({i for p in selected for i in packages[p]["selected"]})
+        delivered_source=render(delivered,"parameterized")
+        materialized=next(p for p in packages if packages[p]["selected"]==delivered and packages[p]["N"]==1 and packages[p]["copies"]==1)
+        assert delivered_source==(OUT/"simple_packages"/(materialized+".py")).read_text(encoding="utf-8")
+        delivered_defects={v:any(detection[p][v] for p in selected) for v in ("2.19.1","2.20.0")}
         rows.append({"method":method,"retained":selected,"reference_case_executions":calls,
                      "descriptive_automation_seconds":seconds,
                      "historical_defects_in_frontier_union":sum(any(detection[p][v] for p in selected) for v in ("2.19.1","2.20.0")),
                      "retained_test_definitions":sum(packages[p]["N"] for p in selected),
                      "retained_rename_edits":sum(packages[p]["maintenance_edits"] for p in selected),
+                     "delivered_case_ids":delivered,"delivered_observations":len(delivered),
+                     "delivered_test_definitions":1,"delivered_rename_edits":2,
+                     "delivered_source_bytes":len(delivered_source.encode()),
+                     "delivered_fixture_bytes":packages[materialized]["fixture_bytes"],
+                     "delivered_source_materialized_and_executed_as":materialized,
+                     "delivered_named_defects":delivered_defects,
                      "per_retained_package_defects":{p:detection[p] for p in selected}})
     result={"packages":packages,"methods":rows,"historical_detection":detection,
             "shared_suite_preparation_seconds":stage_seconds["00-four-packages"],
@@ -229,19 +306,21 @@ def report():
     save("simple_comparison.json",result)
     lines=["# Four-package comparison","",
            "Actual Requests executions; same source/fixture-byte and API-rename cost inputs for every method.","",
-           "| Method | Retained | Historical defects (frontier union) | Reference case executions | Test definitions kept | Rename edits kept |",
-           "|---|---|---:|---:|---:|---:|"]
+           "| Method | Retained | Named historical defects | Profiling case executions | Delivered cases | Delivered test definitions | API rename edits |",
+           "|---|---|---:|---:|---:|---:|---:|"]
     for r in rows:
-        lines.append("| {} | {} | {}/2 | {} | {} | {} |".format(r["method"],", ".join(r["retained"]),
-            r["historical_defects_in_frontier_union"],r["reference_case_executions"],r["retained_test_definitions"],r["retained_rename_edits"]))
+        lines.append("| {} | {} | {}/2 | {} | {} | {} | {} |".format(r["method"],", ".join(r["retained"]),
+            r["historical_defects_in_frontier_union"],r["reference_case_executions"],r["delivered_observations"],
+            r["delivered_test_definitions"],r["delivered_rename_edits"]))
     same=all(r["retained"]==rows[0]["retained"] for r in rows)
     lines.extend(["", "Selections identical across all three methods: "+str(same)+".",
         "Inflation changes the density-only selection: "+str(result["inflation_changes_selection"])+".","",
-        "The full instrumented baseline cost includes real branch/mutation profiling. The fast baseline uses safe containment and cost shortcuts.",
-        "Compare with both: avoiding unnecessary instrumentation is not a unique benefit of the proposed metrics.","",
+        "All methods use the same final operation: union retained case IDs, deduplicate them, and deliver one parameterized harness.",
+        "The optimized baseline profiles shared cases once and stops each mutant at its first killing test. The full baseline also profiles only these six candidate cases, not the whole 200-row domain.","",
         "The common change renames the checker API, removes its old entry point, and actually runs every updated suite on 2.20.1.",
         "Review bytes and rename edit counts are mechanical proxies. Human setup/review/maintenance savings were not measured.",
-        "The two defects are evaluated separately for every retained package in simple_comparison.json; a frontier union is not a single winning package."])
+        "The added sixth case is the already known C100 downgrade reproduction. This is a constructed retrospective demonstration, not prospective validation or a prevalence estimate.",
+        "Both structural methods use the same aggregate branch and mutant counts. Finite-observation-aware selection can reproduce the density result; no new optimization algorithm or inflation/density synergy is demonstrated."])
     text="\n".join(lines)+"\n"
     (OUT/"simple_summary.md").write_text(text,encoding="utf-8")
     import os

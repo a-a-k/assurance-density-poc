@@ -4,16 +4,22 @@ CURRENT SIMPLE POC
 
 Open Actions -> Four-package PoC -> Run workflow. No input fields are needed.
 The run compares the same four executable suites using coverage/mutation Pareto
-selection, inflation+density, and a cheap containment/cost shortcut for the
-baseline. It also reports density without inflation. A tests five downgrade
-cases, B repeats them four times, C has 200 explicit tests, D parameterizes the
-same 200 cases in one test definition. Both historical defects are evaluated
+selection, inflation+density, and an optimized structural baseline (shared
+coverage, containment pruning, first-kill mutation stopping). It also reports
+density without inflation. A parameterizes the earlier five-case structural
+reduction, B repeats it four times, C adds the known C100 downgrade reproduction
+in six explicit tests, D parameterizes the same six cases. This deliberately
+constructed follow-up tests one added observation, not a blind discovery.
+The earlier 200-case comparison gave identical selections for all three methods;
+that result remains in run 39944500021. Both historical defects are evaluated
 separately on the actual 2.19.1 and 2.20.0 releases.
 
 The shared maintenance task renames the checker API. Updated source suites are
 actually run after the old API is removed. The table reports Requests case
 executions, retained test definitions and required rename edits. Source/fixture
 bytes and edit counts are mechanical cost proxies, not measured human effort.
+Every method receives the same final deduplication/parameterization operation.
+The delivered suites have five or six concrete observations in one test method.
 Common suite preparation is reported separately. The seven existing category
 labels come from the analyst policy; its human preparation cost is unmeasured.
 

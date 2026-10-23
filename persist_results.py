@@ -53,7 +53,8 @@ def main():
         new_branch=True
     base_tree=api("GET","/git/commits/"+current)["tree"]["sha"]
     blob=api("POST","/git/blobs",{"content":base64.b64encode(raw).decode(),"encoding":"base64"})["sha"]
-    summary_path=ROOT/"results/summary.md"
+    summary_path=ROOT/"results/simple_summary.md"
+    if not summary_path.exists(): summary_path=ROOT/"results/summary.md"
     summary=summary_path.read_text(encoding="utf-8") if summary_path.exists() else "Incomplete attempt; inspect manifest and logs.\n"
     tree=api("POST","/git/trees",{"base_tree":base_tree,"tree":[
         {"path":prefix+"/results.tar.gz","mode":"100644","type":"blob","sha":blob},

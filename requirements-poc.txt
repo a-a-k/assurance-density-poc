@@ -1,0 +1,6 @@
+requests==2.20.1
+urllib3==1.23
+idna==2.7
+chardet==3.0.4
+certifi==2018.11.29
+coverage==7.6.1

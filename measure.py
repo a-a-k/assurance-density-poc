@@ -128,6 +128,7 @@ def main():
     parser.add_argument("--package-root")
     parser.add_argument("--reference",action="store_true")
     args = parser.parse_args()
+    measurement_started = time.perf_counter()
     if args.package_root:
         sys.path.insert(0,str(Path(args.package_root).resolve()))
     import requests
@@ -144,9 +145,11 @@ def main():
         coverage = Coverage(data_file=None,branch=True,include=[source])
         coverage.start()
     started = time.perf_counter()
+    case_executions = 0
     for case in cases:
         if coverage: coverage.switch_context(case["id"])
         observed = execute(requests,case)
+        case_executions += 1
         result["cases"].append({"id":case["id"],"retained":observed,
                                 "passed":observed==case["expected_retain"]})
     result["uninstrumented_or_coverage_elapsed_seconds"] = time.perf_counter()-started
@@ -180,6 +183,7 @@ def main():
                 killed=[];errors=[]
                 for case in cases:
                     try:
+                        case_executions += 1
                         if execute(requests,case)!=case["expected_retain"]: killed.append(case["id"])
                     except Exception as exc:
                         errors.append({"case":case["id"],"exception":type(exc).__name__})
@@ -189,6 +193,8 @@ def main():
             requests.sessions.SessionRedirectMixin.should_strip_auth=original
         result["mutation_elapsed_seconds"]=time.perf_counter()-started
         assert all(row["passed"] for row in result["cases"]), "Reference violates finite policy"
+    result["case_executions"] = case_executions
+    result["full_measurement_seconds"] = time.perf_counter()-measurement_started
     path=output/("requests_"+args.version+".json")
     path.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"version":args.version,"passed":sum(x["passed"] for x in result["cases"]),

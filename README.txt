@@ -1,4 +1,28 @@
-Requests finite-policy reduction PoC
+Requests four-package comparison
+
+CURRENT SIMPLE POC
+
+Open Actions -> Four-package PoC -> Run workflow. No input fields are needed.
+The run compares the same four executable suites using coverage/mutation Pareto
+selection, inflation+density, and a cheap containment/cost shortcut for the
+baseline. It also reports density without inflation. A tests five downgrade
+cases, B repeats them four times, C has 200 explicit tests, D parameterizes the
+same 200 cases in one test definition. Both historical defects are evaluated
+separately on the actual 2.19.1 and 2.20.0 releases.
+
+The shared maintenance task renames the checker API. Updated source suites are
+actually run after the old API is removed. The table reports Requests case
+executions, retained test definitions and required rename edits. Source/fixture
+bytes and edit counts are mechanical cost proxies, not measured human effort.
+Common suite preparation is reported separately. The seven existing category
+labels come from the analyst policy; its human preparation cost is unmeasured.
+
+Results: simple_comparison.json, simple_summary.md, simple_packages/*.py and
+simple_executions_*.json inside the run archive linked from the Actions summary.
+Archives are stored in experiment-results because the Actions artifact quota
+is full. The earlier audit remains a separate workflow, documented below.
+
+EARLIER AUDIT REPRODUCTION
 
 Run the experiment in GitHub Actions. The repository contains code and frozen
 inputs, without local results or paper sources. Every Actions attempt measures

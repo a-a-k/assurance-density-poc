@@ -7,12 +7,22 @@ on:
         description: Full commit SHA to reproduce (must equal the selected ref)
         required: true
         type: string
+      upload_actions_artifact:
+        description: Also upload an Actions artifact (requires available account storage quota)
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
 
 jobs:
   reproduce:
+    permissions:
+      contents: write
+    concurrency:
+      group: requests-poc-results
+      cancel-in-progress: false
     # Exact historical interpreter build is available for this runner image.
     runs-on: ubuntu-22.04
     timeout-minutes: 15
@@ -53,11 +63,20 @@ jobs:
           python -m pip freeze --all > ci-logs/pip-freeze.txt
 
       - name: Measure, freeze selections, evaluate, and verify
+        id: experiment
         shell: bash
         run: python run_ci.py
 
-      - name: Preserve results and diagnostics from every attempt
+      - name: Archive every attempt in the experiment-results branch
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPERIMENT_OUTCOME: ${{ steps.experiment.outcome }}
+        run: python persist_results.py
+
+      - name: Optionally upload a second copy as an Actions artifact
+        if: always() && inputs.upload_actions_artifact
+        continue-on-error: true
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
         with:
           name: requests-poc-${{ github.run_id }}-${{ github.run_attempt }}

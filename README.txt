@@ -8,7 +8,8 @@ REPRODUCTION
 
 1. Open Actions -> Requests frozen-input PoC -> Run workflow.
 2. Select the branch and paste its full commit SHA into expected_sha.
-3. Download requests-poc-RUN_ID-ATTEMPT from the completed run.
+3. Follow the archive link in the run summary, or open branch experiment-results
+   -> runs/RUN_ID-ATTEMPT -> results.tar.gz. Check archive.json for its SHA-256.
 
 CLI equivalent (from this repository):
   gh workflow run requests-poc.yml --ref main -f expected_sha=FULL_COMMIT_SHA
@@ -33,9 +34,15 @@ STAGES
 
 All HTTP operations use an in-memory adapter and synthetic credentials. There
 is no HTTP/DNS/TLS access to the example domains. Dependency installation uses
-the network. Historical versions use identical shared dependencies. Artifacts
-and logs are uploaded even after failure, retained for 90 days. A completed
+the network. Historical versions use identical shared dependencies. Every
+attempt is archived in the experiment-results branch, including partial logs
+after a failure. This requires contents:write for the job. A completed
 artifact includes verification.json and a successful run_manifest.json.
+An optional second copy can be uploaded as an Actions artifact (retained 90 days)
+when upload_actions_artifact is enabled. It is off by default because the first
+run hit the account's Actions artifact storage quota after all experiment checks
+had succeeded. The separate results branch avoids that quota. Its archives and
+checksums remain in Git history; storage does not modify the experiment code.
 
 OUTPUTS (inside the run artifact)
 

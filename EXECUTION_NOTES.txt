@@ -47,3 +47,9 @@ audit also finishes before historical execution. The committed input bytes are
 preserved; no local output or paper source is included in the repository.
 An independent enumeration check covers all 63 nonempty three-row/two-feature
 matrices and all eight observation groups per matrix (504 classifications).
+
+First Actions attempt 39929359469, source b7abb4fc8e3927a7d030f59e450ca85ddddbad6b:
+All computation and verification stages succeeded. Artifact upload failed because
+the account's Actions storage quota was full. A subsequent infrastructure change
+archives every attempt in a separate experiment-results branch. The scientific
+inputs, measurement, selection, audit and verification code were not changed.

@@ -2,7 +2,12 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
-Status: the automated assessment at commit 932f6b7 failed the usefulness criterion.
+Status: the reviewed Qwen8B comparison is running at commit c5f41e1:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508
+Its assigned-format audit passed all six cases in run 40006203927. This verifies
+the instrument interface, not comparative usefulness; no positive result yet.
+
+The previous automated assessment at commit 932f6b7 failed the usefulness criterion.
 Run 39993128862 was stopped after a verified bound showed that even ideal results
 on every remaining case could not beat the cheap author-test control. All three
 partial archives were saved. The exact control completed all 24 cases in

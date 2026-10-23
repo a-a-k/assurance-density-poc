@@ -92,3 +92,24 @@ cost bounds. They establish neither the original outcome nor a cost-cap pass.
 The separately reviewed next implementation uses the same stronger model for all
 arms and shorter equivalent instructions; it must pass the same assigned-label
 gate and original external-outcome/cost comparison. No success is claimed.
+
+The Qwen8B instrument audit subsequently passed all six assigned-format cases
+in run 40006203927, source de122ab2f9645abc849e01a3ed0b35708fc8681f.
+Model/server checksums, runtime startup and raw responses were independently
+reviewed. On the sixteen available archived payloads, illustrative compact-output
+totals were 38118 structured versus 34630 direct tokens. These are neither actual
+comparison costs nor proof that the unchanged 1.10 token cap will be met.
+
+After root and skeptic GO on the original criterion, the complete comparison
+started in run 40007059508, source c5f41e1b1fcf70319477c36ffed9e37a36311d56.
+It uses the same 24 tasks, seeds 11/29/47, unchanged packages and all strong controls.
+The old negative result remains separate. Full interpretation awaits outcomes
+or an independently verified futility bound; partial progress is not a win.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40006203927
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508
+
+Interpretation aggregation was clarified before completion: one common success
+branch across all seeds is required separately for each model control. The old
+per-pair disjunction is also retained. The updated read-only interpreter passed
+its invariant checks in run 40007972027 at source 35804d4; no benchmark was rerun
+for that validation. Actual quality/cost limits and per-pair facts are unchanged.

@@ -1,0 +1,169 @@
+{
+  "seed": 47,
+  "source_commit": "c5f41e1b1fcf70319477c36ffed9e37a36311d56",
+  "setup": {
+    "assessment_source_seconds": 1.2133086030000015,
+    "author_source_seconds": 0.06710428499999921,
+    "model_seconds": 28.405674848000004,
+    "schema_smoke": {
+      "structured": {
+        "seconds": 32.37527015200001,
+        "tokens": 371,
+        "passed": true,
+        "error": null,
+        "reused": false
+      },
+      "semantic": {
+        "seconds": 32.37527015200001,
+        "tokens": 371,
+        "passed": true,
+        "error": null,
+        "reused": false
+      },
+      "direct": {
+        "seconds": 2.6983846609999773,
+        "tokens": 50,
+        "passed": true,
+        "error": null,
+        "reused": false
+      }
+    }
+  },
+  "methods": {
+    "structured": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 371,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 61.99425360300002,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 61.99425360300002,
+      "format_failures": 0
+    },
+    "semantic": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 371,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 61.99425360300002,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 61.99425360300002,
+      "format_failures": 0
+    },
+    "direct": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 50,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 32.31736811199998,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 32.31736811199998,
+      "format_failures": 0
+    },
+    "author_tests": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 0.06710428499999921,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 0.06710428499999921,
+      "format_failures": 0
+    },
+    "filtered": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 1.2133086030000015,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 1.2133086030000015,
+      "format_failures": 0
+    },
+    "filtered_dedup": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 1.2133086030000015,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 1.2133086030000015,
+      "format_failures": 0
+    },
+    "shortest": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 1.2133086030000015,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 1.2133086030000015,
+      "format_failures": 0
+    },
+    "dependencies": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 1.2133086030000015,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 1.2133086030000015,
+      "format_failures": 0
+    },
+    "contrastive": {
+      "tasks": 0,
+      "natural": 0,
+      "artificial": 0,
+      "false_alarm_tasks": [],
+      "unknown_ids": [],
+      "detected_ids": [],
+      "application_tokens": 0,
+      "tokens": 0,
+      "application_seconds": 0,
+      "standalone_assessment_seconds": 1.2133086030000015,
+      "checker_execution_seconds": 0,
+      "standalone_with_checker_seconds": 1.2133086030000015,
+      "format_failures": 0
+    }
+  }
+}

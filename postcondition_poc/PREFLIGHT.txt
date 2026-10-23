@@ -62,3 +62,12 @@ against docs and the published sound-post ceiling, retaining unknown outcomes.
 Root: GO. Skeptic: explicit GO for this extension only; still no inference GO.
 Any later comparison must make author tests available to all methods. Expanded
 EvalPlus inputs and published faulty programs remain evaluation-only.
+
+Additional cheap combination, 2026-10-23: positive and contrastive filtering can
+use literal I/O already present in original author tests. Mechanical arithmetic
+and string concatenation are allowed; unsupported patterns remain unknown.
+Tolerance-center values are heuristic probes, never hard rejection evidence.
+Direct blank-output doc expressions imply None. Restore exact helpers/imports
+already contained in the public HumanEval prompt; never extract a canonical
+implementation helper. Same first24, same controls/ranking, no quality tuning.
+Root GO and explicit skeptic GO for this cheap extension only. No inference GO.

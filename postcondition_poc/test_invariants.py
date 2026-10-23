@@ -1,6 +1,7 @@
 import unittest
 
 from screen import doc_calls, extract
+from cheap import unit_calls
 
 
 class CheckerIsolation(unittest.TestCase):
@@ -34,6 +35,17 @@ class CheckerIsolation(unittest.TestCase):
         self.assertEqual(calls, [])
         self.assertEqual(len(unknown), 1)
         self.assertIn("unsupported docstring", unknown[0]["reason"])
+
+    def test_blank_direct_example_means_none(self):
+        calls, unknown = doc_calls("Empty.\n>>> subject([])\n", "subject")
+        self.assertEqual(calls, ["_postcheck([], return_value=None)"])
+        self.assertEqual(unknown, [])
+
+    def test_unit_arithmetic_and_tolerance_are_distinguished(self):
+        calls, proxies, unknown = unit_calls("def check(candidate):\n    assert candidate('a'+'b') == (2*3, None)\n    assert abs(candidate(1.33)-0.33)<1e-6\n")
+        self.assertEqual(calls, ["_postcheck('ab', return_value=(6, None))"])
+        self.assertEqual(proxies, ["_postcheck(1.33, return_value=0.33)"])
+        self.assertEqual(unknown, [])
 
 
 if __name__ == "__main__":

@@ -89,7 +89,8 @@ def doc_calls(doc, entry):
             call = tree.body[0].value
             if not isinstance(call, ast.Call) or not isinstance(call.func, ast.Name) or call.func.id != entry:
                 raise ValueError("not a direct function example")
-            expected = ast.literal_eval(example.want.strip())
+            # A direct expression returning None produces no REPL output.
+            expected = ast.literal_eval(example.want.strip()) if example.want.strip() else None
             call.func.id = "_postcheck"
             call.keywords.append(ast.keyword(arg="return_value", value=ast.parse(repr(expected), mode="eval").body))
             calls.append(ast.unparse(ast.fix_missing_locations(call)))

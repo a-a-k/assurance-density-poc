@@ -9,6 +9,7 @@ import time
 import urllib.request
 
 from screen import INPUTS, OUT, ROOT, download, jsonlines, doctest_program, execute, save
+from cheap import prepare
 
 HUMAN_PIN = "b9453e8f1865df0a0057a1383767caa400acfbcf"
 
@@ -32,6 +33,9 @@ def main():
     quality = collections.defaultdict(dict)
     for row in jsonlines(posts_zip, "summary_eval_results.jsonl"):
         quality[row["task_id"]][row["response_num"]] = row
+    posts = collections.defaultdict(dict)
+    for row in jsonlines(posts_zip, "raw_preprocessed_samples.jsonl"):
+        posts[row["task_id"]][row["response_num"]] = row
     rows = []
     for number in range(24):
         task = f"HumanEval/{number}"
@@ -60,7 +64,7 @@ def main():
                 doc_kills.append(code_id)
             elif doc_result["statuses"] != ["pass"]:
                 unknown.append({"code_id": code_id, "kind": "docs", "statuses": doc_result["statuses"]})
-        post_kills = set()
+        post_kills, per_post_kills = set(), collections.defaultdict(set)
         for post_id, q in quality[task].items():
             if not q["test_set_correct"]:
                 continue
@@ -78,11 +82,23 @@ def main():
                     unknown.append({"post_id": post_id, "code_id": code_id, "kind": "unsupported power outcome"})
                 elif any(outcome[1]):
                     post_kills.add(code_id)
+                    per_post_kills[post_id].add(code_id)
         existing = set(unit_kills) | set(doc_kills)
+        prep_start = time.perf_counter()
+        cheap = prepare(h, posts[task])
+        cheap["preparation_seconds"] = time.perf_counter() - prep_start
+        methods = {}
+        for name, selected in cheap["selected"].items():
+            false_alarm = any(not quality[task][i]["test_set_correct"] for i in selected)
+            found = existing | set().union(*(per_post_kills[i] for i in selected))
+            methods[name] = {"selected": selected, "false_alarm": false_alarm,
+                             "usable_code_ids": sorted(found) if not false_alarm else [],
+                             "known_ceiling_missing": sorted((existing | post_kills) - (found if not false_alarm else set()))}
         row = {"task_id": task, "reference_unit": ref, "reference_docs": doc_ref,
                "unit_kill_ids": unit_kills, "doc_kill_ids": doc_kills,
                "existing_test_kill_ids": sorted(existing), "sound_post_kill_ids": sorted(post_kills),
-               "additional_post_kill_ids": sorted(post_kills - existing), "outcomes": results, "unknown": unknown}
+               "additional_post_kill_ids": sorted(post_kills - existing), "outcomes": results, "unknown": unknown,
+               "cheap_assessment": cheap, "cheap_methods": methods}
         rows.append(row)
         save(OUT / "unit_screen_rows.json", rows)
         print(task, "unit", len(unit_kills), "docs", len(doc_kills), "additional-post", len(post_kills - existing), "unknown", len(unknown), flush=True)
@@ -92,6 +108,12 @@ def main():
     for field in ["unit_kill_ids", "doc_kill_ids", "existing_test_kill_ids", "sound_post_kill_ids", "additional_post_kill_ids"]:
         ids = [(r["task_id"], i) for r in rows for i in r[field]]
         summary[field] = {"natural": sum(i < 200 for _, i in ids), "artificial": sum(i >= 200 for _, i in ids), "ids": ids}
+    summary["cheap_methods"] = {}
+    for name in rows[0]["cheap_methods"]:
+        found = [(r["task_id"], i) for r in rows for i in r["cheap_methods"][name]["usable_code_ids"]]
+        summary["cheap_methods"][name] = {"natural": sum(i < 200 for _, i in found), "artificial": sum(i >= 200 for _, i in found),
+                                          "false_alarm_tasks": [r["task_id"] for r in rows if r["cheap_methods"][name]["false_alarm"]],
+                                          "ceiling_missing_count": sum(len(r["cheap_methods"][name]["known_ceiling_missing"]) for r in rows)}
     save(OUT / "unit_screen_summary.json", summary)
     text = "# Author-test necessity screen\n\n" + json.dumps({k: ({kk: vv for kk, vv in v.items() if kk != "ids"} if isinstance(v, dict) else v) for k, v in summary.items()}, indent=2) + "\n"
     (ROOT / "results/simple_summary.md").write_text(text)

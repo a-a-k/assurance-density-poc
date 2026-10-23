@@ -2,6 +2,12 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
+Status: the automated assessment at commit 932f6b7 failed the usefulness criterion.
+Run 39993128862 was stopped after a verified bound showed that even ideal results
+on every remaining case could not beat the cheap author-test control. All three
+partial archives were saved. The exact control completed all 24 cases in
+run 39998699971. See postcondition_poc/RESULTS.txt for the interpretation and links.
+
 Actions -> Existing-artifact semantic assessment -> Run workflow -> post_measure.
 This compares structured claim/evidence assessment with ordinary semantic review,
 direct selection, original author tests, and cheap executable selection rules.
@@ -18,7 +24,7 @@ are under live/RUN_ID-ATTEMPT. A running or successful workflow is not evidence
 that the proposed assessment beats its controls. See postcondition_poc/PREFLIGHT.txt
 for the hypothesis, strongest controls, cost criterion and independent review.
 
-Current run: https://github.com/a-a-k/assurance-density-poc/actions/runs/39993128862
+Stopped comparison: https://github.com/a-a-k/assurance-density-poc/actions/runs/39993128862
 No independent benefit of the inflation/density pair or human-time saving is
 claimed by this comparison. Paper sources are not changed by these workflows.
 

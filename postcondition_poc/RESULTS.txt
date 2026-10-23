@@ -1,0 +1,79 @@
+Observed result, 23 October 2026
+
+The current automated assessment instrument failed the agreed criterion:
+same useful external result at lower effort, or better at comparable effort.
+This is a negative result for this implementation, not the requested positive
+PoC and not a claim that the broader assurance proposal is impossible.
+
+At the recorded seed 47 checkpoint, 14 of 24 tasks were complete. Structured
+assessment had 37 confirmed natural-generation faulty-program detections, zero
+unknown natural outcomes, and 4 false-alarm tasks. Only 12 natural-generation
+faulty programs existed in all remaining tasks combined. Thus even an ideal
+continuation could achieve at most 49 detections.
+
+The exact author_tests control was then completed separately with the same
+evaluate(ids=[]), EvalPlus canonical implementation, inputs and comparator.
+It detected 96 natural-generation faulty programs across 24 tasks, with all 24
+canonical checks passing and no false alarms. One unknown faulty-program outcome
+can only improve this control's lower bound. No new tests or model calls were
+used in this control completion.
+
+The control's entire elapsed time was 34.154s, including source downloads,
+checkpoint retrieval, reference scoring and execution. This full time was
+conservatively assigned as an UPPER bound to every compared wall-cost component.
+The treatment had already spent 807.220s on application, 829.719s with cold setup,
+and 839.611s with checker replay; future work can only increase those costs.
+The control used zero inference tokens versus 35416 already spent by treatment.
+This proves cheaper count-quality competition even against the treatment's
+best possible final outcome. It does not claim identical detected ID sets.
+
+The separate skeptic independently verified the bound and costs. Because the
+agreed success direction had to hold for every seed, this seed already made
+success impossible. Run 39993128862 was cancelled and all 3 always-archive steps
+completed successfully. These are partial runs, not a complete 3-seed experiment;
+the full-run interpreter was not used to relabel them as complete.
+
+Concrete observed failure: HumanEval/8, seed 47.
+Both matrix-based responses say in their rationale that candidate 0 is invalid,
+yet their validity string SCCCCCSSSS marks candidate 0 as supported. The shared
+selector faithfully chooses that candidate from the machine-readable fields.
+Its predicate checks a product of only numbers[0] and numbers[1]. On the
+archived canonical input [3,5,7], the required product is 105; the predicate demands
+15 and rejects the correct program. Direct selection chose candidates 1,4,8.
+This exposes a mismatch between prose reasoning and the compact machine-readable
+assessment. Repairing that interface would require another fair comparison;
+the repair alone would not establish the proposed method's benefit.
+
+Other observed false alarms in the same checkpoint include an empty parentheses
+string rejected by len(output)==len(input.split(' ')), and binary conversion
+with int('',2) on permitted empty strings. These outcomes were preserved,
+not repaired or removed from the evaluated packages.
+
+Contract-boundary qualification: HumanEval/1 has the input '()()(()'. The supplied
+executable domain prevents negative prefix balance but does not require final
+balance zero. The canonical implementation discards the unmatched suffix. A
+postcondition demanding reconstruction of the complete input therefore fails
+this finite oracle, although the prose can be read as assuming balanced groups.
+We do not claim this post is unambiguously wrong under every reading of the
+natural-language contract. Its original score remains preserved.
+
+Sensitivity check, not a replacement score: omitting this entire ambiguous task
+from BOTH methods leaves 96-43=53 confirmed natural detections for the author
+control, while the treatment's best remaining total is still at most 49. The
+control still has no false alarms, and its full 34.154s remains an upper bound
+on the reduced task set. The negative conclusion does not depend on this case.
+
+The skeptic did not approve another full run merely after replacing packed
+status strings and bitmasks. Such a representation repair would need an
+instrument check and a new cost review first; it is not evidence of comparative
+benefit. Existing results and the success criterion remain unchanged.
+
+Evidence:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/39998699971
+https://github.com/a-a-k/assurance-density-poc/blob/experiment-results/runs/39998699971-1/seed-11/SUMMARY.md
+https://github.com/a-a-k/assurance-density-poc/tree/experiment-results/runs/39993128862-1
+
+Checksum-verified archived inputs, model responses, source bindings, actual
+failure witnesses, costs and uncertainties are retained. Generated faulty
+programs are not historical bugs or independent bug classes. No human-time
+saving or independent inflation/density-pair effect was established.

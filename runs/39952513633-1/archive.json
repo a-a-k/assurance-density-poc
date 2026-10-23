@@ -1,0 +1,11 @@
+{
+  "run_id": "39952513633",
+  "run_attempt": "1",
+  "source_commit": "8dc73e252e4f319bdee87048560af49d13c129a6",
+  "experiment_step_outcome": "success",
+  "archived_utc": "2026-10-23T12:22:04.749760+00:00",
+  "archive_sha256": "901e60b001cf43aeba924e13081ee3b6282c40fc6544e1b1ddd896e947101aba",
+  "archive_bytes": 209255,
+  "run_url": "https://github.com/a-a-k/assurance-density-poc/actions/runs/39952513633",
+  "archive_path": "runs/39952513633-1/results.tar.gz"
+}

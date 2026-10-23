@@ -1,0 +1,47 @@
+name: Interpret completed assessment comparison
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Completed comparison run ID-attempt
+        type: string
+        required: true
+      validate_only:
+        description: Check interpretation code without reading experiment outcomes
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  interpret:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Check interpretation invariants
+        run: python -m unittest discover -s postcondition_poc -p 'test_interpret.py' -v
+      - name: Interpret exact archived observations
+        id: interpretation
+        if: inputs.validate_only != true
+        env:
+          SOURCE_RUN: ${{ inputs.source_run }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -u postcondition_poc/interpret.py --run "$SOURCE_RUN"
+      - name: Archive interpretation
+        if: always() && inputs.validate_only != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARCHIVE_KEY: interpretation
+          ARCHIVE_DIRS: results/interpretation,results/simple_summary.md
+          EXPERIMENT_OUTCOME: ${{ steps.interpretation.outcome }}
+        run: python persist_results.py

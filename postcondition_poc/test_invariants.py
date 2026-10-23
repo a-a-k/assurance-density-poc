@@ -29,6 +29,12 @@ class CheckerIsolation(unittest.TestCase):
         self.assertEqual(calls, ["_postcheck(3, return_value=3)"])
         self.assertEqual(unknown, [])
 
+    def test_malformed_docstring_remains_unknown(self):
+        calls, unknown = doc_calls('Identity.\n    >>> subject("abc\ndef")\n    "abc"\n', "subject")
+        self.assertEqual(calls, [])
+        self.assertEqual(len(unknown), 1)
+        self.assertIn("unsupported docstring", unknown[0]["reason"])
+
 
 if __name__ == "__main__":
     unittest.main()

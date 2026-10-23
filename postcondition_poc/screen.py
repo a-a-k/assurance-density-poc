@@ -77,7 +77,11 @@ def extract(post):
 
 def doc_calls(doc, entry):
     calls, unknown = [], []
-    for example in doctest.DocTestParser().get_examples(doc):
+    try:
+        examples = doctest.DocTestParser().get_examples(doc)
+    except ValueError as exc:
+        return [], [{"source": doc, "reason": "unsupported docstring: " + str(exc)}]
+    for example in examples:
         try:
             tree = ast.parse(example.source)
             if len(tree.body) != 1 or not isinstance(tree.body[0], ast.Expr):

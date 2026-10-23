@@ -1,0 +1,55 @@
+Published postcondition assessment — exploratory feasibility screen, 2026-10-23
+
+Same authorized contribution and success criterion: assess EXISTING artifacts;
+same useful external result with less effort or better result at comparable cost.
+No claim about separate inflation+density synergy or generation of new checkers.
+
+Corpus: microsoft/intent-formalization b42cdc0c4b60b7f17c85950d757f77ac107e29c0,
+nl2postcondition-fse2024, GPT4 BasePromptNoRef. Ten existing postconditions per
+task; published naturally generated and explicitly artificial faulty programs.
+These are not historical real-world bugs. Report both groups separately.
+
+Screen all 164 tasks, with a separate first-24-numeric-task report. The latter
+is the candidate small inference cohort, declared before screen outcomes; do
+not select tasks using observed advantage. No LLM inference in this screen.
+
+Controls: author doc tests, all posts, AST-deduplicated posts, posts passing
+author examples, shortest doc-valid nontrivial post, doc-valid post maximizing
+AST dependencies on input parameters and return_value, and author tests plus
+doc-filtered posts. Also choose a doc-valid post maximizing rejection of simple
+altered doc outputs, tie by dependency count then length/ID. These contrastive
+probes are a discrimination heuristic, NOT certified negative examples; they do
+not modify the selected artifacts or enter the external outcome as ground truth.
+All methods retain original artifacts. No new candidate checkers are generated.
+
+Evaluation-only metadata: full EvalPlus finite-soundness and exact faulty-code
+kill sets from the publication. A bundle containing any known unsound post is
+not useful without false alarms. The oracle ceiling is the union of kill sets
+of posts passing the complete published soundness evaluation. Match actual code
+IDs, not just counts. This metadata cannot enter selector inputs.
+
+Execute author doc tests on the published programs, and validate posts on the
+original doc examples in Actions. The post checker sees only arguments, observed
+return_value, its exact postcondition_alone and independent imports. It must not
+have access to any canonical *_original function. The archival solution field
+contains canonical code and is evaluation/preprocessing-only, never model input.
+
+Unknown extraction, imports, timeouts and missing evaluation metadata remain
+explicitly unknown. They cannot silently become zero misses or support victory.
+Cached publication results establish feasibility bounds only, not measured
+performance of a new method. Actual checker executions and complete costs will
+be required before any success claim. Do not amortize model costs over arbitrary
+numbers of evaluation mutants to manufacture a production saving.
+
+Root: GO for this cheap necessity/feasibility check, not yet for inference.
+Independent skeptic: explicit GO on 2026-10-23 for the same screen and constraints.
+If a cheap control reaches the relevant ceiling without false alarms, no further
+inference on that cohort. Otherwise return to both-agent hypothesis review before
+implementing the measurement experiment. No promises of a positive result.
+
+Known semantic caveat before execution: the upstream wrapper evaluates parameters
+after calling the subject, which may mutate them. Doc-I/O filtering only knows
+example inputs and expected output; it must not be confused with canonical
+post-state validation. The screen reports this limitation. Before any inference
+comparison, replay the actual wrapper and resolve or explicitly retain state
+ambiguity; no advantage claim may rely on a changed checker interpretation.

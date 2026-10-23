@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [screen, pilot, full]
+        options: [post_screen, screen, pilot, full]
         default: pilot
 
 permissions:
@@ -48,9 +48,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Validate harness invariants
-        run: python -m unittest discover -s measurement_poc -p 'test_*.py' -v
+        run: |
+          python -m unittest discover -s measurement_poc -p 'test_*.py' -v
+          python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Start pinned CPU model
-        if: inputs.mode != 'screen'
+        if: inputs.mode == 'pilot' || inputs.mode == 'full'
         run: python -u measurement_poc/bootstrap.py
       - name: Assess unchanged published assertions
         id: experiment
@@ -60,7 +62,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = screen ]; then
+          if [ "$MODE" = post_screen ]; then
+            python -u postcondition_poc/screen.py 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = screen ]; then
             python -u measurement_poc/screen.py 2>&1 | tee ci-logs/measurement-run.log
           else
             python -u measurement_poc/run.py --mode "$MODE" --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log

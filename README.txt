@@ -1,6 +1,28 @@
-Requests four-package comparison
+Assurance assessment PoC
 
-CURRENT SIMPLE POC
+CURRENT COMPARISON: EXISTING POSTCONDITIONS
+
+Actions -> Existing-artifact semantic assessment -> Run workflow -> post_measure.
+This compares structured claim/evidence assessment with ordinary semantic review,
+direct selection, original author tests, and cheap executable selection rules.
+All selectors receive the same public contract, candidate source and probe data.
+Candidates are unchanged published checks from the FSE 2024 nl2postcondition
+artifact. External evaluation uses generated faulty programs, canonical programs
+and finite EvalPlus inputs. Natural-generation and deliberately faulty programs
+are reported separately. This is not a historical-bug study.
+
+Three seeds run on GitHub Actions. Prompts, selected IDs, actual witnesses,
+unknown outcomes, false alarms and complete machine costs are archived on branch
+experiment-results under runs/RUN_ID-ATTEMPT/seed-SEED. Small progress summaries
+are under live/RUN_ID-ATTEMPT. A running or successful workflow is not evidence
+that the proposed assessment beats its controls. See postcondition_poc/PREFLIGHT.txt
+for the hypothesis, strongest controls, cost criterion and independent review.
+
+Current run: https://github.com/a-a-k/assurance-density-poc/actions/runs/39993128862
+No independent benefit of the inflation/density pair or human-time saving is
+claimed by this comparison. Paper sources are not changed by these workflows.
+
+EARLIER REQUESTS FOUR-PACKAGE COMPARISON
 
 Open Actions -> Four-package PoC -> Run workflow. No input fields are needed.
 The run compares the same four executable suites using coverage/mutation Pareto

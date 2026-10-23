@@ -399,3 +399,23 @@ Failed transport/invalid server responses preserve exact requests and received
 traces before aborting; no fabricated zero usage. The previous8B cost reports
 omitted wrapper download/extraction. Their archived arithmetic remains unchanged;
 this corrected component cannot reverse the previous negative result.
+
+2026-10-23 23:44 UTC, BEFORE new semantic results: root and independent skeptic
+explicit GO on an additional strongest-baseline interpretation requirement.
+Merely beating expensive model controls does not suffice when cheap controls
+replace those controls with the same or better primary external utility. In
+particular,97 detections costing hours versus96 costing seconds is a tradeoff,
+not better/comparable solely because another expensive method detects96 or less.
+Preserve every existing arithmetic flag and cap; do not rescore old negatives.
+
+Require one SAME model-control ID across all seeds that satisfies the existing
+common success branch and lies on the baseline frontier against ALL other
+model/cheap controls, excluding treatment. Disqualify a witness if another
+control possibly matches/exceeds its natural detection count, has possibly no
+more false-alarm tasks, is no higher in all five cost fields, and is strictly
+lower in application tokens or warm time. Use conservative unknown bounds.
+This is a necessary qualification in addition to all previous comparisons and
+cheap-competition checks, not a substitute for them. Counts are not exact-ID
+dominance; retain both. No zero-token epsilon, no invented human-time or budget.
+The ongoing assigned-output audit is unchanged; implementation of this additive
+interpretation check receives separate review before semantic execution.

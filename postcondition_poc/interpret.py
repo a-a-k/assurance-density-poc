@@ -111,6 +111,32 @@ def format_setup_cost(setup, method, models=MODELS):
     raise ValueError("Unknown schema-smoke cost layout")
 
 
+def baseline_frontier(limits, costs, model_controls):
+    """Do not use an expensive replaceable control as the success denominator."""
+    result = {}
+    for method in model_controls:
+        candidates = {}
+        for other in limits:
+            if other == method:
+                continue
+            comparison = pair(limits[other], limits[method], costs[other], costs[method])
+            possible_competition = (len(natural(limits[other]["possible_detected"])) >=
+                                    len(natural(limits[method]["detected"])) and
+                                    len(limits[other]["fa"]) <= len(limits[method]["possible_fa"]) and
+                                    comparison["cheaper_cost"])
+            candidates[other] = {"possible_primary_count_competition": possible_competition,
+                                 "possible_natural_other": len(natural(limits[other]["possible_detected"])),
+                                 "known_natural_control": len(natural(limits[method]["detected"])),
+                                 "known_fa_other": len(limits[other]["fa"]),
+                                 "possible_fa_control": len(limits[method]["possible_fa"]),
+                                 "costs": comparison["costs"], "cheaper_cost": comparison["cheaper_cost"],
+                                 "gained_ids": comparison["gained_ids"], "lost_ids": comparison["lost_ids"]}
+        competitors = [m for m, p in candidates.items() if p["possible_primary_count_competition"]]
+        result[method] = {"qualified": not competitors, "possible_competing_controls": competitors,
+                          "comparisons": candidates}
+    return result
+
+
 def audit(summary, rows):
     models = PROTOCOLS[summary.get("protocol", "legacy")]
     treatment = models[0]
@@ -161,7 +187,9 @@ def audit(summary, rows):
                                                          and len(c["fa"]) <= len(t["possible_fa"]) and reverse["cheaper_cost"])
         cheap[method] = reverse
     serialized = {m: {key: sorted(value) for key, value in b.items()} for m, b in limits.items()}
+    frontier = baseline_frontier({m: b for m, b in limits.items() if m != treatment}, costs, models[1:])
     return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
+            "baseline_frontier": frontier,
             "model_comparison_pass": all(p["better_branch"] or p["cheaper_branch"] for p in controls.values()),
             "cheap_competition": any(p["exact_id_dominance"] or p["natural_count_competition"] for p in cheap.values()),
             "possible_cheap_competition": any(p["possible_exact_id_dominance"] or p["possible_natural_count_competition"] for p in cheap.values())}
@@ -176,6 +204,11 @@ def consistent_branches(seeds):
     return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
                      for branch in ("better_branch", "cheaper_branch")}
             for method in controls}
+
+
+def efficient_witnesses(seeds, branches):
+    return [method for method, options in branches.items() if any(options.values()) and
+            all(s["baseline_frontier"][method]["qualified"] for s in seeds)]
 
 
 def render(result):
@@ -203,6 +236,9 @@ def render(result):
               f"All-seed model comparison criterion: {result['all_seed_model_comparison_pass']}.",
               f"Any cheaper competing control: {result['any_cheap_competition']}.",
               f"Any possible cheaper competing control (including unresolved outcomes): {result['any_possible_cheap_competition']}.",
+              f"Same efficient model-control witnesses across all seeds: {json.dumps(result['qualified_common_baselines'])}.",
+              f"Original criterion including strongest-baseline qualification: {result['original_criterion_pass']}.",
+              "Beating expensive model controls alone is insufficient if cheaper controls can replace them with the same or better primary utility. Counts and exact-ID preservation remain separate.",
               "Exact gained/lost IDs, uncertainty bounds, costs and provenance are in criterion_audit.json. No human-time, historical-bug or independent metric-pair claim follows from these observations."]
     return "\n".join(lines) + "\n"
 
@@ -233,6 +269,10 @@ def main():
     result["all_seed_model_comparison_pass"] = all(any(branches.values()) for branches in result["per_control_consistent_branches"].values())
     result["any_cheap_competition"] = any(s["cheap_competition"] for s in result["seeds"])
     result["any_possible_cheap_competition"] = any(s["possible_cheap_competition"] for s in result["seeds"])
+    result["qualified_common_baselines"] = efficient_witnesses(result["seeds"], result["per_control_consistent_branches"])
+    result["original_criterion_pass"] = (result["all_seed_model_comparison_pass"] and
+                                         not result["any_possible_cheap_competition"] and
+                                         bool(result["qualified_common_baselines"]))
     out = Path("results/interpretation")
     out.mkdir(parents=True, exist_ok=True)
     (out / "criterion_audit.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

@@ -1,6 +1,7 @@
 import unittest
 
-from interpret import FIELDS, MODELS, SEEDS, audit, bounds, pair, format_setup_cost, consistent_branches
+from interpret import (FIELDS, MODELS, SEEDS, audit, bounds, pair, format_setup_cost,
+                       consistent_branches, baseline_frontier, efficient_witnesses)
 
 
 def limits(found=(), unknown=(), fa=(), uncertain=()):
@@ -13,6 +14,30 @@ def cost(value):
 
 
 class InterpretationInvariants(unittest.TestCase):
+    def test_expensive_replaceable_control_is_not_a_success_witness(self):
+        data = {"semantic": limits([("A", 1)]), "direct": limits([("A", 1)]),
+                "author": limits([("A", 1)])}
+        result = baseline_frontier(data, {"semantic": cost(100), "direct": cost(90), "author": cost(1)},
+                                   ("semantic", "direct"))
+        self.assertFalse(result["semantic"]["qualified"])
+        self.assertFalse(result["direct"]["qualified"])
+        self.assertIn("author", result["semantic"]["possible_competing_controls"])
+        self.assertIn("direct", result["semantic"]["possible_competing_controls"])
+
+    def test_useful_model_control_on_baseline_frontier_can_qualify(self):
+        data = {"semantic": limits([("A", 1), ("A", 2)]), "author": limits([("A", 1)])}
+        result = baseline_frontier(data, {"semantic": cost(100), "author": cost(1)}, ("semantic",))
+        self.assertTrue(result["semantic"]["qualified"])
+        data["author"] = limits([("A", 1)], unknown=[("A", 2)])
+        result = baseline_frontier(data, {"semantic": cost(100), "author": cost(1)}, ("semantic",))
+        self.assertFalse(result["semantic"]["qualified"])
+
+    def test_witness_cannot_switch_between_seeds(self):
+        branches = {"semantic": {"better_branch": True}, "direct": {"cheaper_branch": True}}
+        seeds = [{"baseline_frontier": {"semantic": {"qualified": seed != 29},
+                                        "direct": {"qualified": seed == 29}}} for seed in SEEDS]
+        self.assertEqual(efficient_witnesses(seeds, branches), [])
+
     def test_changing_exclusive_branch_between_seeds_is_not_consistent(self):
         seeds = [{"seed": seed, "model_controls": {
             "semantic": {"better_branch": seed != 29, "cheaper_branch": seed == 29},

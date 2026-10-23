@@ -1,6 +1,9 @@
 name: Interpret completed assessment comparison
 
 on:
+  workflow_run:
+    workflows: [Existing-artifact semantic assessment]
+    types: [completed]
   workflow_dispatch:
     inputs:
       source_run:
@@ -17,6 +20,9 @@ permissions:
 
 jobs:
   interpret:
+    # Automatically interpret the currently authorized comparison only.
+    # Other completed screens stay separate; later comparisons use dispatch.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.id == 39993128862 && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_sha == '932f6b7d08469f0173cada5c2422f0a339e96063')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -34,7 +40,7 @@ jobs:
         id: interpretation
         if: inputs.validate_only != true
         env:
-          SOURCE_RUN: ${{ inputs.source_run }}
+          SOURCE_RUN: ${{ github.event_name == 'workflow_run' && format('{0}-{1}', github.event.workflow_run.id, github.event.workflow_run.run_attempt) || inputs.source_run }}
           GH_TOKEN: ${{ github.token }}
         run: python -u postcondition_poc/interpret.py --run "$SOURCE_RUN"
       - name: Archive interpretation

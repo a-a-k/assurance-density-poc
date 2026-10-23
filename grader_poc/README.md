@@ -1,5 +1,11 @@
 # Real checker adequacy PoC
 
+**Decision against the user's original contribution/success criterion: NO-GO.**
+These Cargo experiments do not establish the requested advantage of the model.
+The full campaign omits a cheap composite alternative unless separately checked;
+the scoped refinement is equivalent to known policy-scoped field mutation.
+Do not reuse these runs as successful evidence for inflation/density.
+
 Run **Real grader adequacy PoC** in GitHub Actions. No local experiment runner.
 
 This compares the actual exhaustive `oracle-mutants` code-artifact audit with a
@@ -53,3 +59,12 @@ repair integration; reuse of the adjudicator is not independent confirmation.
 Workflow modes: `compare` performs the full comparison; `repair` replays a supplied
 `source_run`; `scoped` performs an exploratory follow-up using automatic policy
 read-set selection and a cheap composite control. All execution stays in Actions.
+
+The [scoped follow-up](https://github.com/a-a-k/assurance-density-poc/actions/runs/39966944137)
+actually executed both alternatives: five scoped grader calls plus two behavior
+calls found both relation families; the cheap composite took eleven plus three.
+However, direct policy-scoped field mutation is the **same executed operation**
+as the five probes and also costs seven calls. It is not a separate additional
+experiment. Therefore 7 versus 14 is not an effect of this model. Both alternatives
+receive the same two manually authored relations. This follow-up does not pass
+the original success criterion, as confirmed by the main agent and skeptic.

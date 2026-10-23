@@ -31,13 +31,14 @@
   },
   "methods": {
     "structured": {
-      "tasks": 20,
+      "tasks": 21,
       "natural": 90,
       "artificial": 426,
       "false_alarm_tasks": [
         "HumanEval/6",
         "HumanEval/17",
-        "HumanEval/18"
+        "HumanEval/18",
+        "HumanEval/20"
       ],
       "unknown_ids": [
         [
@@ -2215,18 +2216,18 @@
           295
         ]
       ],
-      "application_tokens": 56527,
-      "tokens": 56898,
-      "application_seconds": 4866.849504266998,
-      "standalone_assessment_seconds": 4921.781330321998,
-      "checker_execution_seconds": 25.351661454992154,
-      "standalone_with_checker_seconds": 4947.132991776991,
+      "application_tokens": 59248,
+      "tokens": 59619,
+      "application_seconds": 5100.275999605998,
+      "standalone_assessment_seconds": 5155.2078256609975,
+      "checker_execution_seconds": 25.42107540499137,
+      "standalone_with_checker_seconds": 5180.628901065989,
       "format_failures": 0
     },
     "semantic": {
-      "tasks": 20,
-      "natural": 89,
-      "artificial": 415,
+      "tasks": 21,
+      "natural": 91,
+      "artificial": 438,
       "false_alarm_tasks": [
         "HumanEval/6",
         "HumanEval/11",
@@ -4358,20 +4359,120 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
-      "application_tokens": 60344,
-      "tokens": 60715,
-      "application_seconds": 5216.673271594997,
-      "standalone_assessment_seconds": 5271.605097649996,
-      "checker_execution_seconds": 24.97528627700615,
-      "standalone_with_checker_seconds": 5296.580383927003,
+      "application_tokens": 65988,
+      "tokens": 66359,
+      "application_seconds": 5701.9194189469945,
+      "standalone_assessment_seconds": 5756.851245001994,
+      "checker_execution_seconds": 26.140354001005676,
+      "standalone_with_checker_seconds": 5782.991599003,
       "format_failures": 1
     },
     "direct": {
-      "tasks": 20,
-      "natural": 38,
-      "artificial": 268,
+      "tasks": 21,
+      "natural": 40,
+      "artificial": 291,
       "false_alarm_tasks": [
         "HumanEval/1",
         "HumanEval/5",
@@ -5799,20 +5900,120 @@
         [
           "HumanEval/17",
           298
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
-      "application_tokens": 43552,
-      "tokens": 43607,
-      "application_seconds": 3448.030405703994,
-      "standalone_assessment_seconds": 3471.481909327994,
-      "checker_execution_seconds": 14.93753612398541,
-      "standalone_with_checker_seconds": 3486.4194454519793,
+      "application_tokens": 46044,
+      "tokens": 46099,
+      "application_seconds": 3646.2562791129913,
+      "standalone_assessment_seconds": 3669.7077827369912,
+      "checker_execution_seconds": 16.126707919980618,
+      "standalone_with_checker_seconds": 3685.834490656972,
       "format_failures": 0
     },
     "author_tests": {
-      "tasks": 20,
-      "natural": 94,
-      "artificial": 526,
+      "tasks": 21,
+      "natural": 95,
+      "artificial": 549,
       "false_alarm_tasks": [],
       "unknown_ids": [
         [
@@ -8300,20 +8501,116 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 2.145600024050509e-05,
-      "standalone_assessment_seconds": 0.14499158500024123,
-      "checker_execution_seconds": 27.934700719018565,
-      "standalone_with_checker_seconds": 28.079692304018806,
+      "application_seconds": 2.255800040984468e-05,
+      "standalone_assessment_seconds": 0.14499268700041057,
+      "checker_execution_seconds": 29.03429188601649,
+      "standalone_with_checker_seconds": 29.1792845730169,
       "format_failures": 0
     },
     "filtered": {
-      "tasks": 20,
-      "natural": 45,
-      "artificial": 344,
+      "tasks": 21,
+      "natural": 47,
+      "artificial": 367,
       "false_alarm_tasks": [
         "HumanEval/1",
         "HumanEval/6",
@@ -10070,20 +10367,120 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 5.962033281000998,
-      "standalone_assessment_seconds": 7.139741278000997,
-      "checker_execution_seconds": 20.451160698981994,
-      "standalone_with_checker_seconds": 27.59090197698299,
+      "application_seconds": 6.277559045001993,
+      "standalone_assessment_seconds": 7.455267042001992,
+      "checker_execution_seconds": 21.65927158697582,
+      "standalone_with_checker_seconds": 29.11453862897781,
       "format_failures": 0
     },
     "filtered_dedup": {
-      "tasks": 20,
-      "natural": 45,
-      "artificial": 344,
+      "tasks": 21,
+      "natural": 47,
+      "artificial": 367,
       "false_alarm_tasks": [
         "HumanEval/1",
         "HumanEval/6",
@@ -11840,20 +12237,120 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 5.962033678999518,
-      "standalone_assessment_seconds": 7.139741675999517,
-      "checker_execution_seconds": 19.11391286397577,
-      "standalone_with_checker_seconds": 26.253654539975287,
+      "application_seconds": 6.277559312999159,
+      "standalone_assessment_seconds": 7.455267309999158,
+      "checker_execution_seconds": 20.323763876972066,
+      "standalone_with_checker_seconds": 27.779031186971224,
       "format_failures": 0
     },
     "shortest": {
-      "tasks": 20,
-      "natural": 90,
-      "artificial": 415,
+      "tasks": 21,
+      "natural": 92,
+      "artificial": 438,
       "false_alarm_tasks": [
         "HumanEval/6",
         "HumanEval/11",
@@ -13989,20 +14486,120 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 5.962032199997196,
-      "standalone_assessment_seconds": 7.139740196997195,
-      "checker_execution_seconds": 25.075732643992637,
-      "standalone_with_checker_seconds": 32.21547284098983,
+      "application_seconds": 6.2775578729977894,
+      "standalone_assessment_seconds": 7.455265869997788,
+      "checker_execution_seconds": 26.22319425599028,
+      "standalone_with_checker_seconds": 33.67846012598807,
       "format_failures": 0
     },
     "dependencies": {
-      "tasks": 20,
-      "natural": 45,
-      "artificial": 363,
+      "tasks": 21,
+      "natural": 47,
+      "artificial": 386,
       "false_alarm_tasks": [
         "HumanEval/1",
         "HumanEval/6",
@@ -15751,20 +16348,120 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 5.962036955995558,
-      "standalone_assessment_seconds": 7.139744952995557,
-      "checker_execution_seconds": 18.869530769994526,
-      "standalone_with_checker_seconds": 26.009275722990083,
+      "application_seconds": 6.277562599996003,
+      "standalone_assessment_seconds": 7.455270596996002,
+      "checker_execution_seconds": 20.015442825993887,
+      "standalone_with_checker_seconds": 27.47071342298989,
       "format_failures": 0
     },
     "contrastive": {
-      "tasks": 20,
-      "natural": 45,
-      "artificial": 364,
+      "tasks": 21,
+      "natural": 47,
+      "artificial": 387,
       "false_alarm_tasks": [
         "HumanEval/1",
         "HumanEval/6",
@@ -17517,14 +18214,114 @@
         [
           "HumanEval/19",
           295
+        ],
+        [
+          "HumanEval/20",
+          6
+        ],
+        [
+          "HumanEval/20",
+          147
+        ],
+        [
+          "HumanEval/20",
+          201
+        ],
+        [
+          "HumanEval/20",
+          203
+        ],
+        [
+          "HumanEval/20",
+          205
+        ],
+        [
+          "HumanEval/20",
+          207
+        ],
+        [
+          "HumanEval/20",
+          209
+        ],
+        [
+          "HumanEval/20",
+          211
+        ],
+        [
+          "HumanEval/20",
+          214
+        ],
+        [
+          "HumanEval/20",
+          217
+        ],
+        [
+          "HumanEval/20",
+          220
+        ],
+        [
+          "HumanEval/20",
+          223
+        ],
+        [
+          "HumanEval/20",
+          229
+        ],
+        [
+          "HumanEval/20",
+          234
+        ],
+        [
+          "HumanEval/20",
+          245
+        ],
+        [
+          "HumanEval/20",
+          247
+        ],
+        [
+          "HumanEval/20",
+          248
+        ],
+        [
+          "HumanEval/20",
+          271
+        ],
+        [
+          "HumanEval/20",
+          272
+        ],
+        [
+          "HumanEval/20",
+          273
+        ],
+        [
+          "HumanEval/20",
+          277
+        ],
+        [
+          "HumanEval/20",
+          283
+        ],
+        [
+          "HumanEval/20",
+          284
+        ],
+        [
+          "HumanEval/20",
+          290
+        ],
+        [
+          "HumanEval/20",
+          297
         ]
       ],
       "application_tokens": 0,
       "tokens": 0,
-      "application_seconds": 10.93141218499639,
-      "standalone_assessment_seconds": 12.109120181996389,
-      "checker_execution_seconds": 19.73363068499839,
-      "standalone_with_checker_seconds": 31.842750866994777,
+      "application_seconds": 11.310963402996805,
+      "standalone_assessment_seconds": 12.488671399996804,
+      "checker_execution_seconds": 20.876735949997055,
+      "standalone_with_checker_seconds": 33.36540734999386,
       "format_failures": 0
     }
   }

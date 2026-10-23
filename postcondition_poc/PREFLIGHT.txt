@@ -286,3 +286,13 @@ Switching exclusive branches between seeds for the same control does not pass.
 Retain all original per-pair results and the old disjunction as separate fields.
 No thresholds, task selection, costs, or experimental execution are changed.
 Validate this read-only interpretation logic in Actions, not by rerunning data.
+
+2026-10-23 19:54 UTC: root and independent skeptic NO-GO on an additional
+singleton-post oracle upper-bound audit. Although checked wrappers receive
+separate namespaces and copied arguments, the replay worker reuses the unwrapped
+subject/reference namespaces across posts and inputs. State interactions can
+make a bundle detect a fault that singleton runs do not detect. No reviewed
+purity restriction proves the proposed union bound; repeated observations would
+not prove it either. No implementation or run was started. Continue using the
+safe raw remaining-program bound and actual completed outcomes. This rejection
+does not change the research hypothesis, controls, thresholds or current run.

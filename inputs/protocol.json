@@ -1,0 +1,71 @@
+{
+  "frozen_utc": "2026-10-23T08:21:01.797747+00:00",
+  "design": "retrospective single-component proof of concept",
+  "cases_sha256": "a3e4773967bc5174428d87fa085eba78e023d141e143f20b02ea6b234e1dff8d",
+  "domain": {
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "ports": [
+      null,
+      80,
+      443,
+      8080,
+      8443
+    ],
+    "destination_host": [
+      "same",
+      "different"
+    ],
+    "cases": 200
+  },
+  "reference": "2.20.1",
+  "historical": [
+    "2.19.1",
+    "2.20.0"
+  ],
+  "policy_basis": [
+    "RFC 7235 section 2.2: protection-space scheme and authority",
+    "RFC 7230 section 2.7.3: default-port normalization",
+    "Requests 2.20.0/2.20.1 release notes: downgrade stripping/default-port retention",
+    "Requests documented-in-source HTTP-to-HTTPS compatibility exception; library-specific, not RFC rule"
+  ],
+  "normative_status": "analyst-defined finite interpretation; not maintainer approval or universal verification",
+  "execution": "real Requests Session.get with an in-memory HTTPAdapter; no network I/O",
+  "mutation_target": "Requests 2.20.1 SessionRedirectMixin.should_strip_auth",
+  "core_mutation_operators": [
+    "comparison inversion",
+    "and/or exchange",
+    "not deletion",
+    "boolean literal inversion",
+    "port integer +1",
+    "http/https literal exchange",
+    "whole condition negation",
+    "return replacement by True or False"
+  ],
+  "sensitivity_operator": "delete one if statement, including its body",
+  "mutant_denominator": "all structurally distinct, executable mutants killed by the complete finite domain; survivor and error counts also reported",
+  "selection": {
+    "objective": "minimum number of distinct finite-domain test rows, exact MILP",
+    "criteria": [
+      "reference branch arcs",
+      "core killed mutants",
+      "branch arcs + core killed mutants",
+      "branch arcs + core mutants + seven policy-category IDs",
+      "branch arcs + core and if-deletion mutants"
+    ],
+    "human_cost": "not measured; test-row count is an explicit size objective, not review or maintenance effort",
+    "tie_rule": "secondary minimization of case-ID sum at the minimum cardinality",
+    "evaluation": "after freezing reductions: historical failures retained, requirement/category coverage, finite-row omissions",
+    "optimal_solution_sensitivity": "test feasibility of omitting each historical failure class at the fixed minimum size; historical outcomes used only for evaluation"
+  },
+  "claims_excluded": [
+    "AI generation effects",
+    "prospective unknown-bug discovery",
+    "population statistics",
+    "human review-time improvement",
+    "synergy of inflation and density",
+    "TDEM reproduction"
+  ]
+}

@@ -1,0 +1,1402 @@
+[
+  {
+    "expected_retain": true,
+    "id": "C000",
+    "new": "http://a.example.test/target",
+    "old": "http://a.example.test/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C001",
+    "new": "http://b.example.test/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C002",
+    "new": "http://a.example.test:80/target",
+    "old": "http://a.example.test/start",
+    "requirement": "DEFAULT_PORT_EQUIVALENCE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C003",
+    "new": "http://b.example.test:80/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C004",
+    "new": "http://a.example.test:443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C005",
+    "new": "http://b.example.test:443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C006",
+    "new": "http://a.example.test:8080/target",
+    "old": "http://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C007",
+    "new": "http://b.example.test:8080/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C008",
+    "new": "http://a.example.test:8443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C009",
+    "new": "http://b.example.test:8443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C010",
+    "new": "https://a.example.test/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HTTP_HTTPS_COMPATIBILITY"
+  },
+  {
+    "expected_retain": false,
+    "id": "C011",
+    "new": "https://b.example.test/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C012",
+    "new": "https://a.example.test:80/target",
+    "old": "http://a.example.test/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C013",
+    "new": "https://b.example.test:80/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C014",
+    "new": "https://a.example.test:443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HTTP_HTTPS_COMPATIBILITY"
+  },
+  {
+    "expected_retain": false,
+    "id": "C015",
+    "new": "https://b.example.test:443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C016",
+    "new": "https://a.example.test:8080/target",
+    "old": "http://a.example.test/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C017",
+    "new": "https://b.example.test:8080/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C018",
+    "new": "https://a.example.test:8443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C019",
+    "new": "https://b.example.test:8443/target",
+    "old": "http://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C020",
+    "new": "http://a.example.test/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "DEFAULT_PORT_EQUIVALENCE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C021",
+    "new": "http://b.example.test/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C022",
+    "new": "http://a.example.test:80/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C023",
+    "new": "http://b.example.test:80/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C024",
+    "new": "http://a.example.test:443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C025",
+    "new": "http://b.example.test:443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C026",
+    "new": "http://a.example.test:8080/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C027",
+    "new": "http://b.example.test:8080/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C028",
+    "new": "http://a.example.test:8443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C029",
+    "new": "http://b.example.test:8443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C030",
+    "new": "https://a.example.test/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HTTP_HTTPS_COMPATIBILITY"
+  },
+  {
+    "expected_retain": false,
+    "id": "C031",
+    "new": "https://b.example.test/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C032",
+    "new": "https://a.example.test:80/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C033",
+    "new": "https://b.example.test:80/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C034",
+    "new": "https://a.example.test:443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HTTP_HTTPS_COMPATIBILITY"
+  },
+  {
+    "expected_retain": false,
+    "id": "C035",
+    "new": "https://b.example.test:443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C036",
+    "new": "https://a.example.test:8080/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C037",
+    "new": "https://b.example.test:8080/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C038",
+    "new": "https://a.example.test:8443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C039",
+    "new": "https://b.example.test:8443/target",
+    "old": "http://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C040",
+    "new": "http://a.example.test/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C041",
+    "new": "http://b.example.test/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C042",
+    "new": "http://a.example.test:80/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C043",
+    "new": "http://b.example.test:80/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C044",
+    "new": "http://a.example.test:443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C045",
+    "new": "http://b.example.test:443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C046",
+    "new": "http://a.example.test:8080/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C047",
+    "new": "http://b.example.test:8080/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C048",
+    "new": "http://a.example.test:8443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C049",
+    "new": "http://b.example.test:8443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C050",
+    "new": "https://a.example.test/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C051",
+    "new": "https://b.example.test/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C052",
+    "new": "https://a.example.test:80/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C053",
+    "new": "https://b.example.test:80/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C054",
+    "new": "https://a.example.test:443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C055",
+    "new": "https://b.example.test:443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C056",
+    "new": "https://a.example.test:8080/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C057",
+    "new": "https://b.example.test:8080/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C058",
+    "new": "https://a.example.test:8443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C059",
+    "new": "https://b.example.test:8443/target",
+    "old": "http://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C060",
+    "new": "http://a.example.test/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C061",
+    "new": "http://b.example.test/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C062",
+    "new": "http://a.example.test:80/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C063",
+    "new": "http://b.example.test:80/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C064",
+    "new": "http://a.example.test:443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C065",
+    "new": "http://b.example.test:443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C066",
+    "new": "http://a.example.test:8080/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C067",
+    "new": "http://b.example.test:8080/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C068",
+    "new": "http://a.example.test:8443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C069",
+    "new": "http://b.example.test:8443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C070",
+    "new": "https://a.example.test/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C071",
+    "new": "https://b.example.test/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C072",
+    "new": "https://a.example.test:80/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C073",
+    "new": "https://b.example.test:80/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C074",
+    "new": "https://a.example.test:443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C075",
+    "new": "https://b.example.test:443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C076",
+    "new": "https://a.example.test:8080/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C077",
+    "new": "https://b.example.test:8080/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C078",
+    "new": "https://a.example.test:8443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C079",
+    "new": "https://b.example.test:8443/target",
+    "old": "http://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C080",
+    "new": "http://a.example.test/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C081",
+    "new": "http://b.example.test/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C082",
+    "new": "http://a.example.test:80/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C083",
+    "new": "http://b.example.test:80/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C084",
+    "new": "http://a.example.test:443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C085",
+    "new": "http://b.example.test:443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C086",
+    "new": "http://a.example.test:8080/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C087",
+    "new": "http://b.example.test:8080/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C088",
+    "new": "http://a.example.test:8443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C089",
+    "new": "http://b.example.test:8443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C090",
+    "new": "https://a.example.test/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C091",
+    "new": "https://b.example.test/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C092",
+    "new": "https://a.example.test:80/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C093",
+    "new": "https://b.example.test:80/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C094",
+    "new": "https://a.example.test:443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C095",
+    "new": "https://b.example.test:443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C096",
+    "new": "https://a.example.test:8080/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C097",
+    "new": "https://b.example.test:8080/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C098",
+    "new": "https://a.example.test:8443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "OTHER_UPGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C099",
+    "new": "https://b.example.test:8443/target",
+    "old": "http://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C100",
+    "new": "http://a.example.test/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C101",
+    "new": "http://b.example.test/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C102",
+    "new": "http://a.example.test:80/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C103",
+    "new": "http://b.example.test:80/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C104",
+    "new": "http://a.example.test:443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C105",
+    "new": "http://b.example.test:443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C106",
+    "new": "http://a.example.test:8080/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C107",
+    "new": "http://b.example.test:8080/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C108",
+    "new": "http://a.example.test:8443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C109",
+    "new": "http://b.example.test:8443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C110",
+    "new": "https://a.example.test/target",
+    "old": "https://a.example.test/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C111",
+    "new": "https://b.example.test/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C112",
+    "new": "https://a.example.test:80/target",
+    "old": "https://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C113",
+    "new": "https://b.example.test:80/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C114",
+    "new": "https://a.example.test:443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "DEFAULT_PORT_EQUIVALENCE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C115",
+    "new": "https://b.example.test:443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C116",
+    "new": "https://a.example.test:8080/target",
+    "old": "https://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C117",
+    "new": "https://b.example.test:8080/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C118",
+    "new": "https://a.example.test:8443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C119",
+    "new": "https://b.example.test:8443/target",
+    "old": "https://a.example.test/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C120",
+    "new": "http://a.example.test/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C121",
+    "new": "http://b.example.test/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C122",
+    "new": "http://a.example.test:80/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C123",
+    "new": "http://b.example.test:80/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C124",
+    "new": "http://a.example.test:443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C125",
+    "new": "http://b.example.test:443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C126",
+    "new": "http://a.example.test:8080/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C127",
+    "new": "http://b.example.test:8080/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C128",
+    "new": "http://a.example.test:8443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C129",
+    "new": "http://b.example.test:8443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C130",
+    "new": "https://a.example.test/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C131",
+    "new": "https://b.example.test/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C132",
+    "new": "https://a.example.test:80/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C133",
+    "new": "https://b.example.test:80/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C134",
+    "new": "https://a.example.test:443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C135",
+    "new": "https://b.example.test:443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C136",
+    "new": "https://a.example.test:8080/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C137",
+    "new": "https://b.example.test:8080/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C138",
+    "new": "https://a.example.test:8443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C139",
+    "new": "https://b.example.test:8443/target",
+    "old": "https://a.example.test:80/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C140",
+    "new": "http://a.example.test/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C141",
+    "new": "http://b.example.test/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C142",
+    "new": "http://a.example.test:80/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C143",
+    "new": "http://b.example.test:80/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C144",
+    "new": "http://a.example.test:443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C145",
+    "new": "http://b.example.test:443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C146",
+    "new": "http://a.example.test:8080/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C147",
+    "new": "http://b.example.test:8080/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C148",
+    "new": "http://a.example.test:8443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C149",
+    "new": "http://b.example.test:8443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C150",
+    "new": "https://a.example.test/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "DEFAULT_PORT_EQUIVALENCE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C151",
+    "new": "https://b.example.test/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C152",
+    "new": "https://a.example.test:80/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C153",
+    "new": "https://b.example.test:80/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C154",
+    "new": "https://a.example.test:443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C155",
+    "new": "https://b.example.test:443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C156",
+    "new": "https://a.example.test:8080/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C157",
+    "new": "https://b.example.test:8080/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C158",
+    "new": "https://a.example.test:8443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C159",
+    "new": "https://b.example.test:8443/target",
+    "old": "https://a.example.test:443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C160",
+    "new": "http://a.example.test/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C161",
+    "new": "http://b.example.test/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C162",
+    "new": "http://a.example.test:80/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C163",
+    "new": "http://b.example.test:80/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C164",
+    "new": "http://a.example.test:443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C165",
+    "new": "http://b.example.test:443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C166",
+    "new": "http://a.example.test:8080/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C167",
+    "new": "http://b.example.test:8080/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C168",
+    "new": "http://a.example.test:8443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C169",
+    "new": "http://b.example.test:8443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C170",
+    "new": "https://a.example.test/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C171",
+    "new": "https://b.example.test/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C172",
+    "new": "https://a.example.test:80/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C173",
+    "new": "https://b.example.test:80/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C174",
+    "new": "https://a.example.test:443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C175",
+    "new": "https://b.example.test:443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C176",
+    "new": "https://a.example.test:8080/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C177",
+    "new": "https://b.example.test:8080/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C178",
+    "new": "https://a.example.test:8443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C179",
+    "new": "https://b.example.test:8443/target",
+    "old": "https://a.example.test:8080/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C180",
+    "new": "http://a.example.test/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C181",
+    "new": "http://b.example.test/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C182",
+    "new": "http://a.example.test:80/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C183",
+    "new": "http://b.example.test:80/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C184",
+    "new": "http://a.example.test:443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C185",
+    "new": "http://b.example.test:443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C186",
+    "new": "http://a.example.test:8080/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C187",
+    "new": "http://b.example.test:8080/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C188",
+    "new": "http://a.example.test:8443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HTTPS_DOWNGRADE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C189",
+    "new": "http://b.example.test:8443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C190",
+    "new": "https://a.example.test/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C191",
+    "new": "https://b.example.test/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C192",
+    "new": "https://a.example.test:80/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C193",
+    "new": "https://b.example.test:80/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C194",
+    "new": "https://a.example.test:443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C195",
+    "new": "https://b.example.test:443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C196",
+    "new": "https://a.example.test:8080/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "PORT_CHANGE"
+  },
+  {
+    "expected_retain": false,
+    "id": "C197",
+    "new": "https://b.example.test:8080/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  },
+  {
+    "expected_retain": true,
+    "id": "C198",
+    "new": "https://a.example.test:8443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "SAME_ORIGIN"
+  },
+  {
+    "expected_retain": false,
+    "id": "C199",
+    "new": "https://b.example.test:8443/target",
+    "old": "https://a.example.test:8443/start",
+    "requirement": "HOST_CHANGE"
+  }
+]

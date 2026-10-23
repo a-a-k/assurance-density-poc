@@ -1,0 +1,10 @@
+.venv/
+.tools/
+vendor/
+results/
+ci-logs/
+github_runs/
+paper/
+__pycache__/
+*.pyc
+.coverage*

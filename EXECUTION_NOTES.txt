@@ -1,0 +1,49 @@
+Execution notes, 23 October 2026
+
+The finite 200-row policy, mutation operators, exact minimum-size objective,
+secondary case-ID objective, and post-selection historical evaluation were
+frozen in inputs/protocol.json before measuring Requests.
+
+Two instrumentation/interpretation errors were found during development:
+
+1. The initial branch matrix intersected raw coverage.py arcs with normalized
+   JSON-report arcs. Multi-line statements were therefore undercounted. The
+   corrected implementation applies coverage.py's own translation and asserts
+   that the union of all per-case branches equals the complete-domain report.
+   The dataset and objectives are unchanged. Initial summary results were not
+   validated and are not used in the completed PoC report.
+
+2. A failure anywhere in Requests 2.19.1 is not necessarily a reproduction of
+   CVE-2018-18074. The complete policy also identifies port-change and unusual
+   upgrade discrepancies. Named CVE detection is therefore evaluated only on
+   the HTTPS_DOWNGRADE category. Named 2.20.0 regression detection uses only
+   DEFAULT_PORT_EQUIVALENCE. All other discrepancies are reported separately.
+   This corrects the outcome definition; historical outcomes never enter the
+   minimum-size or case-ID selection objectives.
+
+This is a retrospective, analyst-constructed pilot. Freezing inputs does not
+make the known historical defects prospective or blind. It is not an LLM test
+generation experiment. No maintainer reviewed or approved the finite policy.
+
+Exploratory follow-up, explicitly separate from the frozen primary analysis:
+diagnose.py isolates same-host HTTPS-to-HTTP credential retention within the
+fixed implementation, while leaving other finite-domain observations correct.
+It also constructs a minimum-size structural reduction constrained to contain
+a downgrade observation. These diagnostic queries were added after the initial
+results. They do not modify the frozen baseline selections or their objectives,
+and do not constitute prospective evidence of improved defect detection.
+
+The exploratory follow-up was then generalized to all seven frozen categories
+in audit_ambiguity.py. For each category, two fixed-optimum feasibility queries
+look for reductions containing and omitting an assigned observation. This
+audit reads neither historical outcomes nor isolated-fault outcomes. Its
+development was informed by the primary results; it is not represented as a
+prospectively evaluated or uniquely novel optimization technique.
+
+GitHub reproduction:
+The Actions workflow separates selection and historical execution into distinct
+processes. Selection refuses to run if historical outputs already exist. The
+audit also finishes before historical execution. The committed input bytes are
+preserved; no local output or paper source is included in the repository.
+An independent enumeration check covers all 63 nonempty three-row/two-feature
+matrices and all eight observation groups per matrix (504 classifications).

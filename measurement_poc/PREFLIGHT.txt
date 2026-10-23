@@ -72,3 +72,22 @@ Execution: GitHub Actions only. Qwen3-4B Q4_K_M via pinned llama.cpp CPU server,
 temperature 0.2, max 1200 completion tokens, one JSON-format retry only.
 The model is an executable operationalization of the measurement procedure;
 results cannot establish superiority of the abstract formalism in general.
+
+Pre-full-run baseline correction, 2026-10-23, before observing pilot results:
+DeCon section 5.6.3 reports that original author I/O examples alone detected
+152/164 faults. Its GPT-4 postconditions also outperform GPT-3.5 in the reported
+aggregate. Both are necessary cheap checks. Root + skeptic explicitly GO for
+screen.py: replay author doctests, both DeCon versions, and an evaluation-only
+oracle ceiling of the same 32-candidate pools, without model inference. If author
+examples with no false alarms cover that ceiling, full-run NO-GO. Do not select
+only the tasks missed by the examples to manufacture a positive result. Author
+examples are currently outside the 32-ID action space: this is a necessity
+check of the task, not a clean measurement comparison. Any subsequent comparison
+must offer the same selectable artifacts to all methods.
+
+Aggregation clarification accepted by both agents before results: same-result
+claims require a nonempty usable-detection task set preserved as a superset,
+and a subset of false-alarm task IDs, not just equal counts. The better-result
+branch retains the specified counts criterion but discloses gained/lost task IDs
+per seed. Incomplete runs cannot win by dropping missing tasks. Cheap controls
+with equal/better external quality and lower costs defeat a positive claim.

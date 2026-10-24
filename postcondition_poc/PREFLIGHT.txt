@@ -790,3 +790,17 @@ execution still requires independent review of actual audit results and costs.
 Both reviewers give CODE GO for Actions validate_only on the minimal singleton
 addition: full pool, identical full_review preparation,0/1 selections,200 tokens,
 own smoke and all48 methods included in shard/frontier/replacement accounting.
+
+2026-10-24, before semantic execution: both reviewers give DESIGN GO to run the
+same exposure comparison as6 four-task shards per seed, max-parallel18. Official
+Actions limits allow20 standard concurrent jobs even on Free; no paid runners.
+All24 tasks, three seeds,48 methods, global method rotation, model/evaluator pins
+and success criterion stay fixed. Reduced calendar waiting is infrastructure,
+not a model benefit. Model methods pay all six source/wrapper/cold/smoke setups;
+cheap relevant-source MIN credit and all warm-cost/ANYreplacement guards remain.
+Old4-shard archives must remain readable. Explicit partition counts, full24-task
+coverage, disjoint shards, common-input identity and mixed-count rejection need
+Actions tests and independent code review. Existing author-prefix audit may not
+silently interpret a new four-task shard as an old six-task shard. Current
+assigned audit40072093191 is unchanged. Semantic GO still awaits its results.
+https://docs.github.com/en/actions/reference/limits

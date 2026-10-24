@@ -163,9 +163,6 @@ def treatment_replacements(treatment, limits, costs):
 
 def audit(summary, rows):
     models = PROTOCOLS[summary.get("protocol", "legacy")]
-    policy = summary["setup"].get("evaluation_policy", "fixed-v1")
-    if policy not in ("fixed-v1", "relative-v1") or any(r["outcome"].get("evaluation_policy", "fixed-v1") != policy for r in rows):
-        raise ValueError("Unknown or mixed evaluation policy")
     treatment = models[0]
     expected = {f"HumanEval/{i}" for i in range(24)}
     grouped, limits = {}, {}
@@ -175,6 +172,11 @@ def audit(summary, rows):
         group = [r for r in rows if r["method"] == method]
         if len(group) != 24 or {r["task_id"] for r in group} != expected:
             raise ValueError(f"Incomplete/duplicate task set: seed {summary['seed']} {method}")
+    policy = summary["setup"].get("evaluation_policy", "fixed-v1")
+    if policy not in ("fixed-v1", "relative-v1") or any(r["outcome"].get("evaluation_policy", "fixed-v1") != policy for r in rows):
+        raise ValueError("Unknown or mixed evaluation policy")
+    for method in models + CHEAP:
+        group = [r for r in rows if r["method"] == method]
         if any(r["seed"] != summary["seed"] for r in group):
             raise ValueError("Mixed seed rows")
         grouped[method] = group

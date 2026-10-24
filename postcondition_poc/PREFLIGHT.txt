@@ -568,3 +568,9 @@ Root and independent skeptic explicit final code-review EXECUTION GO for
 replay_audit:528 canonical evaluations, exact fixed/relative rules and source
 hashes, no model calls or candidate selection. The full comparison still awaits
 actual calibration and all three planned-copy audits, not just passing CI.
+
+Calibration attempt40047724912 failed before replay: the policy guard accessed
+setup before an existing incomplete-report test could reject missing rows.
+Restore the existing completeness check before policy metadata access. No test
+expectation, timing rule, result, hypothesis or criterion changes. Root and
+skeptic reviewed the diff and give explicit EXECUTION GO to repeat replay_audit.

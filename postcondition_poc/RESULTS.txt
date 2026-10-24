@@ -1,4 +1,22 @@
-Latest result, 24 October 2026 (Europe/Moscow)
+Compact-procedure instrument audit, 24 October 2026
+
+Run40040779566: https://github.com/a-a-k/assurance-density-poc/actions/runs/40040779566
+Source69161ea. All36 assigned-output copies passed across seeds11/29/47 and
+minimum/median/maximum full input contexts. Root and independent skeptic checked
+the exact archived responses, input identity, hashes, model/server pins and costs.
+
+Seed     T/direct_top1 tokens ratio     T/direct_top1 wall ratio
+11                        1.055346                      1.115014
+29                        1.055346                      1.077398
+47                        1.055346                      1.182053
+
+All assigned-copy cost ratios satisfy1.10 tokens/1.20 time. This establishes
+instrument feasibility only. It does not measure useful defect detection or
+predict semantic assessment costs. Both agents approved the full comparison;
+no positive research result exists yet. See PREFLIGHT.txt for the unchanged
+external-outcome criterion and its reviewed efficient-baseline interpretation.
+
+Previous semantic result, 24 October 2026 (Europe/Moscow)
 
 The repaired Qwen8B comparison also FAILS the original usefulness criterion.
 Run40007059508, source c5f41e1b1fcf70319477c36ffed9e37a36311d56:

@@ -445,3 +445,19 @@ Publish all comparisons, including lower-cost/lower-quality tradeoffs; counts
 are never described as exact-ID dominance. This aligns our operationalization
 with the original request before any new semantic observations. It changes no
 inputs, numerical margins, methods or thresholds, and does not establish success.
+
+2026-10-24 00:16 UTC: full-context audit40040779566 completed on source69161ea.
+Root and separate skeptic independently verified all3 archive hashes/bytes,
+36assigned outputs and actual field order, common inputs/ranks23/8/0, exact
+model/server pins, no prompt cache, and all measured token/time totals. All pass.
+T/direct_top1 token ratio1.0553455 in each seed; time ratios11=1.1150143,
+29=1.0773979,47=1.1820529. This is feasible copying, not semantic quality or a
+semantic-runtime bound. Actual answers can be longer and the real caps remain.
+
+Root GO and independent skeptic explicit ACTUAL-AUDIT + FULL EXECUTION GO on
+the ORIGINAL criterion for warrant_measure: unchanged24 tasks, seeds11/29/47,
+4model arms and6cheap controls. Use the reviewed efficient-baseline aggregation
+and retain strict_protocol_pass plus every pairwise flag. Interpretation CI
+40043995305 passed at0baa109; full workflow repeats instrument invariants before
+inference. Preserve negative outcomes and all research overhead. A complete or
+rigorously futile result still needs independent review before interpretation.

@@ -9,12 +9,13 @@ Both reviewers verified that the agreed conservative criterion became impossible
 seed29 can confirm at most97 natural detections, while the exact cheap author
 baseline has96 confirmed plus1 unresolved. Its possible replacement therefore
 blocks the criterion at strictly lower complete costs. This is not confirmed
-dominance or a completed three-seed comparison. Partial archives are retained.
+dominance or a completed three-seed comparison. All12 partial archives are retained;
+their downloaded bytes, SHA256 digests and extracted members were verified.
 Exact checkpoints/calculation: postcondition_poc/audits/40051157793/bound.json.
 Reproduce with mode=planned_measure and evaluation_policy=fixed-v1 in
 measurement-poc.yml; the complete-run interpreter requires all shards to finish.
 
-Exploratory follow-up: candidate-blind external obligation planning, then
+The stopped procedure used candidate-blind external obligation planning, then
 selection of existing checks. Compare ordinary two-stage source-first review,
 ordinary one-stage review, direct selection, direct top1 and all six cheap
 controls plus ten simple ranking/union controls. Both planners receive the same

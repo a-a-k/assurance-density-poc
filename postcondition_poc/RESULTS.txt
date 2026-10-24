@@ -340,8 +340,12 @@ verified all76 code tests in40051834314 at0ac107f01038860a5eec5bd8d6306fd1e92b8f
 This is validation of an additional interpretation, not a positive PoC result.
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40051834314
 
-Planned comparison40051157793: cancellation requested after both reviewers'
-independent conservative futility audit. Exact current author-only completion
+Planned comparison40051157793: cancelled after both reviewers'
+independent conservative futility audit. All12 archive steps completed successfully;
+all12 downloaded archives match their recorded byte counts and SHA256 digests.
+Extracted files also match their archive members. These are partial results;
+no complete24-task/three-seed comparison is inferred from them.
+Exact current author-only completion
 40053365653 has96 confirmed natural detections, unknown(HumanEval/1,62), and24
 canonical passes. Its entire audit takes28.527384061s and zero model tokens.
 Archive22977288bytes SHA256

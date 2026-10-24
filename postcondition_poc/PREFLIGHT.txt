@@ -810,3 +810,9 @@ adaptation: exact counts/partitions/common-input ranges, old4-part compatibility
 all six measured model setups and conservative cheap source credit are checked.
 The existing author-only prefix interpreter explicitly rejects the new partition.
 No semantic execution is authorized until the actual assigned audit is reviewed.
+
+2026-10-24 07:49 UTC: both reviewers independently confirmed Actions40075397639,
+job120817532512, checkout353a324cf74b6d9c32ba8abe186a1e7dd27acec8: all95 invariant
+tests passed, including both new six-shard coverage/cost/rejection checks.
+This closes the code/CI prerequisite only; semantic GO still awaits the actual
+three-seed assigned audit40072093191 and its measured costs.

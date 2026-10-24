@@ -1,0 +1,11 @@
+{
+  "run_id": "40051157793",
+  "run_attempt": "1",
+  "source_commit": "986c886bc3295384dc4b5bde517fad8de183b797",
+  "experiment_step_outcome": "cancelled",
+  "archived_utc": "2026-10-24T02:25:01.816743+00:00",
+  "archive_sha256": "a6b1b4ff805d005a5602fd6ca8842a79d4f6e4c038954e5503e314fd72571c0a",
+  "archive_bytes": 33510044,
+  "run_url": "https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793",
+  "archive_path": "runs/40051157793-1/seed-47-shard-2/results.tar.gz"
+}

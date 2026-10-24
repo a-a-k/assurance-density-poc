@@ -309,3 +309,18 @@ The relative policy increased some limits but resolved none of the remaining
 unknowns. Keep the original fixed-v1 for the upcoming comparison. The audit
 does not establish an evaluator improvement; previous unknowns remain unknown.
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40048069251
+
+The two-stage copying audit40046714357 completed all three seeds:45 assessment
+rows and63 exact stage copies, no retries. Both agents verified raw messages,
+source/config/input hashes and complete copying costs. T/spec_plan tokens ratio
+1.09445883 in every seed; elapsed ratios1.14714106/1.11802468/1.12027629 for
+seeds11/29/47 respectively. These pass the instrument limits but establish no
+semantic advantage. All73 code invariants passed in40050681816.
+After both agents' original-criterion GO, the main comparison uses21 methods:
+the five planned/model controls, six existing cheap controls, and ten additional
+AST-deduplicated ranking/union controls. It runs four six-task shards per seed;
+exact24-task merging and full duplicated model costs are required. Cheap source
+costs exclude unused EvalPlus preparation and receive the documented conservative
+single-source credit. No hypothesis margin or uncertainty rule was relaxed.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40046714357
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40050681816

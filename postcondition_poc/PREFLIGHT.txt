@@ -636,3 +636,19 @@ validate_only CI (all postcondition invariant tests). No local tests/model/repla
 were run. Full semantic execution still requires passing CI and independent
 actual review of the remaining two copying seeds. Prompts, success margins and
 the agreed external usefulness criterion are unchanged.
+
+2026-10-24: final original-criterion EXECUTION GO from BOTH root and independent
+skeptic for planned_measure, fixed-v1,24 tasks x3 original seeds, four six-task
+shards per seed, five model methods and16 cheap controls. Code afe2d67ca350b0d0710bcb64851258c55eae3369
+passed all73 invariants in Actions40050681816. All45 rows/63 exact model copies in
+40046714357 were independently verified, including original input hashes, actual
+source-only/own-plan messages, all flags/configuration, usage and elapsed work.
+T/spec_plan token ratio1.09445883 in all seeds; wall ratios11:1.14714106,
+29:1.11802468,47:1.12027629. Seed29 archive34626bytes SHA256
+91b68fbc6a47ebb3328d65a717bdc540637573d829ec65af373c040338e1fc14;
+seed47 archive34658bytes SHA256
+fc461a9b7e7577fbaedc4b3b2db5b69cac83f7b3bb8e980bb158215212696d66.
+The final pre-execution commit changes documentation only. Main Actions repeats
+invariants before any model call. Unknowns, including task13/15 timeouts, retain
+the conservative interpretation. Audits are not positive scientific results.
+Actual outcomes/futility require another independent review before any claim.

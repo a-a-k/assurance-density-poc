@@ -2,12 +2,17 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
-Running comparison (source986c886bc3295384dc4b5bde517fad8de183b797):
+Stopped comparison (source986c886bc3295384dc4b5bde517fad8de183b797):
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793
 24 tasks, three seeds,21 methods, fixed-v1 evaluator;12 parallel task shards.
-Independent instrument/code audits passed before execution. Results are pending.
+Both reviewers verified that the agreed conservative criterion became impossible:
+seed29 can confirm at most97 natural detections, while the exact cheap author
+baseline has96 confirmed plus1 unresolved. Its possible replacement therefore
+blocks the criterion at strictly lower complete costs. This is not confirmed
+dominance or a completed three-seed comparison. Partial archives are retained.
+Exact checkpoints/calculation: postcondition_poc/audits/40051157793/bound.json.
 Reproduce with mode=planned_measure and evaluation_policy=fixed-v1 in
-measurement-poc.yml; interpret completed archives with shards=4.
+measurement-poc.yml; the complete-run interpreter requires all shards to finish.
 
 Exploratory follow-up: candidate-blind external obligation planning, then
 selection of existing checks. Compare ordinary two-stage source-first review,

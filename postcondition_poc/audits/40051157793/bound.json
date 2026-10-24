@@ -1,0 +1,474 @@
+{
+  "kind": "inability to establish the existing conservative criterion, not confirmed dominance",
+  "run": "40051157793-1",
+  "source_commit": "986c886bc3295384dc4b5bde517fad8de183b797",
+  "seed": 29,
+  "baseline_audit": "40053365653-1",
+  "baseline_archive_sha256": "340b178bca5778218571a2c636f0996fdfbfdb86eecbe4488840bd86a8d62ae4",
+  "snapshots": [
+    {
+      "shard": 0,
+      "tasks": 1,
+      "blob_sha": "689b5e2858590f48fcb28da857c8dfea0f12fa8b",
+      "path": "live/40051157793-1/seed-29-shard-0.json",
+      "content_sha256": "dbf52b61a11424ef64c4d7fb2981698e3b6b479c5db8b0654a9b527b95563280"
+    },
+    {
+      "shard": 1,
+      "tasks": 5,
+      "blob_sha": "957f34c5bfb88ec3410359bb9575e13d89c17875",
+      "path": "live/40051157793-1/seed-29-shard-1.json",
+      "content_sha256": "861d94fe7efc38defe17a4d402129b40d895b9590e67a18bb4a38aefec885847"
+    },
+    {
+      "shard": 2,
+      "tasks": 2,
+      "blob_sha": "c7f35d0a686031bc90795c49d207b5803d177b01",
+      "path": "live/40051157793-1/seed-29-shard-2.json",
+      "content_sha256": "997952960922a4bfc524db1658f968417ff5156146cf6a598e03b2a17a332e18"
+    },
+    {
+      "shard": 3,
+      "tasks": 2,
+      "blob_sha": "aebfda7fcee318ae73e0a18b4c56c067c2e1d911",
+      "path": "live/40051157793-1/seed-29-shard-3.json",
+      "content_sha256": "ef8d7a1fb5180b3d08229d5ae15910797fdd4cfeaaee83b15b0e448469e9a55f"
+    }
+  ],
+  "completed_tasks": [
+    "HumanEval/0",
+    "HumanEval/10",
+    "HumanEval/12",
+    "HumanEval/13",
+    "HumanEval/18",
+    "HumanEval/19",
+    "HumanEval/6",
+    "HumanEval/7",
+    "HumanEval/8",
+    "HumanEval/9"
+  ],
+  "treatment_known_natural": [
+    [
+      "HumanEval/0",
+      2
+    ],
+    [
+      "HumanEval/0",
+      196
+    ],
+    [
+      "HumanEval/10",
+      0
+    ],
+    [
+      "HumanEval/10",
+      1
+    ],
+    [
+      "HumanEval/10",
+      2
+    ],
+    [
+      "HumanEval/10",
+      6
+    ],
+    [
+      "HumanEval/10",
+      8
+    ],
+    [
+      "HumanEval/10",
+      18
+    ],
+    [
+      "HumanEval/10",
+      42
+    ],
+    [
+      "HumanEval/10",
+      43
+    ],
+    [
+      "HumanEval/10",
+      49
+    ],
+    [
+      "HumanEval/10",
+      52
+    ],
+    [
+      "HumanEval/10",
+      67
+    ],
+    [
+      "HumanEval/10",
+      68
+    ],
+    [
+      "HumanEval/10",
+      69
+    ],
+    [
+      "HumanEval/10",
+      81
+    ],
+    [
+      "HumanEval/10",
+      112
+    ],
+    [
+      "HumanEval/10",
+      159
+    ],
+    [
+      "HumanEval/10",
+      185
+    ],
+    [
+      "HumanEval/12",
+      0
+    ],
+    [
+      "HumanEval/12",
+      3
+    ],
+    [
+      "HumanEval/12",
+      5
+    ],
+    [
+      "HumanEval/12",
+      8
+    ],
+    [
+      "HumanEval/12",
+      14
+    ],
+    [
+      "HumanEval/12",
+      23
+    ],
+    [
+      "HumanEval/12",
+      80
+    ],
+    [
+      "HumanEval/12",
+      82
+    ],
+    [
+      "HumanEval/12",
+      144
+    ],
+    [
+      "HumanEval/19",
+      4
+    ],
+    [
+      "HumanEval/19",
+      18
+    ],
+    [
+      "HumanEval/19",
+      63
+    ],
+    [
+      "HumanEval/8",
+      3
+    ],
+    [
+      "HumanEval/8",
+      49
+    ],
+    [
+      "HumanEval/9",
+      3
+    ],
+    [
+      "HumanEval/9",
+      51
+    ],
+    [
+      "HumanEval/9",
+      106
+    ],
+    [
+      "HumanEval/9",
+      141
+    ],
+    [
+      "HumanEval/9",
+      146
+    ],
+    [
+      "HumanEval/9",
+      162
+    ]
+  ],
+  "treatment_unknown_natural": [],
+  "remaining_raw_natural": [
+    [
+      "HumanEval/1",
+      0
+    ],
+    [
+      "HumanEval/1",
+      4
+    ],
+    [
+      "HumanEval/1",
+      6
+    ],
+    [
+      "HumanEval/1",
+      8
+    ],
+    [
+      "HumanEval/1",
+      9
+    ],
+    [
+      "HumanEval/1",
+      12
+    ],
+    [
+      "HumanEval/1",
+      13
+    ],
+    [
+      "HumanEval/1",
+      14
+    ],
+    [
+      "HumanEval/1",
+      18
+    ],
+    [
+      "HumanEval/1",
+      19
+    ],
+    [
+      "HumanEval/1",
+      25
+    ],
+    [
+      "HumanEval/1",
+      28
+    ],
+    [
+      "HumanEval/1",
+      30
+    ],
+    [
+      "HumanEval/1",
+      33
+    ],
+    [
+      "HumanEval/1",
+      35
+    ],
+    [
+      "HumanEval/1",
+      41
+    ],
+    [
+      "HumanEval/1",
+      43
+    ],
+    [
+      "HumanEval/1",
+      51
+    ],
+    [
+      "HumanEval/1",
+      55
+    ],
+    [
+      "HumanEval/1",
+      58
+    ],
+    [
+      "HumanEval/1",
+      62
+    ],
+    [
+      "HumanEval/1",
+      69
+    ],
+    [
+      "HumanEval/1",
+      83
+    ],
+    [
+      "HumanEval/1",
+      85
+    ],
+    [
+      "HumanEval/1",
+      86
+    ],
+    [
+      "HumanEval/1",
+      87
+    ],
+    [
+      "HumanEval/1",
+      91
+    ],
+    [
+      "HumanEval/1",
+      92
+    ],
+    [
+      "HumanEval/1",
+      94
+    ],
+    [
+      "HumanEval/1",
+      95
+    ],
+    [
+      "HumanEval/1",
+      97
+    ],
+    [
+      "HumanEval/1",
+      105
+    ],
+    [
+      "HumanEval/1",
+      106
+    ],
+    [
+      "HumanEval/1",
+      116
+    ],
+    [
+      "HumanEval/1",
+      119
+    ],
+    [
+      "HumanEval/1",
+      138
+    ],
+    [
+      "HumanEval/1",
+      140
+    ],
+    [
+      "HumanEval/1",
+      144
+    ],
+    [
+      "HumanEval/1",
+      147
+    ],
+    [
+      "HumanEval/1",
+      150
+    ],
+    [
+      "HumanEval/1",
+      156
+    ],
+    [
+      "HumanEval/1",
+      161
+    ],
+    [
+      "HumanEval/1",
+      166
+    ],
+    [
+      "HumanEval/1",
+      171
+    ],
+    [
+      "HumanEval/1",
+      186
+    ],
+    [
+      "HumanEval/1",
+      188
+    ],
+    [
+      "HumanEval/11",
+      6
+    ],
+    [
+      "HumanEval/17",
+      133
+    ],
+    [
+      "HumanEval/20",
+      6
+    ],
+    [
+      "HumanEval/20",
+      147
+    ],
+    [
+      "HumanEval/21",
+      0
+    ],
+    [
+      "HumanEval/21",
+      22
+    ],
+    [
+      "HumanEval/21",
+      26
+    ],
+    [
+      "HumanEval/22",
+      0
+    ],
+    [
+      "HumanEval/4",
+      100
+    ],
+    [
+      "HumanEval/5",
+      27
+    ],
+    [
+      "HumanEval/5",
+      60
+    ],
+    [
+      "HumanEval/5",
+      143
+    ]
+  ],
+  "treatment_final_known_upper": 97,
+  "baseline_known_natural": 96,
+  "baseline_possible_natural": 97,
+  "baseline_unknown_natural": [
+    [
+      "HumanEval/1",
+      62
+    ]
+  ],
+  "baseline_all_canonical_pass": true,
+  "treatment_known_false_alarm_tasks": [
+    "HumanEval/18",
+    "HumanEval/6"
+  ],
+  "baseline_cost_upper": {
+    "application_tokens": 0,
+    "tokens": 0,
+    "application_seconds": 28.527384061000006,
+    "standalone_assessment_seconds": 28.527384061000006,
+    "standalone_with_checker_seconds": 28.527384061000006
+  },
+  "treatment_already_spent_lower": {
+    "application_tokens": 32985,
+    "tokens": 37577,
+    "application_seconds": 1723.9384152580008,
+    "standalone_assessment_seconds": 2082.170959274001,
+    "standalone_with_checker_seconds": 2088.922028835997
+  },
+  "possible_replacement_inevitable": true,
+  "strict_original_certificate_futility_established": false,
+  "confirmed_baseline_count_at_least_optimistic_treatment": false
+}

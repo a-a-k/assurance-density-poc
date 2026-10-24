@@ -339,3 +339,41 @@ Existing flags and negative results remain unchanged. Both agents independently
 verified all76 code tests in40051834314 at0ac107f01038860a5eec5bd8d6306fd1e92b8f14.
 This is validation of an additional interpretation, not a positive PoC result.
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40051834314
+
+Planned comparison40051157793: cancellation requested after both reviewers'
+independent conservative futility audit. Exact current author-only completion
+40053365653 has96 confirmed natural detections, unknown(HumanEval/1,62), and24
+canonical passes. Its entire audit takes28.527384061s and zero model tokens.
+Archive22977288bytes SHA256
+340b178bca5778218571a2c636f0996fdfbfdb86eecbe4488840bd86a8d62ae4.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40053365653
+
+Four saved seed29 checkpoints, source986c886, have completed prefixes[1,5,2,2].
+They cover10 disjoint tasks:39 confirmed natural IDs, zero natural unknowns,
+false alarms on6/18, and58 raw natural IDs on unfinished tasks. Even perfect
+completion can therefore confirm at most97. Author possible detections=97.
+The already adopted ANY-possible-replacement guard must remain true regardless
+of future results: author knownFA0 is no worse than treatment's possibleFA,
+and all five costs are lower. Treatment already spent32985 application tokens,
+37577 total tokens,1723.938415258s application,2082.170959274s standalone and
+2088.922028836s including checker; the whole author audit upper is28.527s.
+That guard blocks both original branches and the separately recorded addendum
+in seed29; success requires all three seeds.
+
+This establishes inability to demonstrate the AGREED CONSERVATIVE criterion.
+It does not establish confirmed author dominance:96 is less than optimistic97.
+The existing strict author-only certificate correctly remains false. This is a
+stopped, incomplete comparison, not a full three-seed result or a general
+disproof of obligation-based assessment. Exact raw checkpoint files and the
+calculation are preserved in postcondition_poc/audits/40051157793/.
+
+Pre-implementation rejection of another candidate: sequential inspection on the
+same ten-post pool. Both reviewers independently calculated archived payload
+sizes, without executing models or tests locally. Total common JSON163585bytes;
+base without candidates76798; source-only46201. Source planning plus one batch
+of three candidate bodies already needs91.166% of original payload bytes; an
+additional inspection repeating the common base raises this to138.113%, before
+index/schema/system/response/history overhead. These are byte estimates, not
+token/time measurements, and the three-body sizes use the median of all120
+triples per task. A plain top3-then-review control is also cheaper. No sufficient
+cost mechanism is established for this small pool, so no implementation GO.

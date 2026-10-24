@@ -47,6 +47,8 @@ def assignments(arm, common, case):
     choice = [p['id'] for p in common['displays'][scope]]
     if arm in ('diverse_review', 'portfolio_review'):
         choice = common['shortlists']['diverse_top3' if arm == 'diverse_review' else 'three_heuristics']
+    if arm == 'full_review_top1':
+        count = 1
     return [{'notes': 'The selected inspected predicates appear sound over the permitted caller domain and useful for the required output goals.',
              'selected': choice[:count]}]
 

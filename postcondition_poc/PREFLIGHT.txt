@@ -786,3 +786,7 @@ Current six-arm assigned audit40072093191 remains applicable to its unchanged
 methods; no repeat of those84 calls is needed. New control requires code review,
 Actions invariants and its own schema smoke before semantic calls. Semantic
 execution still requires independent review of actual audit results and costs.
+
+Both reviewers give CODE GO for Actions validate_only on the minimal singleton
+addition: full pool, identical full_review preparation,0/1 selections,200 tokens,
+own smoke and all48 methods included in shard/frontier/replacement accounting.

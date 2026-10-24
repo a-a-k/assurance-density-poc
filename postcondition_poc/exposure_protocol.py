@@ -7,7 +7,7 @@ from planned_protocol import SOURCE_FIELDS, TOPICS
 from warrant_protocol import call
 
 ARMS = ['exposure_adaptive', 'ordinary_adaptive', 'full_review', 'diverse_review',
-        'portfolio_review', 'gpt4_review']
+        'portfolio_review', 'gpt4_review', 'full_review_top1']
 STATUSES = ('adequate', 'partial', 'unresolved', 'contradicted')
 COMMON = TOPICS + """Assess unchanged candidate postconditions. All original author
 tests and docs remain. Seek additional defect detection without false alarms.
@@ -94,7 +94,7 @@ def schema(arm, stage):
     fields = {'notes': {'type': 'string'}}
     if arm == 'ordinary_adaptive':
         fields['next'] = ids(3)
-    return obj({**fields, 'selected': ids(3)})
+    return obj({**fields, 'selected': ids(1 if arm == 'full_review_top1' else 3)})
 
 
 def parse(raw, arm, stage, required=()):
@@ -175,7 +175,10 @@ def inspected(common, seen, scope='full', shortlist=None):
 
 
 def request(arm, stage, payload, seed, destination, required=(), assigned=None):
-    messages = [{'role': 'system', 'content': PLAN[arm] if stage == 'plan' else REVIEW.get(arm, SINGLE)},
+    instruction = PLAN[arm] if stage == 'plan' else REVIEW.get(arm, SINGLE)
+    if arm == 'full_review_top1':
+        instruction += ' Compare the whole supplied pool and retain at most ONE useful sound checker; none is allowed.'
+    messages = [{'role': 'system', 'content': instruction},
                 {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False, separators=(',', ':'))}]
     if assigned is not None:
         messages.append({'role': 'user', 'content': 'Interface audit only. Copy this exact assigned object: ' + json.dumps(assigned, separators=(',', ':'))})

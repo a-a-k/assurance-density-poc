@@ -69,12 +69,13 @@ class ShardAccounting(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Incomplete"):
             audit(summary, rows)
 
-    def test_exposure_scope_costs_merge_with_all47_methods(self):
+    def test_exposure_scope_costs_merge_with_all48_methods(self):
         summary, rows, _ = merge_shards(self.parts('exposure'), 11)
-        self.assertEqual(len(rows), 24 * 47)
+        self.assertEqual(len(rows), 24 * 48)
         self.assertEqual(len(audit(summary, rows)['cheap_controls']), 41)
         methods, setup = summary['methods'], summary['setup']
         self.assertEqual(methods['exposure_adaptive']['standalone_assessment_seconds'], 212)
+        self.assertEqual(methods['full_review_top1']['standalone_assessment_seconds'], 212)
         self.assertEqual(methods['gpt4_review']['standalone_assessment_seconds'], 200)
         self.assertEqual(methods['gpt4_review']['tokens'], 266)
         self.assertEqual(setup['source_seconds_by_method']['gpt4_review'], 34)

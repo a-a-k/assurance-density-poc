@@ -18,7 +18,7 @@ SEEDS = (11, 29, 47)
 MODELS = ("structured", "semantic", "direct")
 PROTOCOLS = {"legacy": MODELS, "warrant": ("warrant", "spec_first", "direct", "direct_top1"),
              "planned": ("obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1"),
-             "exposure": ("exposure_adaptive", "ordinary_adaptive", "full_review", "diverse_review", "portfolio_review", "gpt4_review")}
+             "exposure": ("exposure_adaptive", "ordinary_adaptive", "full_review", "diverse_review", "portfolio_review", "gpt4_review", "full_review_top1")}
 CHEAP = LEGACY_CHEAP
 FIELDS = ("application_tokens", "tokens", "application_seconds", "standalone_assessment_seconds", "standalone_with_checker_seconds")
 LIMITS = (1.10, 1.10, 1.20, 1.20, 1.20)

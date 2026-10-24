@@ -108,7 +108,7 @@ def run(seed, shard):
             if arm in protocol.ARMS:
                 scope = 'gpt4' if arm == 'gpt4_review' else 'full'
                 key = (arm + '_model' if arm in ('diverse_review', 'portfolio_review') else
-                       scope + '_full_review' if arm in ('full_review', 'gpt4_review') else scope + '_model')
+                       scope + '_full_review' if arm in ('full_review', 'gpt4_review', 'full_review_top1') else scope + '_model')
                 prep = prepared['costs'][key] + assembly_seconds[scope]
                 prediction, measured = protocol.assess(arm, common, seed, f'{number:02}')
                 cost.update(measured)

@@ -93,6 +93,22 @@ class ExposureTests(unittest.TestCase):
         seen = json.loads(bodies[0]['messages'][1]['content'])['inspected']
         self.assertEqual([v['id'] for v in seen], [4, 5])
 
+    def test_semantic_singleton_reviews_the_full_pool_and_enforces_maximum_one(self):
+        common = fixture()
+        answer = {'notes': 'Choose the strongest sound predicate.', 'selected': [4]}
+        result, cost, bodies, _ = self.run_assigned('full_review_top1', common, [answer])
+        self.assertEqual(result['selected'], [4])
+        self.assertEqual(cost['calls'], 1)
+        self.assertEqual(bodies[0]['max_tokens'], 200)
+        self.assertEqual([v['id'] for v in json.loads(bodies[0]['messages'][1]['content'])['inspected']], list(range(6)))
+        self.assertIn('at most ONE', bodies[0]['messages'][0]['content'])
+        for selected in ([4], []):
+            self.assertEqual(p.parse(json.dumps({**answer, 'selected': selected}), 'full_review_top1', 'review')['selected'], selected)
+        with self.assertRaises(ValueError):
+            p.parse(json.dumps({**answer, 'selected': [4, 5]}), 'full_review_top1', 'review')
+        for case in range(3):
+            self.assertEqual(len(assignments('full_review_top1', common, case)[0]['selected']), 1)
+
     def test_sources_never_leak_extra_reference_fields(self):
         common = fixture()
         common.update({'solution': 'PRIVATE_REFERENCE', 'canonical_solution': 'PRIVATE_REFERENCE',

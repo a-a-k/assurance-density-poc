@@ -9,6 +9,8 @@ targets, selecting unchanged published posts. It compares goal-aware ordinary
 adaptive review, full review, two cheap shortlist-then-review methods, all-GPT4
 review and41 cheap controls. The natural pool contains120 posts/task from all12
 pinned source archives. First24 tasks, three seeds and external criterion remain.
+Before the semantic run, an additional full-pool semantic top1 control was
+required and implemented to check the simpler "retain only one" explanation.
 Next: assigned-output/routing and actual-cost audit before semantic execution.
 No benefit has yet been established for this implementation.
 

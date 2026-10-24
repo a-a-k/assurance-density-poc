@@ -5,7 +5,8 @@ from unittest.mock import patch
 
 import measurement
 import planned_protocol as protocol
-from interpret import CHEAP, PROTOCOLS, audit
+from interpret import PROTOCOLS, audit
+from controls import cheap_methods
 
 
 class PlannedProtocol(unittest.TestCase):
@@ -102,18 +103,23 @@ class PlannedProtocol(unittest.TestCase):
     def test_all_five_models_and_setup_costs_reach_interpreter(self):
         models = PROTOCOLS["planned"]
         setup = {"author_source_seconds": 1, "assessment_source_seconds": 2, "model_seconds": 5,
-                 "wrapper_source_seconds": 7, "schema_smoke": {a: {"seconds": 3, "tokens": 10} for a in models}}
+                 "cheap_source_seconds": 1.5,
+                 "wrapper_source_seconds": 7, "cheap_control_version": "portfolios-v1",
+                 "schema_smoke": {a: {"seconds": 3, "tokens": 10} for a in models}}
         rows = [{"task_id": f"HumanEval/{i}", "method": arm, "seed": 11,
                  "cost": {"application_seconds": 3, "tokens": 8 if arm in models else 0},
                  "outcome": {"usable_code_ids": [], "unknown_code_ids": [], "false_alarm": False,
                              "canonical": {"status": "pass"}, "execution_seconds": 2}}
-                for i in range(24) for arm in models + CHEAP]
+                for i in range(24) for arm in models + cheap_methods(setup)]
         with patch.object(measurement, "save") as saved, patch.object(measurement.Path, "write_text"), \
                 patch.dict(measurement.os.environ, {"GITHUB_SHA": "fixture"}):
             measurement.report(rows, setup, 11, list(models), "planned")
         summary = saved.call_args_list[0].args[1]
         self.assertEqual(summary["methods"]["obligation_plan"]["standalone_assessment_seconds"], 89)
+        self.assertEqual(summary["methods"]["shortest_top3"]["standalone_assessment_seconds"], 73.5)
         self.assertEqual(set(audit(summary, rows)["model_controls"]), set(models[1:]))
+        self.assertEqual(len(audit(summary, rows)["cheap_controls"]), 16)
+        self.assertEqual(len(summary["methods"]), 21)
 
 
 if __name__ == "__main__":

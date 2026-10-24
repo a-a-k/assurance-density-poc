@@ -19,6 +19,7 @@ from string import Template
 from assessment_prompts import PROMPTS
 from screen import BASE, INPUTS, OUT, ROOT, download, jsonlines, save, doctest_program
 from cheap import prepare
+from controls import cheap_methods, needs_contrastive, partition, source_field
 
 SEEDS = [11, 29, 47]
 ARMS = ["structured", "semantic", "direct"]
@@ -279,13 +280,13 @@ def evaluate(h, plus, posts, programs, ids, wrap, evaluation_policy="fixed-v1"):
 def report(rows, setup, seed, arms=None, protocol="legacy"):
     arms = ARMS if arms is None else arms
     methods = {}
-    for arm in arms + ["author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive"]:
+    for arm in arms + list(cheap_methods(setup)):
         group = [r for r in rows if r["method"] == arm]
         ids = [(r["task_id"], i) for r in group for i in r["outcome"]["usable_code_ids"]]
         warm = sum(r["cost"]["application_seconds"] for r in group)
         execution = sum(r["outcome"]["execution_seconds"] for r in group)
         smoke = setup["schema_smoke"][arm] if arm in arms else {"seconds": 0, "tokens": 0}
-        cold = (setup["author_source_seconds"] if arm == "author_tests" else setup["assessment_source_seconds"]) + (setup["model_seconds"] if arm in arms else 0) + smoke["seconds"]
+        cold = setup[source_field(setup, arm, arms)] + (setup["model_seconds"] if arm in arms else 0) + smoke["seconds"]
         if arm in arms:
             cold += setup.get("wrapper_source_seconds", 0)
         methods[arm] = {"tasks": len(group), "natural": sum(i < 200 for _, i in ids), "artificial": sum(i >= 200 for _, i in ids),
@@ -314,7 +315,10 @@ def checkpoint(seed):
     token = os.environ.get("GH_TOKEN")
     if not token:
         return
-    path = f"live/{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}/seed-{seed}.json"
+    snapshot = json.loads((OUT / "measurement_summary.json").read_text())
+    shard = snapshot["setup"].get("task_partition")
+    suffix = f"-shard-{shard['index']}" if shard else ""
+    path = f"live/{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}/seed-{seed}{suffix}.json"
     url = f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/contents/{path}"
     headers = {"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "Content-Type": "application/json"}
     for attempt in range(3):
@@ -349,7 +353,10 @@ def main():
     parser.add_argument("--seed", type=int, choices=SEEDS, required=True)
     parser.add_argument("--protocol", choices=("legacy", "warrant", "planned"), default="legacy")
     parser.add_argument("--evaluation-policy", choices=("fixed-v1", "relative-v1"), default="fixed-v1")
+    parser.add_argument("--shard", type=int, choices=range(4))
     args = parser.parse_args()
+    if args.shard is not None and args.protocol != "planned":
+        raise ValueError("Only the planned comparison uses task shards")
     arms, assessor, selector, smoke = ARMS, assess, select, format_smoke
     if args.protocol == "warrant":
         import warrant_protocol
@@ -368,13 +375,20 @@ def main():
     raw_plus, em = fetch(PLUS_URL, "HumanEvalPlus-v0.1.2.jsonl.gz")
     if em["sha256"] != "7b2bfad32438e4c543f73f430cabbd5d3d9cfbba4b011c0736195bf0e5e63f72":
         raise RuntimeError("EvalPlus release checksum changed")
+    began_post_sources = time.perf_counter()
     pzip, pm = download("GeneratedPostconditions/EvalPlus/GPT4/BasePromptNoRef/gpt4_base_no_ref.zip")
     posts = collections.defaultdict(dict)
     for row in jsonlines(pzip, "raw_preprocessed_samples.jsonl"):
         posts[row["task_id"]][row["response_num"]] = row
+    cheap_source_seconds = author_source_seconds + time.perf_counter() - began_post_sources
     plus = {r["task_id"]: r for r in map(json.loads, gzip.decompress(raw_plus).decode().splitlines())}
     setup = {"assessment_source_seconds": time.perf_counter() - start, "author_source_seconds": author_source_seconds,
              "evaluation_policy": args.evaluation_policy}
+    if args.protocol == "planned":
+        setup["cheap_control_version"] = "portfolios-v1"
+        setup["cheap_source_seconds"] = cheap_source_seconds
+    if args.shard is not None:
+        setup["task_partition"] = partition(args.shard)
     # Fault bodies and held-out inputs never enter selector inputs. The wrapper
     # template/binding rules do enter model inputs and are charged separately.
     dzip, dm = download("nl2postcondition_source_evalplus/code_mutants/distinct_code_mutants.jsonl.zip")
@@ -393,12 +407,13 @@ def main():
     rows = []
     report(rows, setup, args.seed, arms, args.protocol)
     checkpoint(args.seed)
-    for number in range(24):
+    numbers = range(24) if args.shard is None else range(args.shard * 6, (args.shard + 1) * 6)
+    for number in numbers:
         task, began = f"HumanEval/{number}", time.perf_counter()
         h, p = human[task], posts[task]
         if sorted(p) != list(range(10)):
             raise RuntimeError("The predetermined candidate IDs are unavailable")
-        cheap = prepare(h, p)
+        cheap = prepare(h, p, include_portfolios=args.protocol == "planned")
         common = {"task_id": task, "external_prompt": h["prompt"], "author_tests": h["test"], "domain_conditions": plus[task]["contract"],
                   "clauses": clauses(h["prompt"], h["entry_point"]),
                   "exact_wrapper_template": wrapper_template,
@@ -418,7 +433,7 @@ def main():
         order = arms[rotation:] + arms[:rotation] + ["author_tests", *cheap["selected"]]
         for arm in order:
             cost = {"tokens": 0, "calls": 0, "assessment_seconds": 0, "format_failed": False,
-                    "preparation_seconds": common_seconds if arm in arms else (0 if arm == "author_tests" else cheap["total_seconds"] - (0 if arm == "contrastive" else cheap["contrastive_execution_seconds"]))}
+                    "preparation_seconds": common_seconds if arm in arms else (0 if arm == "author_tests" else cheap["total_seconds"] - (0 if needs_contrastive(arm) else cheap["contrastive_execution_seconds"]))}
             if arm in arms:
                 prediction, measured = assessor(arm, common, args.seed, f"{number:02}")
                 cost.update(measured)

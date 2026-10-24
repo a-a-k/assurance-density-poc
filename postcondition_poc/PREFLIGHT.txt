@@ -574,3 +574,65 @@ setup before an existing incomplete-report test could reject missing rows.
 Restore the existing completeness check before policy metadata access. No test
 expectation, timing rule, result, hypothesis or criterion changes. Root and
 skeptic reviewed the diff and give explicit EXECUTION GO to repeat replay_audit.
+
+2026-10-24 01:23 UTC, BEFORE new semantic results: root and skeptic explicit
+design/IMPLEMENTATION GO on the ORIGINAL criterion for two infrastructure/control
+changes. Seed11 copying audit40046714357 took1983.2168s for three contexts;
+24 contexts plus semantic output/retries/replay risk the360-minute job ceiling.
+Use four contiguous six-task shards per seed, keeping global task numbers and
+arm rotation, identical source/model/server/timing-policy pins, distinct live
+and archive paths. Merge exact disjoint24 tasks for each original seed before
+the unchanged three-seed criterion. No shard becomes a new replicate.
+Every model arm pays ALL actual duplicated source/model/wrapper/smoke costs.
+Each cheap control receives a conservative credit: one MINIMUM observed complete
+source setup plus summed task-specific work. This is not a measured single-process
+elapsed time. Publish actual summed setup and every raw shard alongside the
+credited comparison. Verify each method's task set, seed/source/archive identity,
+all source digests and identical common inputs across seeds. Futility can use
+only explicitly identified shard0's true global prefix and ALL remaining raw
+programs through task23; no other shard may masquerade as that prefix.
+
+Before the main run add ten obvious stronger cheap controls, from the SAME
+existing rankings: top2/top3 shortest, dependencies and contrastive; the three
+pairwise unions and the triple union of their top1 selections. Every added
+package has at most3 distinct unchanged candidates. No outcome-informed ranking
+or model call is added. Contrastive-related controls pay the actual contrastive
+work; other controls exclude that unnecessary execution. Record selection/prep
+work; all16 cheap controls participate in frontier/replacement checks. Older
+protocols retain their original six controls. Planned now has21 total methods.
+Independent code review and all actual instrument audits remain required before
+semantic execution; these changes do not claim comparative usefulness.
+
+Calibration40048069251 (source610aaed3c51b80f7a068866a52454673f685d597)
+independently verified by root and skeptic: archive19238077bytes SHA256
+bd9edcb76714a46ff345eada3619e3b84cb6214016ac0621cb2635d05fbd1727;
+528 exact rows,260665 applied reference-limit records. BOTH policies yield
+183 passes,64 false alarms and17 unknown outcomes; no status changed. Relative
+limits actually increased some budgets, without resolving the14 timeouts or
+3 syntax-related unknowns. Both agents choose the original fixed-v1 for the
+upcoming comparison. Do not tune factors, relabel unknowns or claim this audit
+as an evaluator improvement or comparative benefit. Conservative bounds remain.
+
+Planned-copy seed11 archive34652bytes SHA256
+08946431f7e071edb408150d26d1a405ed3c52998272e0543e2094d40f72bd4d
+independently verified:15 rows/21 exact copies, source-only equality and own-plan
+stage2 bindings, all actual costs. T/spec_plan token ratio1.09445883 and wall
+ratio1.14714106 pass the instrument caps. Remaining two seeds still pending.
+
+Code-review refinements, both agents' GO before semantic execution: the ten new
+controls skip duplicate ASTs, retaining the first survivor of the SAME original
+ranking (or fixed portfolio-member order). Their budgets cannot be wasted on
+trivial syntactic duplicates; the six old controls retain their old behavior.
+Archive original rankings. Compare complete server command flags and CPU/thread
+configuration across shards/seeds in addition to model/server binary hashes.
+Measure cheap_source_seconds separately: actual HumanEval fetch/parse plus
+published-post fetch/parse, excluding unnecessary EvalPlus fetch/parse. Models
+keep the full assessment-source cost; author-only keeps its separate source cost.
+Raw shard reports, summed actual costs and conservative single-source credit all
+use this distinction. Older archives without the field retain old accounting.
+
+Root and independent skeptic final routing/control code-review EXECUTION GO for
+validate_only CI (all postcondition invariant tests). No local tests/model/replay
+were run. Full semantic execution still requires passing CI and independent
+actual review of the remaining two copying seeds. Prompts, success margins and
+the agreed external usefulness criterion are unchanged.

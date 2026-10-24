@@ -23,6 +23,9 @@ on:
       source_treatment:
         type: string
         description: Author-only audit treatment, structured, warrant or obligation_plan
+      source_shard:
+        type: string
+        description: Author-only audit shard; only0 may supply a global prefix
       evaluation_policy:
         type: choice
         description: Timing policy for planned_measure; relative requires calibration review
@@ -36,17 +39,23 @@ jobs:
   prepare:
     runs-on: ubuntu-24.04
     outputs:
-      seeds: ${{ steps.seeds.outputs.value }}
+      cases: ${{ steps.cases.outputs.value }}
     steps:
-      - id: seeds
+      - id: cases
         env:
           MODE: ${{ inputs.mode }}
         run: |
-          if [ "$MODE" = full ] || [ "$MODE" = post_measure ] || [ "$MODE" = warrant_audit ] || [ "$MODE" = warrant_measure ] || [ "$MODE" = planned_audit ] || [ "$MODE" = planned_measure ]; then
-            echo 'value=[11,29,47]' >> "$GITHUB_OUTPUT"
-          else
-            echo 'value=[11]' >> "$GITHUB_OUTPUT"
-          fi
+          python - <<'PY'
+          import json, os
+          mode = os.environ['MODE']
+          seeds = [11,29,47] if mode in ('full','post_measure','warrant_audit','warrant_measure','planned_audit','planned_measure') else [11]
+          shards = range(4) if mode == 'planned_measure' else [None]
+          cases = [{'seed': seed, 'shard': shard if shard is not None else '',
+                    'key': f'seed-{seed}' + (f'-shard-{shard}' if shard is not None else '')}
+                   for seed in seeds for shard in shards]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write('value=' + json.dumps({'include': cases}) + '\n')
+          PY
   compare:
     needs: prepare
     runs-on: ubuntu-24.04
@@ -55,9 +64,8 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
-      max-parallel: 3
-      matrix:
-        seed: ${{ fromJSON(needs.prepare.outputs.seeds) }}
+      max-parallel: 12
+      matrix: ${{ fromJSON(needs.prepare.outputs.cases) }}
     env:
       PYTHONHASHSEED: '0'
     steps:
@@ -82,12 +90,14 @@ jobs:
         env:
           MODE: ${{ inputs.mode }}
           SEED: ${{ matrix.seed }}
+          SHARD: ${{ matrix.shard }}
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ inputs.source_run }}
           SOURCE_SHA: ${{ inputs.source_sha }}
           SOURCE_SEED: ${{ inputs.source_seed }}
           SOURCE_PROTOCOL: ${{ inputs.source_protocol }}
           SOURCE_TREATMENT: ${{ inputs.source_treatment }}
+          SOURCE_SHARD: ${{ inputs.source_shard }}
           EVALUATION_POLICY: ${{ inputs.evaluation_policy }}
         run: |
           set -o pipefail
@@ -97,7 +107,7 @@ jobs:
           elif [ "$MODE" = planned_audit ]; then
             python -u postcondition_poc/planned_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = planned_measure ]; then
-            python -u postcondition_poc/measurement.py --seed "$SEED" --protocol planned --evaluation-policy "$EVALUATION_POLICY" 2>&1 | tee ci-logs/measurement-run.log
+            python -u postcondition_poc/measurement.py --seed "$SEED" --protocol planned --evaluation-policy "$EVALUATION_POLICY" --shard "$SHARD" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = warrant_audit ]; then
             python -u postcondition_poc/warrant_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = warrant_measure ]; then
@@ -105,7 +115,9 @@ jobs:
           elif [ "$MODE" = post_format ]; then
             python -u postcondition_poc/format_audit.py 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = author_only ]; then
-            python -u postcondition_poc/author_only.py --source-run "$SOURCE_RUN" --source-sha "$SOURCE_SHA" --seed "$SOURCE_SEED" --protocol "$SOURCE_PROTOCOL" --treatment "$SOURCE_TREATMENT" 2>&1 | tee ci-logs/measurement-run.log
+            shard_args=()
+            if [ -n "$SOURCE_SHARD" ]; then shard_args=(--source-shard "$SOURCE_SHARD"); fi
+            python -u postcondition_poc/author_only.py --source-run "$SOURCE_RUN" --source-sha "$SOURCE_SHA" --seed "$SOURCE_SEED" --protocol "$SOURCE_PROTOCOL" --treatment "$SOURCE_TREATMENT" "${shard_args[@]}" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = post_measure ]; then
             python -u postcondition_poc/measurement.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = unit_screen ]; then
@@ -121,7 +133,7 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-          ARCHIVE_KEY: seed-${{ matrix.seed }}
+          ARCHIVE_KEY: ${{ matrix.key }}
           ARCHIVE_DIRS: inputs/measurement,results/measurement,ci-logs,results/simple_summary.md
           EXPERIMENT_OUTCOME: ${{ steps.experiment.outcome }}
         run: python persist_results.py

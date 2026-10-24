@@ -5,6 +5,7 @@ import operator
 import time
 
 from screen import contrastive_calls, dedup, doc_calls, execute, extract
+from controls import additional_selections
 
 
 def value(node):
@@ -57,7 +58,7 @@ def unit_calls(test):
     return calls, proxies, unknown
 
 
-def prepare(human, posts):
+def prepare(human, posts, include_portfolios=False):
     started = time.perf_counter()
     tree = ast.parse(human["prompt"])
     entry = human["entry_point"]
@@ -91,14 +92,19 @@ def prepare(human, posts):
         contrasts[i]["rejections"] = sum(s != "pass" for s in contrasts[i]["statuses"]) if not bad else 0
     valid = [i for i in extracted if validations[i]["accepted"]]
     nontrivial = [i for i in valid if extracted[i]["nontrivial"]]
+    rankings = {
+        "shortest": sorted(nontrivial, key=lambda i: (len(extracted[i]["post"]), i)),
+        "dependencies": sorted(nontrivial, key=lambda i: (-extracted[i]["dependency_score"], len(extracted[i]["post"]), i)),
+        "contrastive": sorted(nontrivial, key=lambda i: (-contrasts[i]["rejections"], -extracted[i]["dependency_score"], len(extracted[i]["post"]), i)),
+    }
     selected = {
         "filtered": valid,
         "filtered_dedup": dedup(valid, extracted),
-        "shortest": sorted(nontrivial, key=lambda i: (len(extracted[i]["post"]), i))[:1],
-        "dependencies": sorted(nontrivial, key=lambda i: (-extracted[i]["dependency_score"], len(extracted[i]["post"]), i))[:1],
-        "contrastive": sorted(nontrivial, key=lambda i: (-contrasts[i]["rejections"], -extracted[i]["dependency_score"], len(extracted[i]["post"]), i))[:1],
+        **{name: ranking[:1] for name, ranking in rankings.items()},
     }
-    return {"selected": selected, "validation": validations, "contrastive": contrasts,
+    if include_portfolios:
+        selected.update(additional_selections(rankings, {i: item["ast_key"] for i, item in extracted.items()}))
+    return {"selected": selected, "rankings": rankings, "validation": validations, "contrastive": contrasts,
             "total_seconds": time.perf_counter() - started,
             "contrastive_execution_seconds": sum(r["wall_seconds"] for r in contrasts.values()),
             "exact_calls": positive, "tolerance_center_proxies": proxies,

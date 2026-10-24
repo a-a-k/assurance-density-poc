@@ -5,11 +5,21 @@ CURRENT COMPARISON: EXISTING POSTCONDITIONS
 Exploratory follow-up: candidate-blind external obligation planning, then
 selection of existing checks. Compare ordinary two-stage source-first review,
 ordinary one-stage review, direct selection, direct top1 and all six cheap
-controls. Both planners receive the same external sources before candidates.
+controls plus ten simple ranking/union controls. Both planners receive the same
+external sources before candidates. Added controls use the same existing cheap
+rankings, choosing top2/top3 or unions of their first choices, with no model calls.
 Workflow planned_audit checks both stages, actual copying costs and full contexts;
 planned_measure requires independent review of that audit before execution.
 The original external-result/full-cost criterion remains. New code and a passing
 instrument audit do not establish benefit. See postcondition_poc/PREFLIGHT.txt.
+
+planned_measure uses four six-task shards per original seed to stay within job
+time limits. Interpret with shards=4: all24 exact tasks are merged before the
+unchanged three-seed criterion. Model methods pay all duplicated setup/smoke work;
+cheap controls receive a conservative credit for one minimum observed full-source
+setup. Actual duplicated costs and every raw setup are also published. This
+credit is not a measured single-process runtime. New planned archives/checkpoints
+use seed-SEED-shard-INDEX; old archive paths remain unchanged.
 
 The compact one-stage warrant comparison40044226843 was stopped after a verified
 futility certificate: treatment could reach at most70 natural detections while

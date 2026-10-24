@@ -12,12 +12,13 @@ import os
 import tarfile
 import urllib.request
 from pathlib import Path
+from controls import LEGACY_CHEAP, cheap_methods, partition, source_field
 
 SEEDS = (11, 29, 47)
 MODELS = ("structured", "semantic", "direct")
 PROTOCOLS = {"legacy": MODELS, "warrant": ("warrant", "spec_first", "direct", "direct_top1"),
              "planned": ("obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1")}
-CHEAP = ("author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive")
+CHEAP = LEGACY_CHEAP
 FIELDS = ("application_tokens", "tokens", "application_seconds", "standalone_assessment_seconds", "standalone_with_checker_seconds")
 LIMITS = (1.10, 1.10, 1.20, 1.20, 1.20)
 
@@ -31,12 +32,14 @@ def api(repository, path):
         return json.load(response)
 
 
-def archived(repository, run, seed):
-    prefix = f"runs/{run}/seed-{seed}"
+def archived(repository, run, seed, shard=None):
+    prefix = f"runs/{run}/seed-{seed}" + (f"-shard-{shard}" if shard is not None else "")
     info = api(repository, f"contents/{prefix}/archive.json?ref=experiment-results")
     metadata = json.loads(base64.b64decode(info["content"]))
     if f"{metadata['run_id']}-{metadata['run_attempt']}" != run:
         raise ValueError("Requested run and archive metadata disagree")
+    if metadata["archive_path"] != prefix + "/results.tar.gz":
+        raise ValueError("Requested seed/shard and archive path disagree")
     if metadata.get("experiment_step_outcome") != "success":
         raise ValueError(f"Seed {seed} did not complete successfully")
     entry = api(repository, f"contents/{prefix}/results.tar.gz?ref=experiment-results")
@@ -51,7 +54,94 @@ def archived(repository, run, seed):
         summary = read("results/measurement/postconditions/measurement_summary.json")
         rows = read("results/measurement/postconditions/measurement_rows.json")
         provenance = read("ci-logs/model-provenance.json")
+        provenance["input_sources"] = read("inputs/measurement/postconditions/measurement_provenance.json")
+        provenance["common_input_sha256"] = {
+            Path(member.name).stem: hashlib.sha256(archive.extractfile(member).read()).hexdigest()
+            for member in archive.getmembers()
+            if member.isfile() and member.name.startswith("inputs/measurement/postconditions/model_inputs/") and member.name.endswith(".json")}
     return metadata, summary, rows, provenance
+
+
+def source_digests(provenance):
+    return tuple(sorted((entry.get("url", entry.get("path")), entry["sha256"]) for entry in provenance["input_sources"]))
+
+
+def server_signature(provenance):
+    command = list(provenance["command"])
+    if type(provenance["cpus"]) != int or provenance["cpus"] < 1 or int(command[command.index("--threads") + 1]) != provenance["cpus"]:
+        raise ValueError("Server thread/CPU configuration mismatch")
+    # Only machine-local executable/model locations may differ, never flags.
+    command[0] = Path(command[0]).name
+    model_index = command.index("-m") + 1
+    command[model_index] = Path(command[model_index]).name
+    return provenance["cpus"], tuple(command)
+
+
+def merge_shards(parts, seed):
+    """Reconstruct one24-task seed, retaining all actual costs and raw setups."""
+    if len(parts) != 4:
+        raise ValueError("Exactly four shards are required")
+    indices, commits, runs, policies, models, sources, configurations = set(), set(), set(), set(), set(), set(), set()
+    all_rows, all_common, raw_setups = [], {}, []
+    for metadata, summary, rows, provenance in parts:
+        spec = summary["setup"].get("task_partition", {})
+        index = spec.get("index")
+        if spec != partition(index) or index in indices:
+            raise ValueError("Invalid or duplicate shard partition")
+        indices.add(index)
+        if summary["seed"] != seed or summary["protocol"] != "planned" or summary["setup"].get("cheap_control_version") != "portfolios-v1":
+            raise ValueError("Shard seed/protocol/control version mismatch")
+        if metadata["source_commit"] != summary["source_commit"] or metadata.get("experiment_step_outcome") != "success":
+            raise ValueError("Unsuccessful or mismatched shard source")
+        expected_path = f"runs/{metadata['run_id']}-{metadata['run_attempt']}/seed-{seed}-shard-{index}/results.tar.gz"
+        if metadata["archive_path"] != expected_path:
+            raise ValueError("Shard archive identity mismatch")
+        audit(summary, rows, expected=set(spec["task_ids"]))
+        expected_common = {f"{index * 6 + n:02}" for n in range(6)}
+        if set(provenance["common_input_sha256"]) != expected_common:
+            raise ValueError("Missing or extra shard common inputs")
+        all_common.update(provenance["common_input_sha256"])
+        commits.add(summary["source_commit"])
+        runs.add((metadata["run_id"], metadata["run_attempt"]))
+        policies.add(summary["setup"].get("evaluation_policy", "fixed-v1"))
+        models.add(tuple(sorted(d["sha256"] for d in provenance["downloads"])))
+        configurations.add(server_signature(provenance))
+        sources.add(source_digests(provenance))
+        raw_setups.append(summary["setup"])
+        all_rows.extend(rows)
+    if indices != set(range(4)) or any(len(s) != 1 for s in (commits, runs, policies, models, sources, configurations)):
+        raise ValueError("Mixed shard identity, source, timing policy or model pins")
+    raw_setups.sort(key=lambda s: s["task_partition"]["index"])
+    model_names = PROTOCOLS["planned"]
+    setup = {key: sum(s.get(key, 0) for s in raw_setups) for key in
+             ("assessment_source_seconds", "author_source_seconds", "model_seconds", "wrapper_source_seconds")}
+    if any("cheap_source_seconds" in s for s in raw_setups):
+        if not all("cheap_source_seconds" in s for s in raw_setups):
+            raise ValueError("Mixed source-cost accounting across shards")
+        setup["cheap_source_seconds"] = sum(s["cheap_source_seconds"] for s in raw_setups)
+    setup.update({"evaluation_policy": next(iter(policies)), "cheap_control_version": "portfolios-v1",
+                  "schema_smoke": {m: {"seconds": sum(s["schema_smoke"][m]["seconds"] for s in raw_setups),
+                                        "tokens": sum(s["schema_smoke"][m]["tokens"] for s in raw_setups),
+                                        "passed": all(s["schema_smoke"][m]["passed"] for s in raw_setups)} for m in model_names},
+                  "shard_setups": raw_setups,
+                  "cheap_setup_credit": "minimum observed full-source setup; conservative credit, not measured single-process elapsed"})
+    methods = model_names + cheap_methods(setup)
+    setup["source_seconds_by_method"] = {
+        m: (sum(s["assessment_source_seconds"] for s in raw_setups) if m in model_names else
+            min(s[source_field(s, m, model_names)] for s in raw_setups))
+        for m in methods}
+    merged = {"seed": seed, "protocol": "planned", "source_commit": next(iter(commits)), "setup": setup, "methods": {}}
+    for method in methods:
+        originals = [summary["methods"][method] for _, summary, _, _ in parts]
+        value = {key: sum(s[key] for s in originals) for key in originals[0] if not isinstance(originals[0][key], list)}
+        value.update({key: sorted(item for s in originals for item in s[key]) for key in originals[0] if isinstance(originals[0][key], list)})
+        for field in ("standalone_assessment_seconds", "standalone_with_checker_seconds"):
+            value["actual_duplicated_" + field] = value[field]
+            if method not in model_names:
+                value[field] -= sum(s[source_field(s, method, model_names)] for s in raw_setups) - setup["source_seconds_by_method"][method]
+        merged["methods"][method] = value
+    audit(merged, all_rows)
+    return merged, all_rows, all_common
 
 
 def bounds(rows):
@@ -161,21 +251,24 @@ def treatment_replacements(treatment, limits, costs):
     return result
 
 
-def audit(summary, rows):
+def audit(summary, rows, expected=None):
     models = PROTOCOLS[summary.get("protocol", "legacy")]
     treatment = models[0]
-    expected = {f"HumanEval/{i}" for i in range(24)}
+    expected = {f"HumanEval/{i}" for i in range(24)} if expected is None else expected
+    cheap_names = cheap_methods(summary.get("setup", {}))
     grouped, limits = {}, {}
-    if any(r["method"] not in models + CHEAP for r in rows):
+    if any(r["method"] not in models + cheap_names for r in rows):
         raise ValueError("Unexpected method for recorded protocol")
-    for method in models + CHEAP:
+    for method in models + cheap_names:
         group = [r for r in rows if r["method"] == method]
-        if len(group) != 24 or {r["task_id"] for r in group} != expected:
+        if len(group) != len(expected) or {r["task_id"] for r in group} != expected:
             raise ValueError(f"Incomplete/duplicate task set: seed {summary['seed']} {method}")
+    if set(summary["methods"]) != set(models + cheap_names):
+        raise ValueError("Unexpected summary method set")
     policy = summary["setup"].get("evaluation_policy", "fixed-v1")
     if policy not in ("fixed-v1", "relative-v1") or any(r["outcome"].get("evaluation_policy", "fixed-v1") != policy for r in rows):
         raise ValueError("Unknown or mixed evaluation policy")
-    for method in models + CHEAP:
+    for method in models + cheap_names:
         group = [r for r in rows if r["method"] == method]
         if any(r["seed"] != summary["seed"] for r in group):
             raise ValueError("Mixed seed rows")
@@ -188,7 +281,23 @@ def audit(summary, rows):
         tokens = sum(r["cost"]["tokens"] for r in group)
         warm = sum(r["cost"]["application_seconds"] for r in group)
         checker = sum(r["outcome"]["execution_seconds"] for r in group)
-        cold = setup["author_source_seconds"] if method == "author_tests" else setup["assessment_source_seconds"]
+        cold = setup[source_field(setup, method, models)]
+        if "shard_setups" in setup:
+            shards = setup["shard_setups"]
+            if len(shards) != 4 or {s["task_partition"]["index"] for s in shards} != set(range(4)):
+                raise ValueError("Incomplete merged setup provenance")
+            actual_source = sum(shard[source_field(shard, method, models)] for shard in shards)
+            credited_source = actual_source if method in models else min(shard[source_field(shard, method, models)] for shard in shards)
+            if not math.isclose(setup["source_seconds_by_method"][method], credited_source, rel_tol=1e-12):
+                raise ValueError("Incorrect conservative source credit")
+            cold = credited_source
+            for field in ("model_seconds", "wrapper_source_seconds"):
+                if not math.isclose(setup[field], sum(shard.get(field, 0) for shard in shards), rel_tol=1e-12):
+                    raise ValueError("Duplicated model/wrapper setup was omitted")
+            if method in models:
+                for field in ("seconds", "tokens"):
+                    if not math.isclose(setup["schema_smoke"][method][field], sum(shard["schema_smoke"][method][field] for shard in shards), rel_tol=1e-12):
+                        raise ValueError("Duplicated smoke costs were omitted")
         cold += setup["model_seconds"] if method in models else 0
         if method in models:
             cold += setup.get("wrapper_source_seconds", 0)
@@ -204,7 +313,7 @@ def audit(summary, rows):
     costs = summary["methods"]
     controls = {m: pair(limits[treatment], limits[m], costs[treatment], costs[m]) for m in models[1:]}
     cheap = {}
-    for method in CHEAP:
+    for method in cheap_names:
         c, t = limits[method], limits[treatment]
         reverse = pair(c, t, costs[method], costs[treatment])
         reverse["exact_id_dominance"] = reverse["same_all_quality"] and reverse["cheaper_cost"]
@@ -218,6 +327,7 @@ def audit(summary, rows):
     serialized = {m: {key: sorted(value) for key, value in b.items()} for m, b in limits.items()}
     frontier = baseline_frontier({m: b for m, b in limits.items() if m != treatment}, costs, models[1:])
     return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "evaluation_policy": policy,
+            "cheap_control_version": summary["setup"].get("cheap_control_version", "legacy-v1"),
             "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
             "baseline_frontier": frontier,
             "treatment_replacements": treatment_replacements(treatment, limits, costs),
@@ -234,6 +344,8 @@ def consistent_branches(seeds):
         raise ValueError("Inconsistent control sets across seeds")
     if len({s.get("evaluation_policy", "fixed-v1") for s in seeds}) != 1:
         raise ValueError("Mixed evaluation policies across seeds")
+    if len({s.get("cheap_control_version", "legacy-v1") for s in seeds}) != 1:
+        raise ValueError("Mixed cheap-control versions across seeds")
     return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
                      for branch in ("better_branch", "cheaper_branch")}
             for method in controls}
@@ -307,23 +419,37 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True, help="Actions run ID-attempt")
     parser.add_argument("--repository", default="a-a-k/assurance-density-poc")
+    parser.add_argument("--shards", type=int, choices=(1, 4), default=1)
     args = parser.parse_args()
     if not all(x.isdigit() for x in args.run.split("-")) or len(args.run.split("-")) != 2:
         raise ValueError("Expected run ID-attempt")
     result = {"run": args.run, "archives": [], "seeds": []}
-    commits, model_digests = set(), set()
+    commits, model_digests, input_digests, common_digests, configurations = set(), set(), set(), set(), set()
     for seed in SEEDS:
-        metadata, summary, rows, provenance = archived(args.repository, args.run, seed)
+        parts = [archived(args.repository, args.run, seed, shard) for shard in range(4)] if args.shards == 4 else [archived(args.repository, args.run, seed)]
+        if args.shards == 4:
+            summary, rows, common = merge_shards(parts, seed)
+            metadata, _, _, provenance = parts[0]
+        else:
+            metadata, summary, rows, provenance = parts[0]
+            common = provenance["common_input_sha256"]
         if summary["seed"] != seed or metadata["source_commit"] != summary["source_commit"]:
             raise ValueError("Archive identity mismatch")
         commits.add(summary["source_commit"])
         model_digests.add(tuple(sorted(d["sha256"] for d in provenance["downloads"])))
-        result["archives"].append({"metadata": metadata, "model_provenance": provenance, "summary": summary})
+        configurations.add(server_signature(provenance))
+        input_digests.add(source_digests(provenance))
+        common_digests.add(tuple(sorted(common.items())))
+        result["archives"].append({"seed": seed, "shards": [{"metadata": m, "model_provenance": p, "summary": s} for m, s, _, p in parts], "summary": summary})
         result["seeds"].append(audit(summary, rows))
     if len(commits) != 1:
         raise ValueError("Seeds used different source revisions")
     if len(model_digests) != 1:
         raise ValueError("Seeds used different model/server downloads")
+    if len(configurations) != 1:
+        raise ValueError("Seeds used different server configurations")
+    if len(input_digests) != 1 or len(common_digests) != 1:
+        raise ValueError("Seeds used different source/common inputs")
     result.update(aggregate(result["seeds"]))
     out = Path("results/interpretation")
     out.mkdir(parents=True, exist_ok=True)

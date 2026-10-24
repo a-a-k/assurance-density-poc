@@ -3,6 +3,7 @@ import copy
 import unittest
 
 from author_only import checkpoint_treatment, optimistic_ids
+from controls import cheap_methods, partition
 
 
 class FutilityGuards(unittest.TestCase):
@@ -47,6 +48,21 @@ class FutilityGuards(unittest.TestCase):
         snapshot["methods"]["warrant"]["detected_ids"].append(["HumanEval/2", 1])
         with self.assertRaises(ValueError):
             self.validate(snapshot)
+
+    def test_sharded_futility_requires_explicit_first_global_partition(self):
+        models = ("obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1")
+        snapshot = self.snapshot()
+        snapshot["protocol"] = "planned"
+        snapshot["setup"] = {"cheap_control_version": "portfolios-v1", "task_partition": partition(0)}
+        sample = snapshot["methods"]["warrant"]
+        snapshot["methods"] = {name: copy.deepcopy(sample) for name in models + cheap_methods(snapshot["setup"])}
+        validate = lambda shard=None: checkpoint_treatment(snapshot, "a" * 40, 47, "planned", "obligation_plan", shard)
+        with self.assertRaisesRegex(ValueError, "global prefix"):
+            validate()
+        self.assertEqual(validate(0)["tasks"], 2)
+        snapshot["setup"]["task_partition"] = partition(1)
+        with self.assertRaisesRegex(ValueError, "global prefix"):
+            validate(0)
 
 
 if __name__ == "__main__":

@@ -251,3 +251,61 @@ branch across all seeds is required separately for each model control. The old
 per-pair disjunction is also retained. The updated read-only interpreter passed
 its invariant checks in run 40007972027 at source 35804d4; no benchmark was rerun
 for that validation. Actual quality/cost limits and per-pair facts are unchanged.
+
+2026-10-24 continuation: no positive comparison has been established.
+The completed seeds29/47 of40007059508 each give structured90 natural detections
+and5 known false-alarm tasks; ordinary semantic91/4, direct41/7, shortest92/4,
+author tests96/0. Structured, semantic and shortest also have an unresolved
+canonical outcome on task15; direct has unresolved canonical outcomes on13/15.
+Author tests have one unresolved natural program. Counts concern generated
+faulty programs, not distinct historical bugs. Seed11 was cancelled incomplete.
+
+Compact one-stage source-warrant comparison40044226843 (source417997bf81c1a12640c4a5655186eed40bfd9a23)
+also failed the original criterion. The exact-source author-only audit40045762075
+completed all24 tasks:96 confirmed natural detections, one unknown program,
+24 canonical passes, zero model tokens. Its ENTIRE38.0098-second audit is less
+than the treatment's already-spent costs at seed47 prefix3. That treatment has
+2 confirmed natural detections and an optimistic final upper70, computed from
+ALL remaining raw faulty programs, not only programs detectable by candidates.
+Both agents independently verified the archives, source equality and inequality
+before cancelling. All three partial comparison archives were saved; this is a
+futility result, not a complete three-seed comparison.
+Author-only archive SHA256:
+c2da3d56723a67421b2413ba1f4dbf883cd8fab80926a6e8934fda2b307ed1c8.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40044226843
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40045762075
+
+This latest futility bound includes the previously documented HumanEval/1
+contract-boundary ambiguity. We do not claim the latest negative bound is
+unchanged if that whole task is removed. The finite evaluation remains unchanged.
+
+Next exploratory candidate: source-only obligation planning before candidates
+are visible, followed by assessment of unchanged checkers. Its strongest model
+control performs ordinary source-only planning followed by ordinary review with
+the same sources, knowledge, semantic topics and stage budgets. One-stage and
+direct model controls and all six cheap controls remain. This candidate tests
+substantive assessment, not separate novelty of inflation/density. Both agents
+approved the hypothesis against the original external-outcome/cost criterion.
+Its copying/instrument audit40046714357 is pending; copying is not semantic
+accuracy, comparative usefulness or a semantic-cost guarantee.
+
+Separately, fixed0.2-second wrapped-call limits can leave large correct sequence
+assertions unresolved. A symmetric calibration covers every one of10 published
+posts plus author-only on all24 tasks under the preserved fixed-v1 policy and a
+new versioned relative-v1 policy. The latter adapts the same pinned study's
+reference-relative time limits and records actual limits/work; details and
+pre-execution approvals are in PREFLIGHT.txt. No old unknown is relabelled.
+Primary source:
+https://github.com/microsoft/intent-formalization/blob/b42cdc0c4b60b7f17c85950d757f77ac107e29c0/nl2postcondition-fse2024/nl2postcondition_source_evalplus/run_postcondition_evaluation.py
+https://github.com/microsoft/intent-formalization/blob/b42cdc0c4b60b7f17c85950d757f77ac107e29c0/nl2postcondition-fse2024/nl2postcondition_source_evalplus/lib/evalplusWithNl2PostconditionEval.zip
+Attempt40047724912 failed an incomplete-report invariant before any calibration
+evaluations. The guard order was repaired without changing expectations, policy
+or criterion; repeat40048069251 is pending. No new semantic comparison has begun.
+
+Calibration40048069251 subsequently completed:528 rows,183 passes/64 false alarms/
+17 unknowns under EACH policy, zero changed statuses. Both agents independently
+verified260665 reference-limit records, exact archive/source hashes and outcomes.
+The relative policy increased some limits but resolved none of the remaining
+unknowns. Keep the original fixed-v1 for the upcoming comparison. The audit
+does not establish an evaluator improvement; previous unknowns remain unknown.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40048069251

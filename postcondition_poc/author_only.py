@@ -11,20 +11,26 @@ import urllib.request
 
 from measurement import HUMAN_PIN, PLUS_URL, evaluate, fetch
 from screen import INPUTS, OUT, ROOT, download, jsonlines, save
+from controls import cheap_methods, partition
 
 
-def checkpoint_treatment(snapshot, source_sha, seed, protocol, treatment):
+def checkpoint_treatment(snapshot, source_sha, seed, protocol, treatment, source_shard=None):
     models = {"warrant": ["warrant", "spec_first", "direct", "direct_top1"],
               "planned": ["obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1"],
               "legacy": ["structured", "semantic", "direct"]}[protocol]
-    expected = set(models + ["author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive"])
+    expected = set(models + list(cheap_methods(snapshot.get("setup", {}))))
     if (snapshot["source_commit"] != source_sha or snapshot["seed"] != seed
             or snapshot.get("protocol", "legacy") != protocol or treatment != models[0]
             or set(snapshot["methods"]) != expected):
         raise ValueError("Checkpoint source, seed, protocol, treatment or methods mismatch")
     result = snapshot["methods"][treatment]
     completed = result["tasks"]
-    if type(completed) != int or not 0 < completed <= 24 or any(
+    recorded_partition = snapshot.get("setup", {}).get("task_partition")
+    if recorded_partition is not None or source_shard is not None:
+        if source_shard != 0 or recorded_partition != partition(0) or protocol != "planned":
+            raise ValueError("Only explicitly identified shard0 can provide a global prefix")
+    maximum = 6 if source_shard is not None else 24
+    if type(completed) != int or not 0 < completed <= maximum or any(
             m["tasks"] != completed for m in snapshot["methods"].values()):
         raise ValueError("Checkpoint is not a common completed prefix")
     prefix = {f"HumanEval/{n}" for n in range(completed)}
@@ -56,13 +62,15 @@ def main():
     parser.add_argument("--seed", type=int, choices=(11, 29, 47), required=True)
     parser.add_argument("--protocol", choices=("legacy", "warrant", "planned"), required=True)
     parser.add_argument("--treatment", choices=("structured", "warrant", "obligation_plan"), required=True)
+    parser.add_argument("--source-shard", type=int, choices=(0,))
     args = parser.parse_args()
     if not re.fullmatch(r"[0-9]+-[1-9][0-9]*", args.source_run) or not re.fullmatch(r"[0-9a-f]{40}", args.source_sha):
         raise ValueError("Expected RUN-ATTEMPT and a full source SHA")
     INPUTS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     began = time.perf_counter()
-    url = f"https://api.github.com/repos/a-a-k/assurance-density-poc/contents/live/{args.source_run}/seed-{args.seed}.json?ref=experiment-results"
+    suffix = f"-shard-{args.source_shard}" if args.source_shard is not None else ""
+    url = f"https://api.github.com/repos/a-a-k/assurance-density-poc/contents/live/{args.source_run}/seed-{args.seed}{suffix}.json?ref=experiment-results"
     headers = {"Accept": "application/vnd.github+json"}
     if os.environ.get("GH_TOKEN"):
         headers["Authorization"] = "Bearer " + os.environ["GH_TOKEN"]
@@ -70,7 +78,7 @@ def main():
     with urllib.request.urlopen(request, timeout=60) as response:
         checkpoint = json.load(response)
     snapshot = json.loads(base64.b64decode(checkpoint["content"]))
-    treatment = checkpoint_treatment(snapshot, args.source_sha, args.seed, args.protocol, args.treatment)
+    treatment = checkpoint_treatment(snapshot, args.source_sha, args.seed, args.protocol, args.treatment, args.source_shard)
     save(INPUTS / "futility_checkpoint.json", {"url": url, "blob_sha": checkpoint["sha"], "snapshot": snapshot})
     evaluator_sources = []
     for path in ("postcondition_poc/measurement.py", "postcondition_poc/replay_worker.py",
@@ -118,6 +126,7 @@ def main():
     certificate = {"kind": "futility bound, not a completed three-seed comparison", "snapshot_tasks": completed,
                    "source_comparison": args.source_run, "source_commit": args.source_sha,
                    "seed": args.seed, "protocol": args.protocol, "treatment": args.treatment,
+                   "source_shard": args.source_shard,
                    "evaluation_policy": snapshot["setup"].get("evaluation_policy", "fixed-v1"),
                    "audit_run": os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"],
                    "audit_source_commit": os.environ["GITHUB_SHA"], "audit_job_seed": os.environ.get("SEED"),

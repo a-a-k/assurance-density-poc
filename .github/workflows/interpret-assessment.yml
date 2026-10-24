@@ -14,6 +14,11 @@ on:
         description: Check interpretation code without reading experiment outcomes
         type: boolean
         default: false
+      shards:
+        description: Number of task shards per original seed
+        type: choice
+        options: ['1', '4']
+        default: '1'
 
 permissions:
   contents: read
@@ -35,14 +40,15 @@ jobs:
         with:
           python-version: '3.12'
       - name: Check interpretation invariants
-        run: python -m unittest discover -s postcondition_poc -p 'test_interpret.py' -v
+        run: python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Interpret exact archived observations
         id: interpretation
         if: inputs.validate_only != true
         env:
           SOURCE_RUN: ${{ github.event_name == 'workflow_run' && format('{0}-{1}', github.event.workflow_run.id, github.event.workflow_run.run_attempt) || inputs.source_run }}
           GH_TOKEN: ${{ github.token }}
-        run: python -u postcondition_poc/interpret.py --run "$SOURCE_RUN"
+          SHARDS: ${{ inputs.shards || '1' }}
+        run: python -u postcondition_poc/interpret.py --run "$SOURCE_RUN" --shards "$SHARDS"
       - name: Archive interpretation
         if: always() && inputs.validate_only != true
         env:

@@ -771,3 +771,18 @@ EXECUTION GO only for exposure_audit, three seeds, expected54 assessments and84
 assigned stage copies. Check exact archives, copies, routing, input/model pins
 and measured matched T/ordinary cost ratios before any semantic execution GO.
 This commit only corrects the preceding timestamp and records status/review.
+
+2026-10-24, BEFORE semantic execution and before any new semantic outcomes:
+root and independent skeptic give DESIGN GO to restore the direct semantic
+singleton control from the preceding comparison: full_review_top1 sees the same
+complete minified full pool as full_review and uses the same ordinary review,
+40-word notes and200-token ceiling, but may select at most1 unchanged post.
+Permission to choose one is not the same policy as forcing the maximum to one;
+cheap singleton ranking does not substitute for semantic ranking. This closes
+the explanation that fewer selected checks alone prevent package false alarms.
+Treatment, ordinary adaptive review, costs and all criterion guards stay fixed.
+The new control enters frontier/replacement checks and every complete report.
+Current six-arm assigned audit40072093191 remains applicable to its unchanged
+methods; no repeat of those84 calls is needed. New control requires code review,
+Actions invariants and its own schema smoke before semantic calls. Semantic
+execution still requires independent review of actual audit results and costs.

@@ -120,11 +120,17 @@ def baseline_frontier(limits, costs, model_controls):
             if other == method:
                 continue
             comparison = pair(limits[other], limits[method], costs[other], costs[method])
-            possible_competition = (len(natural(limits[other]["possible_detected"])) >=
-                                    len(natural(limits[method]["detected"])) and
-                                    len(limits[other]["fa"]) <= len(limits[method]["possible_fa"]) and
-                                    comparison["cheaper_cost"])
+            possible_quality = (len(natural(limits[other]["possible_detected"])) >=
+                                len(natural(limits[method]["detected"])) and
+                                len(limits[other]["fa"]) <= len(limits[method]["possible_fa"]))
+            possible_strict_quality = (len(natural(limits[other]["possible_detected"])) >
+                                       len(natural(limits[method]["detected"])) or
+                                       len(limits[other]["fa"]) < len(limits[method]["possible_fa"]))
+            no_higher_cost = all(c["at_most_equal"] for c in comparison["costs"].values())
+            strict_cost = any(costs[other][f] < costs[method][f] for f in FIELDS)
+            possible_competition = possible_quality and no_higher_cost and (strict_cost or possible_strict_quality)
             candidates[other] = {"possible_primary_count_competition": possible_competition,
+                                 "legacy_strict_cost_competition": possible_quality and comparison["cheaper_cost"],
                                  "possible_natural_other": len(natural(limits[other]["possible_detected"])),
                                  "known_natural_control": len(natural(limits[method]["detected"])),
                                  "known_fa_other": len(limits[other]["fa"]),
@@ -132,8 +138,25 @@ def baseline_frontier(limits, costs, model_controls):
                                  "costs": comparison["costs"], "cheaper_cost": comparison["cheaper_cost"],
                                  "gained_ids": comparison["gained_ids"], "lost_ids": comparison["lost_ids"]}
         competitors = [m for m, p in candidates.items() if p["possible_primary_count_competition"]]
+        legacy_competitors = [m for m, p in candidates.items() if p["legacy_strict_cost_competition"]]
         result[method] = {"qualified": not competitors, "possible_competing_controls": competitors,
+                          "legacy_qualified": not legacy_competitors,
+                          "legacy_possible_competing_controls": legacy_competitors,
                           "comparisons": candidates}
+    return result
+
+
+def treatment_replacements(treatment, limits, costs):
+    result = {}
+    t = limits[treatment]
+    for method, c in limits.items():
+        if method == treatment:
+            continue
+        comparison = pair(c, t, costs[method], costs[treatment])
+        result[method] = {**comparison, "possible_primary_replacement": (
+            len(natural(c["possible_detected"])) >= len(natural(t["detected"])) and
+            len(c["fa"]) <= len(t["possible_fa"]) and
+            all(value["at_most_equal"] for value in comparison["costs"].values()))}
     return result
 
 
@@ -190,6 +213,7 @@ def audit(summary, rows):
     frontier = baseline_frontier({m: b for m, b in limits.items() if m != treatment}, costs, models[1:])
     return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
             "baseline_frontier": frontier,
+            "treatment_replacements": treatment_replacements(treatment, limits, costs),
             "model_comparison_pass": all(p["better_branch"] or p["cheaper_branch"] for p in controls.values()),
             "cheap_competition": any(p["exact_id_dominance"] or p["natural_count_competition"] for p in cheap.values()),
             "possible_cheap_competition": any(p["possible_exact_id_dominance"] or p["possible_natural_count_competition"] for p in cheap.values())}
@@ -206,9 +230,28 @@ def consistent_branches(seeds):
             for method in controls}
 
 
-def efficient_witnesses(seeds, branches):
+def efficient_witnesses(seeds, branches, field="qualified"):
     return [method for method, options in branches.items() if any(options.values()) and
-            all(s["baseline_frontier"][method]["qualified"] for s in seeds)]
+            all(s["baseline_frontier"][method][field] for s in seeds)]
+
+
+def aggregate(seeds):
+    branches = consistent_branches(seeds)
+    result = {"all_seed_pairwise_pass": all(s["model_comparison_pass"] for s in seeds),
+              "per_control_consistent_branches": branches,
+              "all_seed_model_comparison_pass": all(any(b.values()) for b in branches.values()),
+              "any_cheap_competition": any(s["cheap_competition"] for s in seeds),
+              "any_possible_cheap_competition": any(s["possible_cheap_competition"] for s in seeds),
+              "qualified_common_baselines": efficient_witnesses(seeds, branches),
+              "legacy_qualified_common_baselines": efficient_witnesses(seeds, branches, "legacy_qualified"),
+              "any_possible_treatment_replacement": any(p["possible_primary_replacement"]
+                  for s in seeds for p in s["treatment_replacements"].values())}
+    result["strict_protocol_pass"] = (result["all_seed_model_comparison_pass"] and
+                                      not result["any_possible_cheap_competition"] and
+                                      bool(result["legacy_qualified_common_baselines"]))
+    result["original_criterion_pass"] = (bool(result["qualified_common_baselines"]) and
+                                        not result["any_possible_treatment_replacement"])
+    return result
 
 
 def render(result):
@@ -230,13 +273,21 @@ def render(result):
     for seed in result["seeds"]:
         for method, p in seed["cheap_controls"].items():
             lines.append(f"| {seed['seed']} | {method} | {p['exact_id_dominance']} | {p['natural_count_competition']} | {p['possible_exact_id_dominance']} | {p['possible_natural_count_competition']} |")
-    lines += ["", "A common success branch must hold across seeds for each control; different controls may have different branches.",
+    lines += ["", "| Seed | Model controls on the baseline frontier | Possible primary-utility replacements for treatment |",
+              "|---:|---|---|"]
+    for seed in result["seeds"]:
+        frontier = [m for m, p in seed["baseline_frontier"].items() if p["qualified"]]
+        replacements = [m for m, p in seed["treatment_replacements"].items() if p["possible_primary_replacement"]]
+        lines.append(f"| {seed['seed']} | {', '.join(frontier) or 'none'} | {', '.join(replacements) or 'none'} |")
+    lines += ["", "Pairwise branches remain visible for every control. The original criterion requires one SAME efficient baseline and one common success branch across all seeds, with no same/better no-higher-cost replacement for treatment.",
               f"Consistent branches by control: {json.dumps(result['per_control_consistent_branches'], sort_keys=True)}.",
               f"Per-pair disjunction in every seed: {result['all_seed_pairwise_pass']}.",
-              f"All-seed model comparison criterion: {result['all_seed_model_comparison_pass']}.",
+              f"Stricter all-model comparison flag: {result['all_seed_model_comparison_pass']}.",
               f"Any cheaper competing control: {result['any_cheap_competition']}.",
               f"Any possible cheaper competing control (including unresolved outcomes): {result['any_possible_cheap_competition']}.",
               f"Same efficient model-control witnesses across all seeds: {json.dumps(result['qualified_common_baselines'])}.",
+              f"Former stricter all-model-control conjunction: {result['strict_protocol_pass']}.",
+              f"Any possible treatment replacement among ALL controls: {result['any_possible_treatment_replacement']}.",
               f"Original criterion including strongest-baseline qualification: {result['original_criterion_pass']}.",
               "Beating expensive model controls alone is insufficient if cheaper controls can replace them with the same or better primary utility. Counts and exact-ID preservation remain separate.",
               "Exact gained/lost IDs, uncertainty bounds, costs and provenance are in criterion_audit.json. No human-time, historical-bug or independent metric-pair claim follows from these observations."]
@@ -264,15 +315,7 @@ def main():
         raise ValueError("Seeds used different source revisions")
     if len(model_digests) != 1:
         raise ValueError("Seeds used different model/server downloads")
-    result["all_seed_pairwise_pass"] = all(s["model_comparison_pass"] for s in result["seeds"])
-    result["per_control_consistent_branches"] = consistent_branches(result["seeds"])
-    result["all_seed_model_comparison_pass"] = all(any(branches.values()) for branches in result["per_control_consistent_branches"].values())
-    result["any_cheap_competition"] = any(s["cheap_competition"] for s in result["seeds"])
-    result["any_possible_cheap_competition"] = any(s["possible_cheap_competition"] for s in result["seeds"])
-    result["qualified_common_baselines"] = efficient_witnesses(result["seeds"], result["per_control_consistent_branches"])
-    result["original_criterion_pass"] = (result["all_seed_model_comparison_pass"] and
-                                         not result["any_possible_cheap_competition"] and
-                                         bool(result["qualified_common_baselines"]))
+    result.update(aggregate(result["seeds"]))
     out = Path("results/interpretation")
     out.mkdir(parents=True, exist_ok=True)
     (out / "criterion_audit.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

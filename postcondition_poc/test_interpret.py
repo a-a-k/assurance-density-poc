@@ -1,7 +1,8 @@
 import unittest
 
 from interpret import (FIELDS, MODELS, SEEDS, audit, bounds, pair, format_setup_cost,
-                       consistent_branches, baseline_frontier, efficient_witnesses)
+                       consistent_branches, baseline_frontier, efficient_witnesses,
+                       treatment_replacements, aggregate)
 
 
 def limits(found=(), unknown=(), fa=(), uncertain=()):
@@ -14,6 +15,52 @@ def cost(value):
 
 
 class InterpretationInvariants(unittest.TestCase):
+    def synthetic_comparison(self, quality, costs):
+        observations = {m: limits([("A", i) for i in range(n)]) for m, n in quality.items()}
+        costs = {m: v if isinstance(v, dict) else cost(v) for m, v in costs.items()}
+        controls = {m: pair(observations["T"], observations[m], costs["T"], costs[m]) for m in ("S", "D")}
+        frontier = baseline_frontier({m: q for m, q in observations.items() if m != "T"}, costs, ("S", "D"))
+        replacements = treatment_replacements("T", observations, costs)
+        seeds = [{"seed": seed, "model_controls": controls, "baseline_frontier": frontier,
+                  "treatment_replacements": replacements,
+                  "model_comparison_pass": all(p["better_branch"] or p["cheaper_branch"] for p in controls.values()),
+                  "cheap_competition": False,
+                  "possible_cheap_competition": replacements["author"]["possible_primary_replacement"]} for seed in SEEDS]
+        return aggregate(seeds)
+
+    def test_efficient_baseline_win_does_not_require_beating_cheaper_lower_quality(self):
+        result = self.synthetic_comparison({"T": 100, "S": 99, "D": 98, "author": 97},
+                                           {"T": 100, "S": 100, "D": 1, "author": 0.1})
+        self.assertTrue(result["original_criterion_pass"])
+        self.assertFalse(result["strict_protocol_pass"])
+        self.assertEqual(result["qualified_common_baselines"], ["S"])
+
+    def test_existing_equal_result_equal_cost_blocks_apparent_win_against_another_control(self):
+        higher = cost(115)
+        higher["application_tokens"] = higher["tokens"] = 105
+        result = self.synthetic_comparison({"T": 100, "S": 99, "D": 100, "author": 97},
+                                           {"T": higher, "S": 100, "D": higher, "author": 0.1})
+        self.assertEqual(result["qualified_common_baselines"], ["S"])
+        self.assertTrue(result["any_possible_treatment_replacement"])
+        self.assertFalse(result["original_criterion_pass"])
+
+    def test_frontier_allows_equal_copies_but_excludes_equal_cost_lower_quality(self):
+        data = {"S": limits([("A", 1)]), "D": limits([("A", 1)])}
+        costs = {"S": cost(100), "D": cost(100)}
+        result = baseline_frontier(data, costs, ("S", "D"))
+        self.assertTrue(result["S"]["qualified"] and result["D"]["qualified"])
+        data["D"] = limits([("A", 1), ("A", 2)])
+        result = baseline_frontier(data, costs, ("S", "D"))
+        self.assertFalse(result["S"]["qualified"])
+        self.assertTrue(result["S"]["legacy_qualified"])
+        self.assertTrue(result["D"]["qualified"])
+
+    def test_unknown_control_can_block_treatment_replacement_claim(self):
+        data = {"T": limits([("A", 1), ("A", 2)]), "D": limits([("A", 1)], unknown=[("A", 2)])}
+        result = treatment_replacements("T", data, {"T": cost(100), "D": cost(90)})
+        self.assertTrue(result["D"]["possible_primary_replacement"])
+        self.assertNotIn("T", result)
+
     def test_expensive_replaceable_control_is_not_a_success_witness(self):
         data = {"semantic": limits([("A", 1)]), "direct": limits([("A", 1)]),
                 "author": limits([("A", 1)])}

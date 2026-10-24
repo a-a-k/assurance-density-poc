@@ -419,3 +419,29 @@ cheap-competition checks, not a substitute for them. Counts are not exact-ID
 dominance; retain both. No zero-token epsilon, no invented human-time or budget.
 The ongoing assigned-output audit is unchanged; implementation of this additive
 interpretation check receives separate review before semantic execution.
+
+2026-10-24 00:10 UTC, still BEFORE semantic results: root and separate skeptic
+explicit DESIGN GO to correct an overly strong sufficient operational test.
+The user's original request does not require beating EVERY point on a cost/
+quality frontier. Example: T=100 useful detections at cost100, S=99 at100,
+direct_top1=98 at1, author=97 at0.1. T improves an efficient S at the same cost;
+failing a time cap against the lower-quality top1 does not invalidate that gain.
+No user instruction requiring universal model-control caps was found.
+
+Keep every old pairwise flag and the full former conjunction under
+strict_protocol_pass. original_criterion_pass instead requires one SAME
+efficient model-control ID across all3 seeds and one common accepted branch
+against it, with the unchanged1.10/1.20 caps, exact-ID/FA rules and unknown bounds.
+Also require that NO other model/cheap control can possibly replace T's primary
+utility at no higher cost in all five fields, including an exact cost/quality
+tie. Thus T100/cost115 vs S99/cost100 and an existing C100/cost115 does NOT pass.
+
+The baseline frontier compares all controls excluding T, requiring weakly
+better possible natural-count/FA utility and no higher component costs, plus
+some strict cost improvement OR possible strict quality improvement. Equal
+baseline copies do not exclude each other merely by equality. Retain the prior
+strict-cost-only witness qualification separately for exact former arithmetic.
+Publish all comparisons, including lower-cost/lower-quality tradeoffs; counts
+are never described as exact-ID dominance. This aligns our operationalization
+with the original request before any new semantic observations. It changes no
+inputs, numerical margins, methods or thresholds, and does not establish success.

@@ -755,7 +755,7 @@ The published study supports GPT4 provenance; reference visibility alone was not
 a significant correctness advantage (RQ1,p=.42). Do not imply it was.
 https://arxiv.org/pdf/2310.01831
 
-2026-10-24 07:00 UTC: root and independent skeptic give explicit CODE GO for
+2026-10-24 06:51 UTC: root and independent skeptic give explicit CODE GO for
 Actions validate_only invariant checks of the exposure implementation. The six
 model methods and41 cheap controls retain the external criterion and all guards.
 Subset source costs use their own SUM for model shards and conservative MIN
@@ -764,3 +764,10 @@ Adequate targets stop acquisition; partial may remain useful without adequacy;
 both adaptive methods may stop early. Invalid target sources are excluded without
 renumbering or semantic feedback. No local experiment/model/checker/test execution.
 Assigned-copy/cost audit and semantic execution require their separate review.
+
+2026-10-24 06:54 UTC:92 invariant tests passed in Actions40071841333 at
+896679519a481c39ba3f56930883462491e50d00. Root and independent skeptic give explicit
+EXECUTION GO only for exposure_audit, three seeds, expected54 assessments and84
+assigned stage copies. Check exact archives, copies, routing, input/model pins
+and measured matched T/ordinary cost ratios before any semantic execution GO.
+This commit only corrects the preceding timestamp and records status/review.

@@ -2,6 +2,16 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
+New exposure-controlled inspection code passed92 Actions invariant tests:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40071841333
+The reviewed hypothesis allocates further inspection only to still-open output
+targets, selecting unchanged published posts. It compares goal-aware ordinary
+adaptive review, full review, two cheap shortlist-then-review methods, all-GPT4
+review and41 cheap controls. The natural pool contains120 posts/task from all12
+pinned source archives. First24 tasks, three seeds and external criterion remain.
+Next: assigned-output/routing and actual-cost audit before semantic execution.
+No benefit has yet been established for this implementation.
+
 Stopped comparison (source986c886bc3295384dc4b5bde517fad8de183b797):
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793
 24 tasks, three seeds,21 methods, fixed-v1 evaluator;12 parallel task shards.

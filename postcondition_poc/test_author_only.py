@@ -60,6 +60,9 @@ class FutilityGuards(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "global prefix"):
             validate()
         self.assertEqual(validate(0)["tasks"], 2)
+        snapshot['setup']['task_partition'] = partition(0, 6)
+        with self.assertRaisesRegex(ValueError, 'global prefix'):
+            validate(0)
         snapshot["setup"]["task_partition"] = partition(1)
         with self.assertRaisesRegex(ValueError, "global prefix"):
             validate(0)

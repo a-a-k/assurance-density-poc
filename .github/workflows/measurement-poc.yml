@@ -49,7 +49,7 @@ jobs:
           import json, os
           mode = os.environ['MODE']
           seeds = [11,29,47] if mode in ('full','post_measure','warrant_audit','warrant_measure','planned_audit','planned_measure','exposure_audit','exposure_measure') else [11]
-          shards = range(4) if mode in ('planned_measure','exposure_measure') else [None]
+          shards = range(6) if mode == 'exposure_measure' else range(4) if mode == 'planned_measure' else [None]
           cases = [{'seed': seed, 'shard': shard if shard is not None else '',
                     'key': f'seed-{seed}' + (f'-shard-{shard}' if shard is not None else '')}
                    for seed in seeds for shard in shards]
@@ -64,7 +64,7 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 18
       matrix: ${{ fromJSON(needs.prepare.outputs.cases) }}
     env:
       PYTHONHASHSEED: '0'

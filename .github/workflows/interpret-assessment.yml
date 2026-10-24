@@ -17,7 +17,7 @@ on:
       shards:
         description: Number of task shards per original seed
         type: choice
-        options: ['1', '4']
+        options: ['1', '4', '6']
         default: '1'
 
 permissions:

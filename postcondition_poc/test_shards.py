@@ -7,12 +7,13 @@ from interpret import PROTOCOLS, audit, merge_shards
 
 
 class ShardAccounting(unittest.TestCase):
-    def parts(self, protocol='planned'):
+    def parts(self, protocol='planned', count=4):
         result = []
         models = PROTOCOLS[protocol]
-        for index in range(4):
+        size = 24 // count
+        for index in range(count):
             setup = {"cheap_control_version": "portfolios-v1", "evaluation_policy": "fixed-v1",
-                     "task_partition": partition(index), "author_source_seconds": 1 + index,
+                     "task_partition": partition(index, count), "author_source_seconds": 1 + index,
                      "assessment_source_seconds": 10 + index, "model_seconds": 20 + index,
                      "cheap_source_seconds": 5 + index,
                      "wrapper_source_seconds": 2 + index,
@@ -32,11 +33,11 @@ class ShardAccounting(unittest.TestCase):
                 cold = setup[source_field(setup, method, models)]
                 if model:
                     cold += setup['model_seconds'] + setup['wrapper_source_seconds'] + setup['schema_smoke'][method]['seconds']
-                methods[method] = {"tasks": 6, "natural": 0, "artificial": 0, "false_alarm_tasks": [],
-                                   "unknown_ids": [], "detected_ids": [], "application_tokens": 60 if model else 0,
-                                   "tokens": 65 + index if model else 0, "application_seconds": 12,
-                                   "standalone_assessment_seconds": 12 + cold, "checker_execution_seconds": 18,
-                                   "standalone_with_checker_seconds": 30 + cold, "format_failures": 0}
+                methods[method] = {"tasks": size, "natural": 0, "artificial": 0, "false_alarm_tasks": [],
+                                   "unknown_ids": [], "detected_ids": [], "application_tokens": 10 * size if model else 0,
+                                   "tokens": 10 * size + 5 + index if model else 0, "application_seconds": 2 * size,
+                                   "standalone_assessment_seconds": 2 * size + cold, "checker_execution_seconds": 3 * size,
+                                   "standalone_with_checker_seconds": 5 * size + cold, "format_failures": 0}
             summary = {"seed": 11, "protocol": protocol, "source_commit": "a" * 40, "setup": setup, "methods": methods}
             meta = {"run_id": "123", "run_attempt": "1", "source_commit": "a" * 40, "experiment_step_outcome": "success",
                     "archive_path": f"runs/123-1/seed-11-shard-{index}/results.tar.gz"}
@@ -44,7 +45,7 @@ class ShardAccounting(unittest.TestCase):
                           "command": ["/tmp/llama-server", "-m", "/tmp/model.gguf", "--threads", "4", "--ctx-size", "16384", "--parallel", "1", "--reasoning", "off"],
                           "cpus": 4,
                           "input_sources": [{"url": "fixture", "sha256": "source"}],
-                          "common_input_sha256": {f"{n:02}": f"common{n}" for n in range(index * 6, (index + 1) * 6)}}
+                          "common_input_sha256": {f"{n:02}": f"common{n}" for n in range(index * size, (index + 1) * size)}}
             result.append((meta, summary, rows, provenance))
         return result
 
@@ -96,6 +97,41 @@ class ShardAccounting(unittest.TestCase):
             del parts[0][1]['setup'][field]
             with self.subTest(field=field), self.assertRaises((ValueError, KeyError)):
                 merge_shards(parts, 11)
+
+    def test_six_shards_preserve_all24_tasks_and_charge_all_six_setups(self):
+        summary, rows, common = merge_shards(self.parts('exposure', 6), 11)
+        self.assertEqual(len(rows), 24 * 48)
+        self.assertEqual(set(common), {f'{n:02}' for n in range(24)})
+        methods = summary['methods']
+        self.assertEqual(methods['exposure_adaptive']['tasks'], 24)
+        self.assertEqual(methods['exposure_adaptive']['tokens'], 285)
+        self.assertEqual(methods['exposure_adaptive']['standalone_assessment_seconds'], 318)
+        self.assertEqual(methods['gpt4_review']['standalone_assessment_seconds'], 300)
+        self.assertEqual(methods['gpt4_shortest']['actual_duplicated_standalone_assessment_seconds'], 81)
+        self.assertEqual(methods['gpt4_shortest']['standalone_assessment_seconds'], 51)
+        self.assertEqual(methods['ref_shortest']['standalone_assessment_seconds'], 50)
+        self.assertEqual(len(audit(summary, rows)['cheap_controls']), 41)
+        summary['setup']['shard_setups'][0]['task_partition'] = partition(0)
+        with self.assertRaisesRegex(ValueError, 'provenance'):
+            audit(summary, rows)
+
+    def test_six_shards_reject_missing_duplicate_mixed_and_wrong_common_ranges(self):
+        for change in ('missing', 'duplicate', 'mixed_count', 'common', 'row'):
+            parts = self.parts('exposure', 6)
+            if change == 'missing':
+                parts.pop()
+            elif change == 'duplicate':
+                parts[-1] = copy.deepcopy(parts[-2])
+            elif change == 'mixed_count':
+                parts[0][1]['setup']['task_partition'] = partition(0)
+            elif change == 'common':
+                parts[0][3]['common_input_sha256']['05'] = 'wrong-range'
+            else:
+                parts[0][2].pop()
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                merge_shards(parts, 11)
+        with self.assertRaisesRegex(ValueError, 'Legacy'):
+            merge_shards(self.parts('planned', 6), 11)
 
     def test_duplicate_gap_extra_row_and_missing_common_input_are_rejected(self):
         parts = self.parts()

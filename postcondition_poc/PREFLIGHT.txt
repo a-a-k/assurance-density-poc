@@ -804,3 +804,9 @@ Actions tests and independent code review. Existing author-prefix audit may not
 silently interpret a new four-task shard as an old six-task shard. Current
 assigned audit40072093191 is unchanged. Semantic GO still awaits its results.
 https://docs.github.com/en/actions/reference/limits
+
+Root and independent skeptic give CODE GO for Actions validate_only of the6x4
+adaptation: exact counts/partitions/common-input ranges, old4-part compatibility,
+all six measured model setups and conservative cheap source credit are checked.
+The existing author-only prefix interpreter explicitly rejects the new partition.
+No semantic execution is authorized until the actual assigned audit is reviewed.

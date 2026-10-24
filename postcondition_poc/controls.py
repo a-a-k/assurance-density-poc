@@ -55,7 +55,8 @@ def needs_contrastive(method):
     return method == "contrastive" or method.startswith("contrastive_top") or "contrastive" in PORTFOLIOS.get(method, ())
 
 
-def partition(index):
-    if type(index) != int or index not in range(4):
-        raise ValueError("Expected shard index0..3")
-    return {"index": index, "count": 4, "task_ids": [f"HumanEval/{i}" for i in range(index * 6, (index + 1) * 6)]}
+def partition(index, count=4):
+    if type(count) != int or count not in (4, 6) or type(index) != int or index not in range(count):
+        raise ValueError("Expected4 or6 shards and a valid integer index")
+    size = 24 // count
+    return {"index": index, "count": count, "task_ids": [f"HumanEval/{i}" for i in range(index * size, (index + 1) * size)]}

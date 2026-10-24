@@ -11,6 +11,10 @@ review and41 cheap controls. The natural pool contains120 posts/task from all12
 pinned source archives. First24 tasks, three seeds and external criterion remain.
 Before the semantic run, an additional full-pool semantic top1 control was
 required and implemented to check the simpler "retain only one" explanation.
+Its93 invariants passed in Actions40073604495. The exposure main run uses six
+four-task shards per seed (18 parallel jobs); interpret completed data with
+shards=6. All duplicated model setup/smoke costs remain charged. Older planned
+comparisons retain their four six-task shards and shards=4 interpretation.
 Next: assigned-output/routing and actual-cost audit before semantic execution.
 No benefit has yet been established for this implementation.
 

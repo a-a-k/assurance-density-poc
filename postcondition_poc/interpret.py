@@ -98,20 +98,23 @@ def server_signature(provenance):
 
 def merge_shards(parts, seed):
     """Reconstruct one24-task seed, retaining all actual costs and raw setups."""
-    if len(parts) != 4:
-        raise ValueError("Exactly four shards are required")
+    count = len(parts)
+    if count not in (4, 6):
+        raise ValueError("Exactly four or six shards are required")
     indices, commits, runs, policies, models, sources, configurations = set(), set(), set(), set(), set(), set(), set()
     all_rows, all_common, raw_setups, protocol_versions = [], {}, [], set()
     for metadata, summary, rows, provenance in parts:
         spec = summary["setup"].get("task_partition", {})
         index = spec.get("index")
-        if spec != partition(index) or index in indices:
+        if spec != partition(index, count) or index in indices:
             raise ValueError("Invalid or duplicate shard partition")
         indices.add(index)
         version = summary['setup'].get('cheap_control_version')
         protocol = summary['protocol']
         if summary["seed"] != seed or (protocol, version) not in (('planned', 'portfolios-v1'), ('exposure', 'exposure-v1')):
             raise ValueError("Shard seed/protocol/control version mismatch")
+        if protocol == 'planned' and count != 4:
+            raise ValueError('Legacy planned comparison requires four shards')
         protocol_versions.add((protocol, version))
         if metadata["source_commit"] != summary["source_commit"] or metadata.get("experiment_step_outcome") != "success":
             raise ValueError("Unsuccessful or mismatched shard source")
@@ -119,7 +122,7 @@ def merge_shards(parts, seed):
         if metadata["archive_path"] != expected_path:
             raise ValueError("Shard archive identity mismatch")
         audit(summary, rows, expected=set(spec["task_ids"]))
-        expected_common = {f"{index * 6 + n:02}" for n in range(6)}
+        expected_common = {f"{int(task.split('/')[1]):02}" for task in spec['task_ids']}
         if set(provenance["common_input_sha256"]) != expected_common:
             raise ValueError("Missing or extra shard common inputs")
         all_common.update(provenance["common_input_sha256"])
@@ -131,7 +134,7 @@ def merge_shards(parts, seed):
         sources.add(source_digests(provenance))
         raw_setups.append(summary["setup"])
         all_rows.extend(rows)
-    if indices != set(range(4)) or any(len(s) != 1 for s in (commits, runs, policies, models, sources, configurations, protocol_versions)):
+    if indices != set(range(count)) or any(len(s) != 1 for s in (commits, runs, policies, models, sources, configurations, protocol_versions)):
         raise ValueError("Mixed shard identity, source, timing policy or model pins")
     raw_setups.sort(key=lambda s: s["task_partition"]["index"])
     protocol, version = next(iter(protocol_versions))
@@ -316,7 +319,10 @@ def audit(summary, rows, expected=None):
         cold = setup[source_field(setup, method, models)]
         if "shard_setups" in setup:
             shards = setup["shard_setups"]
-            if len(shards) != 4 or {s["task_partition"]["index"] for s in shards} != set(range(4)):
+            count = len(shards)
+            if (count not in (4, 6) or (summary.get('protocol') != 'exposure' and count != 4) or
+                    {s['task_partition']['index'] for s in shards} != set(range(count)) or
+                    any(s['task_partition'] != partition(s['task_partition']['index'], count) for s in shards)):
                 raise ValueError("Incomplete merged setup provenance")
             actual_source = sum(shard[source_field(shard, method, models)] for shard in shards)
             credited_source = actual_source if method in models else min(shard[source_field(shard, method, models)] for shard in shards)
@@ -470,15 +476,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True, help="Actions run ID-attempt")
     parser.add_argument("--repository", default="a-a-k/assurance-density-poc")
-    parser.add_argument("--shards", type=int, choices=(1, 4), default=1)
+    parser.add_argument("--shards", type=int, choices=(1, 4, 6), default=1)
     args = parser.parse_args()
     if not all(x.isdigit() for x in args.run.split("-")) or len(args.run.split("-")) != 2:
         raise ValueError("Expected run ID-attempt")
     result = {"run": args.run, "archives": [], "seeds": []}
     commits, model_digests, input_digests, common_digests, configurations = set(), set(), set(), set(), set()
     for seed in SEEDS:
-        parts = [archived(args.repository, args.run, seed, shard) for shard in range(4)] if args.shards == 4 else [archived(args.repository, args.run, seed)]
-        if args.shards == 4:
+        parts = [archived(args.repository, args.run, seed, shard) for shard in range(args.shards)] if args.shards != 1 else [archived(args.repository, args.run, seed)]
+        if args.shards != 1:
             summary, rows, common = merge_shards(parts, seed)
             metadata, _, _, provenance = parts[0]
         else:

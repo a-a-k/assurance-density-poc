@@ -81,7 +81,7 @@ def common_input(task, human, plus, template, prepared):
 
 def run(seed, shard):
     human, plus, posts, setup, provenance, wrap, template = setup_sources()
-    setup['task_partition'] = partition(shard)
+    setup['task_partition'] = partition(shard, 6)
     dzip, dm = download('nl2postcondition_source_evalplus/code_mutants/distinct_code_mutants.jsonl.zip')
     programs = collections.defaultdict(dict)
     for row in jsonlines(dzip, 'distinct_code_mutants.jsonl'):
@@ -94,8 +94,8 @@ def run(seed, shard):
     rows = []
     report(rows, setup, seed, protocol.ARMS, 'exposure')
     checkpoint(seed)
-    for number in range(shard * 6, (shard + 1) * 6):
-        task = f'HumanEval/{number}'
+    for task in setup['task_partition']['task_ids']:
+        number = int(task.split('/')[1])
         prepared = pool.prepare_pool(human[task], posts[task])
         common, assembly_seconds = common_input(task, human[task], plus[task], template, prepared)
         save(INPUTS / 'model_inputs' / f'{number:02}.json', common)
@@ -133,6 +133,6 @@ if __name__ == '__main__':
         raise SystemExit('Run the experiment only in GitHub Actions')
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, required=True, choices=SEEDS)
-    parser.add_argument('--shard', type=int, required=True, choices=range(4))
+    parser.add_argument('--shard', type=int, required=True, choices=range(6))
     args = parser.parse_args()
     run(args.seed, args.shard)

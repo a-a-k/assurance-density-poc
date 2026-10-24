@@ -816,3 +816,20 @@ job120817532512, checkout353a324cf74b6d9c32ba8abe186a1e7dd27acec8: all95 invaria
 tests passed, including both new six-shard coverage/cost/rejection checks.
 This closes the code/CI prerequisite only; semantic GO still awaits the actual
 three-seed assigned audit40072093191 and its measured costs.
+
+2026-10-24 08:19 UTC: semantic execution of exposure_measure is WITHDRAWN.
+The user explicitly restored the requirement for usefulness of inflation and
+density themselves, not only the procedure for assessing unchanged packages.
+Root and skeptic agree that the existing definitions reduce exactly to Boolean
+Pareto on D/U/review/maintenance, with minN only within identical profiles.
+The adaptive inspection experiment does not establish a separate contribution
+of that pair. Successful assigned transport/cost audits are not such evidence.
+Seeds11 and47 completed; the remaining assigned-audit job was cancelled and its
+partial observations must be retained. No exposure semantic run was launched.
+
+The user subsequently proposed a scalar combination and an analogy with money's
+purchasing power. Analysis of revised definitions is in progress, with no design
+or implementation GO. The suggestion V(S)/N(S) and its inverse relative change
+are conceptual candidates, not accepted definitions or novel findings. The
+external-outcome/full-cost criterion, strongest same-information direct baseline
+and independent skeptic review remain mandatory. The article remains unchanged.

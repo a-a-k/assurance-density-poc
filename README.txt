@@ -1,22 +1,24 @@
 Assurance assessment PoC
 
-CURRENT COMPARISON: EXISTING POSTCONDITIONS
+CURRENT STATUS: PAIR DEFINITIONS UNDER REVIEW; NO NEW SEMANTIC RUN APPROVED
 
-New exposure-controlled inspection code passed92 Actions invariant tests:
-https://github.com/a-a-k/assurance-density-poc/actions/runs/40071841333
-The reviewed hypothesis allocates further inspection only to still-open output
-targets, selecting unchanged published posts. It compares goal-aware ordinary
-adaptive review, full review, two cheap shortlist-then-review methods, all-GPT4
-review and41 cheap controls. The natural pool contains120 posts/task from all12
-pinned source archives. First24 tasks, three seeds and external criterion remain.
-Before the semantic run, an additional full-pool semantic top1 control was
-required and implemented to check the simpler "retain only one" explanation.
-Its93 invariants passed in Actions40073604495. The exposure main run uses six
-four-task shards per seed (18 parallel jobs); interpret completed data with
-shards=6. All duplicated model setup/smoke costs remain charged. Older planned
-comparisons retain their four six-task shards and shards=4 interpretation.
-Next: assigned-output/routing and actual-cost audit before semantic execution.
-No benefit has yet been established for this implementation.
+The user restored the requirement to establish usefulness of inflation/density
+themselves. The exposure-adaptive semantic comparison was therefore withdrawn
+before launch: its allocation of inspection does not establish that contribution.
+The existing pair reduces to Pareto on D/U/burden, then minN at equal profiles.
+A proposed scalar/purchasing-power interpretation is being analysed; neither a
+new value function nor a new experiment has been accepted. External outcomes,
+complete comparable costs and the strongest direct baseline remain required.
+
+The withdrawn exposure implementation passed95 Actions invariant tests:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40075397639
+Its assigned-output audit40072093191 completed seeds11 and47; seed29 was cancelled
+and its partial archive retained. All three archives were downloaded and verified.
+These are instrument observations, not semantic-selection results or pair benefit.
+No exposure_measure run was launched. Details: postcondition_poc/PREFLIGHT.txt.
+The retained implementation supports six four-task shards/seed (shards=6); older
+planned archives retain four six-task shards/seed (shards=4). Both charge every
+duplicated model setup/smoke operation. The article remains unchanged.
 
 Stopped comparison (source986c886bc3295384dc4b5bde517fad8de183b797):
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793

@@ -381,3 +381,30 @@ index/schema/system/response/history overhead. These are byte estimates, not
 token/time measurements, and the three-body sizes use the median of all120
 triples per task. A plain top3-then-review control is also cheaper. No sufficient
 cost mechanism is established for this small pool, so no implementation GO.
+
+EXPOSURE INSTRUMENT AUDIT; SEMANTIC COMPARISON WITHDRAWN (2026-10-24)
+
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40072093191
+Source d367c9c542a750d5adcdeaca05fff722c3b7e01e. This assigned-output audit
+tests transport, routing and actual costs, not autonomous semantic usefulness.
+Seeds11 and47 completed18 assessments/28 exact assigned calls each. Root and
+independent skeptic checked archived bytes, unchanged source ASTs, all24 common
+inputs, raw responses, routes, measured costs and model/source pins. T/ordinary
+token ratio1.0589342969107842 in both; wall ratios1.0938838513927294 and
+1.1158360631513802. The matched instrument-cost caps passed in these two seeds.
+
+seed11:2923271bytes, SHA256
+b456a6abe85a2f86ec6511808402188fcbbdd21dc15ecc855d5f8b2da26241fb
+seed47:2923390bytes, SHA256
+740b96bad46eddbb756740c72e0a69fcaa9a5c30e1aa5412134cb0db3539d5d8
+seed29:CANCELLED; partial archive2902826bytes, SHA256
+fd77c85d60036a2f56e57bb90adf92b02a22985781536ec42b3477f86648a74a
+Seed29 retains16 completed assessment rows, covering24 assigned calls; this
+count does not include unfinished stages or represent the entire spent cost.
+All three archives are retained on experiment-results and verified locally.
+
+The user restored the requirement for usefulness of inflation/density themselves.
+The exposure semantic run was withdrawn before launch; the final assigned audit
+was cancelled because that experiment does not establish the requested pair
+contribution. This is neither a negative semantic result nor positive pair
+evidence. The revised scalar/purchasing-power proposal is under analysis only.

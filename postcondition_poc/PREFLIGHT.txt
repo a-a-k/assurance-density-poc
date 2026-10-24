@@ -702,7 +702,7 @@ NOT a disproof of the general model. The old strict certificate remains FALSE;
 confirmed96 is below optimistic97. Preserve every partial archive and exact
 checkpoint. Continue hypothesis analysis rather than treating this as success.
 
-2026-10-24 06:29 UTC, BEFORE implementation: root and independent skeptic give
+2026-10-24 06:28 UTC, BEFORE implementation: root and independent skeptic give
 explicit DESIGN GO on the ORIGINAL criterion for exposure-controlled inspection.
 Earlier sequential/top-k candidates remain rejected; the stopped results stand.
 
@@ -744,3 +744,13 @@ Code review, Actions invariants and independently reviewed actual matched-contex
 assigned-copy/cost audit precede semantic execution. Existing Qwen8B/no_think and
 evaluator pins stay. This GO authorizes a fair test of the original criterion;
 it neither guarantees a positive result nor substitutes an infrastructure audit.
+
+Before code, both reviewers also explicitly approve stronger simple controls:
+portfolio top3 (shortest/dependencies/contrastive union) then ordinary review,
+and one-call review of all GPT4-only posts (all4 sources,40/task before dedup).
+Apply all16 non-author cheap/diversity rules to GPT4-only as the main provenance
+subset; retain with-reference top1/top3 rankings, triple union and diversity as
+additional controls. Charge each subset only its relevant measured preparation.
+The published study supports GPT4 provenance; reference visibility alone was not
+a significant correctness advantage (RQ1,p=.42). Do not imply it was.
+https://people.cs.umass.edu/~mendres/papers/CanPostconditions.pdf

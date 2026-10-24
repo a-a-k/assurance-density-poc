@@ -2,6 +2,13 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
+Running comparison (source986c886bc3295384dc4b5bde517fad8de183b797):
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793
+24 tasks, three seeds,21 methods, fixed-v1 evaluator;12 parallel task shards.
+Independent instrument/code audits passed before execution. Results are pending.
+Reproduce with mode=planned_measure and evaluation_policy=fixed-v1 in
+measurement-poc.yml; interpret completed archives with shards=4.
+
 Exploratory follow-up: candidate-blind external obligation planning, then
 selection of existing checks. Compare ordinary two-stage source-first review,
 ordinary one-stage review, direct selection, direct top1 and all six cheap
@@ -45,7 +52,7 @@ on every remaining case could not beat the cheap author-test control. All three
 partial archives were saved. The exact control completed all 24 cases in
 run 39998699971. See postcondition_poc/RESULTS.txt for the interpretation and links.
 
-Actions -> Existing-artifact semantic assessment -> Run workflow -> post_measure.
+The earlier one-stage workflow uses mode=post_measure.
 This compares structured claim/evidence assessment with ordinary semantic review,
 direct selection, original author tests, and cheap executable selection rules.
 All selectors receive the same public contract, candidate source and probe data.

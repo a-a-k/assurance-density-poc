@@ -324,3 +324,18 @@ costs exclude unused EvalPlus preparation and receive the documented conservativ
 single-source credit. No hypothesis margin or uncertainty rule was relaxed.
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40046714357
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40050681816
+
+Main planned comparison40051157793 started at01:44 UTC on2026-10-24, source
+986c886bc3295384dc4b5bde517fad8de183b797. All12 jobs passed the required code
+checks and entered assessment. Final outcomes remain pending.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40051157793
+
+At01:51 UTC during execution, before either reviewer read any nonzero result,
+both agents recorded a separate fewer-false-alarm branch of the original user
+criterion. It requires nonempty exact natural-ID preservation against baseline
+uncertainty, a strict subset of known false alarms, the same five comparable
+cost caps, one common efficient baseline across all seeds and no replacement.
+Existing flags and negative results remain unchanged. Both agents independently
+verified all76 code tests in40051834314 at0ac107f01038860a5eec5bd8d6306fd1e92b8f14.
+This is validation of an additional interpretation, not a positive PoC result.
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40051834314

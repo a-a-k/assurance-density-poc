@@ -14,8 +14,9 @@ from screen import INPUTS, OUT, ROOT, download, jsonlines, save
 
 
 def checkpoint_treatment(snapshot, source_sha, seed, protocol, treatment):
-    models = (["warrant", "spec_first", "direct", "direct_top1"] if protocol == "warrant"
-              else ["structured", "semantic", "direct"])
+    models = {"warrant": ["warrant", "spec_first", "direct", "direct_top1"],
+              "planned": ["obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1"],
+              "legacy": ["structured", "semantic", "direct"]}[protocol]
     expected = set(models + ["author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive"])
     if (snapshot["source_commit"] != source_sha or snapshot["seed"] != seed
             or snapshot.get("protocol", "legacy") != protocol or treatment != models[0]
@@ -53,8 +54,8 @@ def main():
     parser.add_argument("--source-run", required=True)
     parser.add_argument("--source-sha", required=True)
     parser.add_argument("--seed", type=int, choices=(11, 29, 47), required=True)
-    parser.add_argument("--protocol", choices=("legacy", "warrant"), required=True)
-    parser.add_argument("--treatment", choices=("structured", "warrant"), required=True)
+    parser.add_argument("--protocol", choices=("legacy", "warrant", "planned"), required=True)
+    parser.add_argument("--treatment", choices=("structured", "warrant", "obligation_plan"), required=True)
     args = parser.parse_args()
     if not re.fullmatch(r"[0-9]+-[1-9][0-9]*", args.source_run) or not re.fullmatch(r"[0-9a-f]{40}", args.source_sha):
         raise ValueError("Expected RUN-ATTEMPT and a full source SHA")

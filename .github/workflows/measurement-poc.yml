@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
+        options: [planned_audit, planned_measure, warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
       source_run:
         type: string
@@ -19,10 +19,10 @@ on:
         description: Author-only audit comparison seed
       source_protocol:
         type: string
-        description: Author-only audit protocol, legacy or warrant
+        description: Author-only audit protocol, legacy, warrant or planned
       source_treatment:
         type: string
-        description: Author-only audit treatment, structured or warrant
+        description: Author-only audit treatment, structured, warrant or obligation_plan
 
 permissions:
   contents: read
@@ -37,7 +37,7 @@ jobs:
         env:
           MODE: ${{ inputs.mode }}
         run: |
-          if [ "$MODE" = full ] || [ "$MODE" = post_measure ] || [ "$MODE" = warrant_audit ] || [ "$MODE" = warrant_measure ]; then
+          if [ "$MODE" = full ] || [ "$MODE" = post_measure ] || [ "$MODE" = warrant_audit ] || [ "$MODE" = warrant_measure ] || [ "$MODE" = planned_audit ] || [ "$MODE" = planned_measure ]; then
             echo 'value=[11,29,47]' >> "$GITHUB_OUTPUT"
           else
             echo 'value=[11]' >> "$GITHUB_OUTPUT"
@@ -67,10 +67,10 @@ jobs:
           python -m unittest discover -s measurement_poc -p 'test_*.py' -v
           python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Install finite replay numeric comparator
-        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure'
+        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_measure'
         run: python -m pip install numpy==1.26.4
       - name: Start pinned CPU model
-        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format' || inputs.mode == 'warrant_audit' || inputs.mode == 'warrant_measure'
+        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format' || inputs.mode == 'warrant_audit' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_audit' || inputs.mode == 'planned_measure'
         run: python -u measurement_poc/bootstrap.py
       - name: Assess unchanged published assertions
         id: experiment
@@ -86,7 +86,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = warrant_audit ]; then
+          if [ "$MODE" = planned_audit ]; then
+            python -u postcondition_poc/planned_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = planned_measure ]; then
+            python -u postcondition_poc/measurement.py --seed "$SEED" --protocol planned 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = warrant_audit ]; then
             python -u postcondition_poc/warrant_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = warrant_measure ]; then
             python -u postcondition_poc/measurement.py --seed "$SEED" --protocol warrant 2>&1 | tee ci-logs/measurement-run.log

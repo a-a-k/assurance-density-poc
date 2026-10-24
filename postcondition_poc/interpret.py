@@ -15,7 +15,8 @@ from pathlib import Path
 
 SEEDS = (11, 29, 47)
 MODELS = ("structured", "semantic", "direct")
-PROTOCOLS = {"legacy": MODELS, "warrant": ("warrant", "spec_first", "direct", "direct_top1")}
+PROTOCOLS = {"legacy": MODELS, "warrant": ("warrant", "spec_first", "direct", "direct_top1"),
+             "planned": ("obligation_plan", "spec_plan", "spec_first", "direct", "direct_top1")}
 CHEAP = ("author_tests", "filtered", "filtered_dedup", "shortest", "dependencies", "contrastive")
 FIELDS = ("application_tokens", "tokens", "application_seconds", "standalone_assessment_seconds", "standalone_with_checker_seconds")
 LIMITS = (1.10, 1.10, 1.20, 1.20, 1.20)

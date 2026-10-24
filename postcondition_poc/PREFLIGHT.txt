@@ -477,3 +477,56 @@ separately. Independent code and actual-result review precede dispatch/cancel.
 Root and skeptic explicit code-review EXECUTION GO for this author-only audit.
 The original comparison and every measured result remain unchanged. Harness
 invariant tests execute in Actions before the audit, with no local benchmarks.
+
+2026-10-24 00:40 UTC: both agents independently verified author-only audit
+40045762075, source5a077ef, archive SHA256 c2da3d56723a67421b2413ba1f4dbf883cd8fab80926a6e8934fda2b307ed1c8.
+Exact current-source24-task control has96 confirmed natural detections, one
+unknown and24 canonical passes. Current T47 prefix3 has optimistic final
+upper70 from all raw remaining programs. Entire audit38.0098s is below every
+T already-spent wall field; zero tokens below both token fields. Root and
+skeptic explicit cancellation GO: this implementation cannot satisfy the
+original criterion. Retain partial archives, including failed/unfinished jobs.
+
+Next design, BEFORE implementation: root GO and skeptic explicit GO on the
+ORIGINAL criterion for exploratory two-stage obligation planning and selection.
+Same24 tasks, three seeds, pinned model/evaluator, unchanged candidates and
+all six cheap controls. No task-specific examples or hints from prior outcomes.
+Mechanism: structured external scoped claims/refutations are written before
+candidates are visible, then used to assess actual checker-to-claim links.
+The strong ordinary two-pass spec_plan control has the SAME blinding, external
+sources, domain/Python/wrapper knowledge and semantic review topics. Additional
+controls are ordinary one-pass spec_first, direct<=3 and direct<=1.
+
+Stage1 sees only external prompt, author tests, domain conditions, clauses and
+wrapper semantics, never candidate/probe/validation data. T emits up to3 records
+with basis clause IDs, claim, permitted scope, refutation and unresolved issues;
+spec_plan emits ordinary source-first notes. Both request at most72 prose words
+and have300 output tokens. Stage2 sees full common raw input plus its own plan;
+both use the SAME review/selected schema,40word request and200token ceiling.
+One-pass review uses the same40word/200token format; direct controls remain terse.
+All receive identical semantic guidance and fallible eligibility. Every failed
+stage, format-only retry, preparation/serialization, setup and execution costs
+counts. Same early stopping is available when no candidate is eligible.
+
+The plans and links are fallible proposals, not approved D/U or proof. External
+fault detection/false alarms remain decisive. Preserve1.10/1.20 margins, same
+efficient model-control witness across all3 seeds and no replacement by ANY
+model/cheap control; no universal requirement to beat cheaper/lower-quality
+points. First require exact-format/full-context copying audit with T/spec_plan
+cost comparison, independent code and actual-audit GO. Then semantic comparison.
+No claim for metric-pair novelty, full human admission or measured human time.
+
+Pre-audit code-review correction, approved by both agents: empty obligations[]
+and ordinary notes="" are valid, not format retries. Both still perform stage2.
+T cannot admit a checker with no recorded claim: preserve attempted selections,
+log excluded_without_plan and return an empty selection. The ordinary control
+may reconsider the raw sources despite empty notes. This is an explicit
+procedural gate, not a promise of unchanged semantic outcomes; external utility
+and cheap replacement tests remain decisive. All final-stage calls, including
+selected-only direct controls, have200 output tokens; direct formats stay terse.
+
+Root and separate skeptic explicit final code-review EXECUTION GO for
+planned_audit:45 assessment rows and63 assigned stage copies across three
+contexts/seeds. Actual hashes, raw request separation, exact outputs and complete
+two-stage costs must pass independent review before planned_measure. No local
+model, benchmark or invariant-test execution; Actions runs the tests first.

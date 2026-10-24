@@ -2,14 +2,21 @@ Assurance assessment PoC
 
 CURRENT COMPARISON: EXISTING POSTCONDITIONS
 
-Exploratory follow-up: a compact source-linked boundary/warrant before selection,
-against ordinary specification-first reasoning, direct selection, direct top1,
-and all six cheap controls. The independent skeptic approved the original
-external-result/full-cost criterion. Workflow mode warrant_audit checks format
-and actual inference cost on full minimum/median/maximum inputs; warrant_measure
-runs the24-task comparison only after both agents review that audit. No result
-is established by the new code or a successful instrument audit. Existing negative
-comparisons remain below. See postcondition_poc/PREFLIGHT.txt for the exact scope.
+Exploratory follow-up: candidate-blind external obligation planning, then
+selection of existing checks. Compare ordinary two-stage source-first review,
+ordinary one-stage review, direct selection, direct top1 and all six cheap
+controls. Both planners receive the same external sources before candidates.
+Workflow planned_audit checks both stages, actual copying costs and full contexts;
+planned_measure requires independent review of that audit before execution.
+The original external-result/full-cost criterion remains. New code and a passing
+instrument audit do not establish benefit. See postcondition_poc/PREFLIGHT.txt.
+
+The compact one-stage warrant comparison40044226843 was stopped after a verified
+futility certificate: treatment could reach at most70 natural detections while
+the exact current author-only control already detected96 with no false alarms,
+in38s versus treatment's195s already spent. All partial archives were saved.
+This is scoped to the unchanged finite oracle, including disclosed source
+ambiguities. Details and evidence: postcondition_poc/RESULTS.txt.
 
 Status: the reviewed Qwen8B comparison at commit c5f41e1 failed the criterion:
 https://github.com/a-a-k/assurance-density-poc/actions/runs/40007059508

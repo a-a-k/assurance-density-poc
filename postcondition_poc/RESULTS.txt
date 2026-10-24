@@ -1,3 +1,33 @@
+Compact-procedure result, 24 October 2026
+
+Run40044226843 at417997bf was stopped after an independently verified futility
+certificate, not reported as a complete three-seed comparison. All three partial
+archives were preserved successfully. Under the unchanged finite evaluation,
+seed47's warrant method rejected the canonical result on task1. At the audited
+common prefix3 it had2 known natural detections and no unknown natural outcomes;
+even detecting every remaining raw natural program would give at most70.
+
+The exact current-source author-only control was completed in run40045762075:
+96 confirmed natural detections, one unknown, all24 canonical passes. Its entire
+audit took38.0098s, below the treatment's already-spent195.1466s warm,
+231.4796s standalone assessment and232.4583s including checker execution.
+Zero tokens are below treatment's7303 application/7685 total tokens. Both agents
+verified source bytes, pinned input hashes, archive integrity, raw program IDs,
+all24 baseline outcomes and the bound. Hence no continuation of this comparison
+can satisfy the original criterion. This is a negative result for this concrete
+instrument under this finite oracle, not impossibility of all assessment methods.
+
+Task1 retains the previously disclosed source ambiguity: prose describes balanced
+groups, while the executable domain permits an unmatched suffix that the finite
+canonical implementation discards. We do not infer an unambiguously wrong
+natural-language interpretation from this rejection. No oracle/threshold was
+changed to obtain a different result. All costs are machine costs, not human time.
+
+Evidence:
+https://github.com/a-a-k/assurance-density-poc/actions/runs/40045762075
+https://github.com/a-a-k/assurance-density-poc/blob/experiment-results/runs/40045762075-1/seed-11/SUMMARY.md
+https://github.com/a-a-k/assurance-density-poc/tree/experiment-results/runs/40044226843-1
+
 Compact-procedure instrument audit, 24 October 2026
 
 Run40040779566: https://github.com/a-a-k/assurance-density-poc/actions/runs/40040779566

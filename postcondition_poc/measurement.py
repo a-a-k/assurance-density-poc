@@ -345,13 +345,17 @@ def main():
         raise SystemExit("Run this comparison in GitHub Actions")
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, choices=SEEDS, required=True)
-    parser.add_argument("--protocol", choices=("legacy", "warrant"), default="legacy")
+    parser.add_argument("--protocol", choices=("legacy", "warrant", "planned"), default="legacy")
     args = parser.parse_args()
     arms, assessor, selector, smoke = ARMS, assess, select, format_smoke
     if args.protocol == "warrant":
         import warrant_protocol
         arms, assessor, selector, smoke = (warrant_protocol.ARMS, warrant_protocol.assess,
                                            warrant_protocol.select, warrant_protocol.format_smoke)
+    elif args.protocol == "planned":
+        import planned_protocol
+        arms, assessor, selector, smoke = (planned_protocol.ARMS, planned_protocol.assess,
+                                           planned_protocol.select, planned_protocol.format_smoke)
     INPUTS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     start = time.perf_counter()
@@ -373,7 +377,7 @@ def main():
     began_wrapper_source = time.perf_counter()
     raw_wrap, wm = fetch(BASE + "nl2postcondition_source_evalplus/response_preprocessing.py", "upstream_response_preprocessing.py")
     wrap, wrapper_template = upstream_wrapper(raw_wrap.decode())
-    if args.protocol == "warrant":
+    if args.protocol != "legacy":
         setup["wrapper_source_seconds"] = time.perf_counter() - began_wrapper_source
     programs = collections.defaultdict(dict)
     for row in jsonlines(dzip, "distinct_code_mutants.jsonl"):
@@ -400,7 +404,8 @@ def main():
                   "validation": {i: {"accepted": r["accepted"], "statuses": r["statuses"]} for i, r in cheap["validation"].items()},
                   "contrastive_rejections": {i: r["rejections"] for i, r in cheap["contrastive"].items()},
                   "cheap_unknowns": cheap["unknown"] + cheap["doc_unknown"] + cheap["unit_unknown"]}
-        if args.protocol == "warrant":
+        if args.protocol != "legacy":
+            import warrant_protocol
             common["eligible_ids"] = warrant_protocol.eligible_ids(common)
         common_seconds = time.perf_counter() - began
         save(INPUTS / "model_inputs" / f"{number:02}.json", common)

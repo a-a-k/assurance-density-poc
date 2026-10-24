@@ -156,6 +156,48 @@ class InterpretationInvariants(unittest.TestCase):
         self.assertEqual(result["possible_fa"], {"A"})
         self.assertEqual(result["possible_detected"], {("A", 2)})
 
+    def test_fewer_false_alarms_preserves_ids_and_all_cost_caps(self):
+        treatment = limits([("A", 1)], fa=["X"])
+        baseline = limits([("A", 1)], fa=["X", "Y"])
+        at_caps = cost(120)
+        at_caps["application_tokens"] = at_caps["tokens"] = 110
+        result = pair(treatment, baseline, at_caps, cost(100))
+        self.assertTrue(result["fewer_false_alarm_branch"])
+        self.assertFalse(result["better_branch"] or result["cheaper_branch"])
+        for field in FIELDS:
+            over_cap = {**at_caps, field: at_caps[field] + 1}
+            self.assertFalse(pair(treatment, baseline, over_cap, cost(100))["fewer_false_alarm_branch"])
+
+    def test_fewer_false_alarm_counts_cannot_hide_swaps_or_unknowns(self):
+        baseline = limits([("A", 1)], fa=["X", "Y"])
+        for treatment in (limits([("A", 2)], fa=["X"]),
+                          limits([("A", 1)], fa=["Z"]),
+                          limits([("A", 1)], fa=["X"], uncertain=["Y"]),
+                          limits([], fa=["X"])):
+            self.assertFalse(pair(treatment, baseline, cost(100), cost(100))["fewer_false_alarm_branch"])
+        baseline = limits([("A", 1)], unknown=[("A", 2)], fa=["X"])
+        self.assertFalse(pair(limits([("A", 1)]), baseline, cost(100), cost(100))["fewer_false_alarm_branch"])
+        self.assertFalse(pair(limits(), limits([], fa=["X"]), cost(100), cost(100))["fewer_false_alarm_branch"])
+
+    def test_addendum_requires_same_witness_and_retains_replacement_guard(self):
+        treatment = limits([("A", 1)])
+        control = limits([("A", 1)], fa=["X"])
+        comparison = pair(treatment, control, cost(100), cost(100))
+        seeds = [{"seed": seed, "protocol": "planned", "model_controls": {"S": comparison, "D": comparison},
+                  "baseline_frontier": {m: {"qualified": True, "legacy_qualified": True} for m in ("S", "D")},
+                  "treatment_replacements": {"author": {"possible_primary_replacement": False}},
+                  "model_comparison_pass": False, "cheap_competition": False,
+                  "possible_cheap_competition": False} for seed in SEEDS]
+        result = aggregate(seeds)
+        self.assertFalse(result["original_criterion_pass"])
+        self.assertTrue(result["fewer_false_alarm_addendum"]["pass"])
+        seeds[1]["treatment_replacements"]["author"]["possible_primary_replacement"] = True
+        self.assertFalse(aggregate(seeds)["fewer_false_alarm_addendum"]["pass"])
+        seeds[1]["treatment_replacements"]["author"]["possible_primary_replacement"] = False
+        seeds[0]["model_controls"] = {"S": comparison, "D": {**comparison, "fewer_false_alarm_branch": False}}
+        seeds[1]["model_controls"] = {"S": {**comparison, "fewer_false_alarm_branch": False}, "D": comparison}
+        self.assertFalse(aggregate(seeds)["fewer_false_alarm_addendum"]["pass"])
+
 
 if __name__ == "__main__":
     unittest.main()

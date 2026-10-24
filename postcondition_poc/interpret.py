@@ -181,12 +181,16 @@ def pair(t, b, tc, bc):
     cheaper_cost = all(v["at_most_equal"] for v in costs.values()) and (
         tc["application_tokens"] < bc["application_tokens"] or tc["application_seconds"] < bc["application_seconds"])
     comparable_cost = all(v["within_comparable_cap"] for v in costs.values())
+    fewer_false_alarms = (bool(natural(t["detected"])) and
+                         natural(t["detected"]) >= natural(b["possible_detected"]) and
+                         t["possible_fa"] < b["fa"])
     return {"gained_ids": sorted(t["detected"] - b["detected"]), "lost_ids": sorted(b["detected"] - t["detected"]),
             "natural_lower_t": len(natural(t["detected"])), "natural_upper_b": len(natural(b["possible_detected"])),
             "fa_upper_t": len(t["possible_fa"]), "fa_lower_b": len(b["fa"]),
             "costs": costs, "better_quality": better_quality, "comparable_cost": comparable_cost,
             "same_natural_quality": same_natural, "same_all_quality": same_all, "cheaper_cost": cheaper_cost,
-            "better_branch": better_quality and comparable_cost, "cheaper_branch": same_all and cheaper_cost}
+            "better_branch": better_quality and comparable_cost, "cheaper_branch": same_all and cheaper_cost,
+            "fewer_false_alarm_branch": fewer_false_alarms and comparable_cost}
 
 
 def format_setup_cost(setup, method, models=MODELS):
@@ -336,7 +340,7 @@ def audit(summary, rows, expected=None):
             "possible_cheap_competition": any(p["possible_exact_id_dominance"] or p["possible_natural_count_competition"] for p in cheap.values())}
 
 
-def consistent_branches(seeds):
+def consistent_branches(seeds, branch_names=("better_branch", "cheaper_branch")):
     if len(seeds) != len(SEEDS) or {s["seed"] for s in seeds} != set(SEEDS):
         raise ValueError("Consistency requires the complete, unique seed set")
     controls = tuple(seeds[0]["model_controls"])
@@ -347,7 +351,7 @@ def consistent_branches(seeds):
     if len({s.get("cheap_control_version", "legacy-v1") for s in seeds}) != 1:
         raise ValueError("Mixed cheap-control versions across seeds")
     return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
-                     for branch in ("better_branch", "cheaper_branch")}
+                     for branch in branch_names}
             for method in controls}
 
 
@@ -372,6 +376,15 @@ def aggregate(seeds):
                                       bool(result["legacy_qualified_common_baselines"]))
     result["original_criterion_pass"] = (bool(result["qualified_common_baselines"]) and
                                         not result["any_possible_treatment_replacement"])
+    if all(s.get("protocol") == "planned" for s in seeds):
+        additional = consistent_branches(seeds, ("fewer_false_alarm_branch",))
+        witnesses = efficient_witnesses(seeds, additional)
+        result["fewer_false_alarm_addendum"] = {
+            "recorded": "2026-10-24 01:51 UTC, during40051157793 before either reviewer read nonzero outcomes",
+            "definition": "nonempty known natural-ID superset of control possible IDs; possible FA strict subset of control known FA; all five comparable-cost caps",
+            "per_control_consistent_branches": additional,
+            "qualified_common_baselines": witnesses,
+            "pass": bool(witnesses) and not result["any_possible_treatment_replacement"]}
     return result
 
 
@@ -412,6 +425,16 @@ def render(result):
               f"Original criterion including strongest-baseline qualification: {result['original_criterion_pass']}.",
               "Beating expensive model controls alone is insufficient if cheaper controls can replace them with the same or better primary utility. Counts and exact-ID preservation remain separate.",
               "Exact gained/lost IDs, uncertainty bounds, costs and provenance are in criterion_audit.json. No human-time, historical-bug or independent metric-pair claim follows from these observations."]
+    if "fewer_false_alarm_addendum" in result:
+        extra = result["fewer_false_alarm_addendum"]
+        lines += ["", "Additional fewer-false-alarm branch: recorded during run40051157793, before either reviewer read nonzero outcomes. Existing flags above remain unchanged.",
+                  "It requires nonempty natural-ID preservation against control uncertainty and a strict subset of known false-alarm tasks, at all five unchanged comparable-cost caps. The same efficient baseline must qualify in every seed; any possible no-higher-cost replacement still blocks success.",
+                  f"Additional common baseline witnesses: {json.dumps(extra['qualified_common_baselines'])}.",
+                  f"Additional branch passes the original user criterion: {extra['pass']}.",
+                  "| Seed | Control | Fewer FA / preserved natural IDs / comparable costs |", "|---:|---|---|"]
+        for seed in result["seeds"]:
+            for method, comparison in seed["model_controls"].items():
+                lines.append(f"| {seed['seed']} | {method} | {comparison['fewer_false_alarm_branch']} |")
     return "\n".join(lines) + "\n"
 
 

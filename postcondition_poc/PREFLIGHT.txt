@@ -670,3 +670,10 @@ Root: GO for alignment with the original external-outcome criterion. Separate
 skeptic: explicit GO for that same criterion, with the set-wise preservation,
 uncertainty and cost requirements above. Any added audit code requires separate
 review and Actions checks before use; no positive result is claimed here.
+
+Root and independent skeptic reviewed the additional audit implementation and
+give explicit code-review GO for validate_only Actions. It adds a separately
+reported planned-protocol branch, preserves all previous aggregate flags and
+requires the same efficient witness and unchanged ANY-replacement guard. The
+new tests cover all five cost boundaries, ID/FA swaps, unresolved outcomes,
+empty utility, switching witnesses and a replacement blocking apparent success.

@@ -701,3 +701,46 @@ NOT confirmed author superiority, NOT a completed three-seed comparison, and
 NOT a disproof of the general model. The old strict certificate remains FALSE;
 confirmed96 is below optimistic97. Preserve every partial archive and exact
 checkpoint. Continue hypothesis analysis rather than treating this as success.
+
+2026-10-24 06:29 UTC, BEFORE implementation: root and independent skeptic give
+explicit DESIGN GO on the ORIGINAL criterion for exposure-controlled inspection.
+Earlier sequential/top-k candidates remain rejected; the stopped results stand.
+
+1. Hypothesis/contribution: scoped obligation/exposure assessments control which
+unchanged published checkers receive further inspection. An adequate target no
+longer consumes acquisition; partial/unresolved targets receive their next unseen
+initial alternative. Only the existing external detection/false-alarm outcome,
+five full costs, common efficient witness across three seeds and ANY-replacement
+guard can establish benefit, including the separately recorded fewer-FA branch.
+Neither exposure labels nor retrieval success establish the research outcome.
+
+2. Population/controls: all12 pinned published ZIPs,120 original posts per task,
+unchanged first24 tasks and seeds11/29/47. Shared exact-AST dedup and compact display;
+delivered/evaluated source remains unchanged. T exposure_adaptive faces ordinary
+explicitly goal/gap-aware adaptive review, full compact one-call review and cheap
+group-diverse top3 then ordinary review. Both adaptive arms receive identical
+sources/index/semantic knowledge, at most9 initial candidateIDs and two batches
+of at most3, with early stopping. All16 existing cheap controls, group diversity
+and the same non-author rules restricted to the two GPT4-with-reference sources
+remain. No reference/original implementation bodies enter model inputs.
+
+3. Actual mechanism: T first inspects the earliest eligible alternative for each
+of at most3 scoped targets. Its controller sends batch2 only to still-open targets
+and their unseen initial alternatives. Partial predicts a sound necessary check
+over the WHOLE caller domain but incomplete target coverage; adequate predicts
+adequacy for the assigned finite target, not proof. Unresolved/contradicted
+candidates are excluded from final selection. Target/candidate identity checks
+are mechanical; semantic statuses remain fallible proposals. Ordinary adaptive
+review can track the same kinds of gaps and stop freely using its own assessment.
+No claim of a new retrieval algorithm or separate inflation/density effect.
+
+4. Cost: all source acquisition, indexing/dedup, validation, plans, inspections,
+state, retries and selection are charged. Index appears initially, followed by
+own state and inspected bodies. Subset controls pay only their actual relevant
+sources/preparation; author-only pays neither model nor candidate preparation.
+All actual duplicated model setup/checker costs remain. Preserve five caps
+(tokens1.10, wall1.20), conservative unknowns and whole-package canonical validity.
+Code review, Actions invariants and independently reviewed actual matched-context
+assigned-copy/cost audit precede semantic execution. Existing Qwen8B/no_think and
+evaluator pins stay. This GO authorizes a fair test of the original criterion;
+it neither guarantees a positive result nor substitutes an infrastructure audit.

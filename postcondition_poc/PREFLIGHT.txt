@@ -652,3 +652,21 @@ The final pre-execution commit changes documentation only. Main Actions repeats
 invariants before any model call. Unknowns, including task13/15 timeouts, retain
 the conservative interpretation. Audits are not positive scientific results.
 Actual outcomes/futility require another independent review before any claim.
+
+2026-10-24 01:54 UTC, DURING run40051157793 but BEFORE either agent read any
+nonzero planned outcome: both agents explicitly approve an additional audit
+branch of the ORIGINAL user criterion. The existing better branch requires
+MORE natural detections and omits a genuine improvement: fewer false alarms
+while preserving detection. The new branch requires a nonempty T known natural
+ID set containing ALL B possible natural IDs, and T possible false-alarm task
+set to be a STRICT SUBSET of B known false-alarm task set. All five existing
+comparable-cost caps remain. The SAME efficient baseline and THIS branch must
+hold in all three original seeds; all-control replacement checks remain.
+Both agents had seen only zero-task checkpoints, not new semantic outcomes.
+This is an amendment during execution, not a pre-execution commitment. Preserve
+all original automatic flags and old negative results; report the new branch
+separately. No change to executing methods, inputs, budgets, evaluator or costs.
+Root: GO for alignment with the original external-outcome criterion. Separate
+skeptic: explicit GO for that same criterion, with the set-wise preservation,
+uncertainty and cost requirements above. Any added audit code requires separate
+review and Actions checks before use; no positive result is claimed here.

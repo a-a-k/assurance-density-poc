@@ -677,3 +677,14 @@ reported planned-protocol branch, preserves all previous aggregate flags and
 requires the same efficient witness and unchanged ANY-replacement guard. The
 new tests cover all five cost boundaries, ID/FA swaps, unresolved outcomes,
 empty utility, switching witnesses and a replacement blocking apparent success.
+
+2026-10-24: root and independent skeptic explicit EXECUTION GO for the existing
+author_only completion of the already declared baseline, using comparison
+40051157793-1/source986c886bc3295384dc4b5bde517fad8de183b797/seed29/planned/
+obligation_plan/shard0. This collects all24 current-source author-only outcomes
+and complete costs. The captured live blob, not an anticipated prefix, determines
+the certificate. No current sufficient futility claim: source-prefix1 gives an
+optimistic upper116 and the then-observed disjoint prefixes give upper98.
+No cancellation before independent review of actual baseline rows, source pins,
+raw remaining-program bound and all five costs. Preserve the strict certificate
+if a separate manual equality-bound conclusion later becomes relevant.

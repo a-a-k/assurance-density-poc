@@ -8,6 +8,21 @@ on:
         description: Infrastructure pilot or full fixed cohort
         options: [warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
+      source_run:
+        type: string
+        description: Author-only audit comparison RUN-ATTEMPT
+      source_sha:
+        type: string
+        description: Author-only audit full comparison source SHA
+      source_seed:
+        type: string
+        description: Author-only audit comparison seed
+      source_protocol:
+        type: string
+        description: Author-only audit protocol, legacy or warrant
+      source_treatment:
+        type: string
+        description: Author-only audit treatment, structured or warrant
 
 permissions:
   contents: read
@@ -63,6 +78,11 @@ jobs:
           MODE: ${{ inputs.mode }}
           SEED: ${{ matrix.seed }}
           GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_SEED: ${{ inputs.source_seed }}
+          SOURCE_PROTOCOL: ${{ inputs.source_protocol }}
+          SOURCE_TREATMENT: ${{ inputs.source_treatment }}
         run: |
           set -o pipefail
           mkdir -p ci-logs
@@ -73,7 +93,7 @@ jobs:
           elif [ "$MODE" = post_format ]; then
             python -u postcondition_poc/format_audit.py 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = author_only ]; then
-            python -u postcondition_poc/author_only.py 2>&1 | tee ci-logs/measurement-run.log
+            python -u postcondition_poc/author_only.py --source-run "$SOURCE_RUN" --source-sha "$SOURCE_SHA" --seed "$SOURCE_SEED" --protocol "$SOURCE_PROTOCOL" --treatment "$SOURCE_TREATMENT" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = post_measure ]; then
             python -u postcondition_poc/measurement.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = unit_screen ]; then

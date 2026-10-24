@@ -461,3 +461,19 @@ and retain strict_protocol_pass plus every pairwise flag. Interpretation CI
 40043995305 passed at0baa109; full workflow repeats instrument invariants before
 inference. Preserve negative outcomes and all research overhead. A complete or
 rigorously futile result still needs independent review before interpretation.
+
+2026-10-24 00:32 UTC: root and skeptic explicit DESIGN/IMPLEMENTATION GO for
+completing the existing author_tests control of run40044226843, source417997b,
+comparison seed47, protocolwarrant. This is a futility audit, not a new hypothesis.
+Parameterize the old author-only instrument; verify source/evaluator bytes,
+protocol/seed, all10 methods and a common completed prefix. Its bound includes
+every remaining raw natural program ID, never a singleton-post union. Finish
+the same24 author-only evaluations. A certificate requires confirmed author
+detections strictly above T's optimistic final bound, all24 canonical passes,
+zero tokens below both T token fields, and the entire audit wall upper below
+each of T's three already-spent wall fields. Record comparison and audit IDs
+separately. Independent code and actual-result review precede dispatch/cancel.
+
+Root and skeptic explicit code-review EXECUTION GO for this author-only audit.
+The original comparison and every measured result remain unchanged. Harness
+invariant tests execute in Actions before the audit, with no local benchmarks.

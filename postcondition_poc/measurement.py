@@ -228,11 +228,12 @@ def replay(request):
     return result
 
 
-def evaluate(h, plus, posts, programs, ids, wrap):
+def evaluate(h, plus, posts, programs, ids, wrap, evaluation_policy="fixed-v1"):
     entry = h["entry_point"]
     doc = ast.get_docstring(next(n for n in ast.parse(h["prompt"]).body if isinstance(n, ast.FunctionDef) and n.name == entry))
     tests = [("author_unit", h["test"] + f"\ncheck({entry})\n"), ("author_docs", doctest_program("", doc))]
-    common = {"entry_point": entry, "atol": plus["atol"], "canonical": plus["prompt"] + plus["canonical_solution"], "base_tests": tests}
+    common = {"entry_point": entry, "atol": plus["atol"], "canonical": plus["prompt"] + plus["canonical_solution"],
+              "base_tests": tests, "evaluation_policy": evaluation_policy}
     began_wrapper = time.perf_counter()
     canonical_wrappers = []
     for i in ids:
@@ -269,7 +270,8 @@ def evaluate(h, plus, posts, programs, ids, wrap):
                 unknown.append(code_id)
     elif canonical["status"] != "false_alarm":
         unknown = sorted(programs)
-    return {"selected": ids, "canonical": canonical, "false_alarm": canonical["status"] == "false_alarm",
+    return {"selected": ids, "evaluation_policy": evaluation_policy,
+            "canonical": canonical, "false_alarm": canonical["status"] == "false_alarm",
             "usable_code_ids": found, "unknown_code_ids": unknown, "faults": outcomes,
             "execution_seconds": canonical["wall_seconds"] + sum(v["wall_seconds"] for v in outcomes.values())}
 
@@ -346,6 +348,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, choices=SEEDS, required=True)
     parser.add_argument("--protocol", choices=("legacy", "warrant", "planned"), default="legacy")
+    parser.add_argument("--evaluation-policy", choices=("fixed-v1", "relative-v1"), default="fixed-v1")
     args = parser.parse_args()
     arms, assessor, selector, smoke = ARMS, assess, select, format_smoke
     if args.protocol == "warrant":
@@ -370,7 +373,8 @@ def main():
     for row in jsonlines(pzip, "raw_preprocessed_samples.jsonl"):
         posts[row["task_id"]][row["response_num"]] = row
     plus = {r["task_id"]: r for r in map(json.loads, gzip.decompress(raw_plus).decode().splitlines())}
-    setup = {"assessment_source_seconds": time.perf_counter() - start, "author_source_seconds": author_source_seconds}
+    setup = {"assessment_source_seconds": time.perf_counter() - start, "author_source_seconds": author_source_seconds,
+             "evaluation_policy": args.evaluation_policy}
     # Fault bodies and held-out inputs never enter selector inputs. The wrapper
     # template/binding rules do enter model inputs and are charged separately.
     dzip, dm = download("nl2postcondition_source_evalplus/code_mutants/distinct_code_mutants.jsonl.zip")
@@ -422,7 +426,7 @@ def main():
             ids = selector(arm, prediction, p) if arm in arms else ([] if arm == "author_tests" else cheap["selected"][arm])
             cost["selection_seconds"] = time.perf_counter() - began_selection
             cost["application_seconds"] = sum(cost[k] for k in ["preparation_seconds", "assessment_seconds", "selection_seconds"])
-            outcome = evaluate(h, plus[task], p, programs[task], ids, wrap)
+            outcome = evaluate(h, plus[task], p, programs[task], ids, wrap, args.evaluation_policy)
             rows.append({"task_id": task, "method": arm, "seed": args.seed, "cost": cost, "outcome": outcome})
             print(task, arm, "selected", ids, "natural", sum(i < 200 for i in outcome["usable_code_ids"]),
                   "false_alarm", outcome["false_alarm"], "unknown", len(outcome["unknown_code_ids"]), "assessment_s", round(cost["application_seconds"], 2), flush=True)

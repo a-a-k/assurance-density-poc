@@ -1,5 +1,17 @@
 Compact-procedure result, 24 October 2026
 
+Subsequent instrument-validity investigation, before new semantic results:
+fixed0.2s per call does not match the original study's reference-relative timing.
+The pinned driver measures unwrapped canonical calls; its CLI uses0.2 minimum
+and factor2. The packaged evaluator uses2*t_ref for canonical correctness and
+3*t_ref for a wrapped faulty program. A separately versioned calibration compares
+both policies on every first24 task, all10 existing singleton posts and author
+tests. It introduces no new candidate artifacts and is not a positive PoC.
+Source-based relative timing preserves explicit unknowns and actual execution
+costs; it does not retroactively change any archived fixed-budget result.
+https://github.com/microsoft/intent-formalization/blob/b42cdc0c4b60b7f17c85950d757f77ac107e29c0/nl2postcondition-fse2024/nl2postcondition_source_evalplus/run_postcondition_evaluation.py
+https://github.com/microsoft/intent-formalization/blob/b42cdc0c4b60b7f17c85950d757f77ac107e29c0/nl2postcondition-fse2024/nl2postcondition_source_evalplus/lib/evalplusWithNl2PostconditionEval.zip
+
 Run40044226843 at417997bf was stopped after an independently verified futility
 certificate, not reported as a complete three-seed comparison. All three partial
 archives were preserved successfully. Under the unchanged finite evaluation,

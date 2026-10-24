@@ -2,7 +2,7 @@ import unittest
 import signal
 from unittest.mock import patch
 
-from replay_worker import run, expired
+from replay_worker import run, expired, call, input_limits
 from measurement import evaluate
 
 
@@ -77,6 +77,37 @@ class ReplayMeaning(unittest.TestCase):
         with patch("measurement.replay", side_effect=[{"status": "pass", "wall_seconds": 0}, {"status": "not_detected", "wall_seconds": 0}]):
             evaluate(h, plus, posts, {7: {"solution": "def f(x): return x+1", "unique_bopi": [[3]]}}, [0], wrap)
         self.assertEqual(subjects, [prompt + "    return x\n", "def f(x): return x+1"])
+
+    def test_relative_limits_use_measured_reference_and_preserve_fault_witness(self):
+        request = {"kind": "fault", "entry_point": "f", "atol": 0, "evaluation_policy": "relative-v1",
+                   "canonical": "def f(x): return x", "subject": "def f(x): return x+1",
+                   "base_tests": [], "inputs": [[3]], "wrappers": [(4,
+                       "def f_original(x): return x+1\ndef f(x):\n    return_value=f_original(x)\n    assert return_value==x\n    return return_value\n")]}
+        with patch("replay_worker.time.perf_counter", side_effect=[1.0, 1.3]), patch("replay_worker.call", wraps=call) as called:
+            result = run(request)
+        self.assertEqual(result["status"], "detected")
+        self.assertEqual(result["witness"], 4)
+        limits = [c.args[2] for c in called.call_args_list]
+        for actual, expected in zip(limits, [2.0, 0.6, 0.9]):
+            self.assertAlmostEqual(actual, expected)
+        self.assertEqual(len(result["reference_timings"]), 1)
+        self.assertEqual(result["external_input_calls"], 3)
+
+    def test_author_only_does_not_pay_for_reference_timing(self):
+        for policy in ("fixed-v1", "relative-v1"):
+            with patch("replay_worker.reference_call") as reference:
+                result = run({"kind": "canonical", "entry_point": "f", "atol": 0,
+                              "evaluation_policy": policy, "canonical": "def f(x): return x",
+                              "base_tests": [("author", "assert f(3)==3")], "inputs": [[3]], "wrappers": []})
+            self.assertEqual(result["status"], "pass")
+            self.assertEqual(result["reference_timings"], [])
+            reference.assert_not_called()
+
+    def test_policy_minimum_and_fixed_legacy_budget_are_not_outcome_dependent(self):
+        self.assertEqual(input_limits("relative-v1", 0.001), {"canonical": 0.2, "subject": 0.2, "wrapped_fault": 0.2})
+        self.assertEqual(input_limits("fixed-v1", 10), {"canonical": 0.2, "subject": 0.2, "wrapped_fault": 0.2})
+        with self.assertRaises(ValueError):
+            input_limits("unknown-policy", 1)
 
 
 if __name__ == "__main__":

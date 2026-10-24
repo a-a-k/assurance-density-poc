@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [planned_audit, planned_measure, warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
+        options: [replay_audit, planned_audit, planned_measure, warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
       source_run:
         type: string
@@ -23,6 +23,11 @@ on:
       source_treatment:
         type: string
         description: Author-only audit treatment, structured, warrant or obligation_plan
+      evaluation_policy:
+        type: choice
+        description: Timing policy for planned_measure; relative requires calibration review
+        options: [fixed-v1, relative-v1]
+        default: fixed-v1
 
 permissions:
   contents: read
@@ -67,7 +72,7 @@ jobs:
           python -m unittest discover -s measurement_poc -p 'test_*.py' -v
           python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Install finite replay numeric comparator
-        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_measure'
+        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_measure' || inputs.mode == 'replay_audit'
         run: python -m pip install numpy==1.26.4
       - name: Start pinned CPU model
         if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format' || inputs.mode == 'warrant_audit' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_audit' || inputs.mode == 'planned_measure'
@@ -83,13 +88,16 @@ jobs:
           SOURCE_SEED: ${{ inputs.source_seed }}
           SOURCE_PROTOCOL: ${{ inputs.source_protocol }}
           SOURCE_TREATMENT: ${{ inputs.source_treatment }}
+          EVALUATION_POLICY: ${{ inputs.evaluation_policy }}
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = planned_audit ]; then
+          if [ "$MODE" = replay_audit ]; then
+            python -u postcondition_poc/replay_audit.py 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = planned_audit ]; then
             python -u postcondition_poc/planned_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = planned_measure ]; then
-            python -u postcondition_poc/measurement.py --seed "$SEED" --protocol planned 2>&1 | tee ci-logs/measurement-run.log
+            python -u postcondition_poc/measurement.py --seed "$SEED" --protocol planned --evaluation-policy "$EVALUATION_POLICY" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = warrant_audit ]; then
             python -u postcondition_poc/warrant_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = warrant_measure ]; then

@@ -62,9 +62,35 @@ def namespace(source):
     return result
 
 
-def call(fn, args):
-    with bounded():
+def call(fn, args, seconds=0.2):
+    with bounded(seconds):
         return fn(*copy.deepcopy(args))
+
+
+def input_limits(policy, reference_seconds):
+    if policy == "fixed-v1":
+        return {"canonical": 0.2, "subject": 0.2, "wrapped_fault": 0.2}
+    if policy != "relative-v1":
+        raise ValueError("Unknown evaluation timing policy")
+    return {"canonical": max(0.2, 2 * reference_seconds),
+            "subject": max(0.2, 2 * reference_seconds),
+            "wrapped_fault": max(0.2, 3 * reference_seconds)}
+
+
+def reference_call(reference, args, policy, post, index, timings):
+    limit = 2.0 if policy == "relative-v1" else 0.2
+    record = {"post": post, "input_id": index, "reference_limit": limit}
+    timings.append(record)
+    began = time.perf_counter()
+    try:
+        result = call(reference, args, limit)
+    except BaseException as exc:
+        record["reference_error"] = type(exc).__name__
+        raise
+    finally:
+        record["reference_seconds"] = time.perf_counter() - began
+    record["limits"] = input_limits(policy, record["reference_seconds"])
+    return result, record["limits"]
 
 
 def assertion_origin(exc, source, entry):
@@ -77,8 +103,9 @@ def assertion_origin(exc, source, entry):
     return inserted, location
 
 
-def run(request):
+def _run(request, timings):
     entry, atol = request["entry_point"], request["atol"]
+    policy = request.get("evaluation_policy", "fixed-v1")
     reference = namespace(request["canonical"])[entry]
     # Count explicit external-input invocations. Original author-suite calls
     # are included in wall time, but are not instrumented or rewritten.
@@ -101,12 +128,12 @@ def run(request):
                 for index, args in enumerate(request["inputs"]):
                     try:
                         external_input_calls += 1
-                        expected = call(reference, args)
+                        expected, limits = reference_call(reference, args, policy, post_id, index, timings)
                     except BaseException as exc:
                         return {"status": "reference_failure", "input_id": index, "reason": type(exc).__name__, "external_input_calls": external_input_calls}
                     try:
                         external_input_calls += 1
-                        actual = call(checked, args)
+                        actual = call(checked, args, limits["canonical"])
                     except AssertionError as exc:
                         inserted, location = assertion_origin(exc, source, entry)
                         return {"status": "false_alarm" if inserted else "unknown", "post": post_id, "input_id": index,
@@ -143,15 +170,15 @@ def run(request):
         for index, args in enumerate(request["inputs"]):
             try:
                 external_input_calls += 1
-                expected = call(reference, args)
+                expected, limits = reference_call(reference, args, policy, post_id, index, timings)
                 external_input_calls += 1
-                original = call(subject, args)
+                original = call(subject, args, limits["subject"])
                 if same(original, expected, atol):
                     records.append({"post": post_id, "input": index, "reason": "published bad input no longer distinguishes subject"})
                     continue
                 try:
                     external_input_calls += 1
-                    call(checked, args)
+                    call(checked, args, limits["wrapped_fault"])
                 except AssertionError as exc:
                     inserted, location = assertion_origin(exc, source, entry)
                     if inserted:
@@ -160,6 +187,14 @@ def run(request):
             except BaseException as exc:
                 records.append({"post": post_id, "input": index, "reason": type(exc).__name__})
     return {"status": "unknown" if records else "not_detected", "unknown": records, "external_input_calls": external_input_calls}
+
+
+def run(request):
+    policy = request.get("evaluation_policy", "fixed-v1")
+    input_limits(policy, 0)
+    timings = []
+    result = _run(request, timings)
+    return {**result, "evaluation_policy": policy, "reference_timings": timings}
 
 
 def main():

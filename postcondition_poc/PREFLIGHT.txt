@@ -530,3 +530,41 @@ planned_audit:45 assessment rows and63 assigned stage copies across three
 contexts/seeds. Actual hashes, raw request separation, exact outputs and complete
 two-stage costs must pass independent review before planned_measure. No local
 model, benchmark or invariant-test execution; Actions runs the tests first.
+
+2026-10-24 00:55 UTC, BEFORE new semantic results: root and skeptic explicit
+IMPLEMENTATION GO for a neutral, separately versioned evaluator calibration.
+Old fixed0.2s outcomes/unknowns remain intact. Task15 has inputs around one
+million, so an assertion repeating the exact correct sequence can exceed that
+fixed wrapped-call cap even when the unwrapped reference succeeds.
+
+Primary source: the same pinned Microsoft's run_postcondition_evaluation.py
+times the UNWRAPPED prompt+canonical_solution using trusted_exec. Its CLI uses
+min_time_limit0.2 and gt_time_limit_factor2.0. Packaged
+lib/evalplusWithNl2PostconditionEval.zip SHA256
+98fc7e66aa0eecf4143b4e3e833bc29d9ed3fdf3f4a7055564b16b2d1eea6f02
+contains evalplus/evalplus/eval/__init__.py SHA256
+6aff2668bcbd3719ee22b07ef1733633e8c6f6d39486d6923e53643aa16d80f9.
+Lines327/444 use factor*t*1.5 for wrapped faulty programs and factor*t for
+ordinary canonical checking respectively. Source URLs are in RESULTS.txt.
+
+relative-v1: reference calls cap2s; canonical wrapped checks and original faulty
+subjects max(0.2,2*t_ref); wrapped faulty subjects max(0.2,3*t_ref). All tasks,
+methods and selected posts use the same role-based policy. Measure the existing
+reference call including our deepcopy, without adding reference calls; its
+actual elapsed work already enters checker execution cost. Author-only packages
+perform no unnecessary reference-timing work. This is a source-based adaptation,
+not exact reproduction of upstream process isolation or timing. Record applied
+limits; hidden references/timings never enter selection. Keep25CPU/35wall outer
+limits; any remaining timeout/reference failure stays unknown. No task exception.
+
+First calibrate all24 tasks x10 singleton unchanged posts plus author-only under
+BOTH fixed-v1 and relative-v1, without LLM inference. This diagnoses instrumentation,
+not candidate selection or a positive PoC. No factor tuning using the outcomes.
+Independent code review precedes CI; independent actual calibration review and
+the ongoing planned-copy audit precede any new semantic run. The original useful
+external result/complete-cost criterion and strongest controls remain mandatory.
+
+Root and independent skeptic explicit final code-review EXECUTION GO for
+replay_audit:528 canonical evaluations, exact fixed/relative rules and source
+hashes, no model calls or candidate selection. The full comparison still awaits
+actual calibration and all three planned-copy audits, not just passing CI.

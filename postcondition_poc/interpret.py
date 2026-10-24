@@ -163,6 +163,9 @@ def treatment_replacements(treatment, limits, costs):
 
 def audit(summary, rows):
     models = PROTOCOLS[summary.get("protocol", "legacy")]
+    policy = summary["setup"].get("evaluation_policy", "fixed-v1")
+    if policy not in ("fixed-v1", "relative-v1") or any(r["outcome"].get("evaluation_policy", "fixed-v1") != policy for r in rows):
+        raise ValueError("Unknown or mixed evaluation policy")
     treatment = models[0]
     expected = {f"HumanEval/{i}" for i in range(24)}
     grouped, limits = {}, {}
@@ -212,7 +215,8 @@ def audit(summary, rows):
         cheap[method] = reverse
     serialized = {m: {key: sorted(value) for key, value in b.items()} for m, b in limits.items()}
     frontier = baseline_frontier({m: b for m, b in limits.items() if m != treatment}, costs, models[1:])
-    return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
+    return {"seed": summary["seed"], "protocol": summary.get("protocol", "legacy"), "evaluation_policy": policy,
+            "bounds": serialized, "model_controls": controls, "cheap_controls": cheap,
             "baseline_frontier": frontier,
             "treatment_replacements": treatment_replacements(treatment, limits, costs),
             "model_comparison_pass": all(p["better_branch"] or p["cheaper_branch"] for p in controls.values()),
@@ -226,6 +230,8 @@ def consistent_branches(seeds):
     controls = tuple(seeds[0]["model_controls"])
     if any(set(s["model_controls"]) != set(controls) for s in seeds):
         raise ValueError("Inconsistent control sets across seeds")
+    if len({s.get("evaluation_policy", "fixed-v1") for s in seeds}) != 1:
+        raise ValueError("Mixed evaluation policies across seeds")
     return {method: {branch: all(s["model_controls"][method][branch] for s in seeds)
                      for branch in ("better_branch", "cheaper_branch")}
             for method in controls}

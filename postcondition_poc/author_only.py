@@ -96,7 +96,8 @@ def main():
     rows = []
     for number in range(24):
         task = f"HumanEval/{number}"
-        outcome = evaluate(human[task], plus[task], {}, programs[task], [], None)
+        outcome = evaluate(human[task], plus[task], {}, programs[task], [], None,
+                           snapshot["setup"].get("evaluation_policy", "fixed-v1"))
         rows.append({"task_id": task, "outcome": outcome})
         save(OUT / "author_only_rows.json", rows)
         print(task, outcome["canonical"]["status"], "natural", sum(i < 200 for i in outcome["usable_code_ids"]), flush=True)
@@ -117,6 +118,7 @@ def main():
     certificate = {"kind": "futility bound, not a completed three-seed comparison", "snapshot_tasks": completed,
                    "source_comparison": args.source_run, "source_commit": args.source_sha,
                    "seed": args.seed, "protocol": args.protocol, "treatment": args.treatment,
+                   "evaluation_policy": snapshot["setup"].get("evaluation_policy", "fixed-v1"),
                    "audit_run": os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"],
                    "audit_source_commit": os.environ["GITHUB_SHA"], "audit_job_seed": os.environ.get("SEED"),
                    "baseline_tasks": len(rows),

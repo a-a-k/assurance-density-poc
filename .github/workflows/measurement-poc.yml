@@ -6,7 +6,7 @@ on:
       mode:
         type: choice
         description: Infrastructure pilot or full fixed cohort
-        options: [replay_audit, planned_audit, planned_measure, warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
+        options: [exposure_audit, exposure_measure, replay_audit, planned_audit, planned_measure, warrant_audit, warrant_measure, post_measure, post_format, author_only, unit_screen, post_screen, screen, pilot, full]
         default: pilot
       source_run:
         type: string
@@ -48,8 +48,8 @@ jobs:
           python - <<'PY'
           import json, os
           mode = os.environ['MODE']
-          seeds = [11,29,47] if mode in ('full','post_measure','warrant_audit','warrant_measure','planned_audit','planned_measure') else [11]
-          shards = range(4) if mode == 'planned_measure' else [None]
+          seeds = [11,29,47] if mode in ('full','post_measure','warrant_audit','warrant_measure','planned_audit','planned_measure','exposure_audit','exposure_measure') else [11]
+          shards = range(4) if mode in ('planned_measure','exposure_measure') else [None]
           cases = [{'seed': seed, 'shard': shard if shard is not None else '',
                     'key': f'seed-{seed}' + (f'-shard-{shard}' if shard is not None else '')}
                    for seed in seeds for shard in shards]
@@ -80,10 +80,10 @@ jobs:
           python -m unittest discover -s measurement_poc -p 'test_*.py' -v
           python -m unittest discover -s postcondition_poc -p 'test_*.py' -v
       - name: Install finite replay numeric comparator
-        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_measure' || inputs.mode == 'replay_audit'
+        if: inputs.mode == 'post_measure' || inputs.mode == 'author_only' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_measure' || inputs.mode == 'replay_audit' || inputs.mode == 'exposure_measure' || inputs.mode == 'exposure_audit'
         run: python -m pip install numpy==1.26.4
       - name: Start pinned CPU model
-        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format' || inputs.mode == 'warrant_audit' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_audit' || inputs.mode == 'planned_measure'
+        if: inputs.mode == 'pilot' || inputs.mode == 'full' || inputs.mode == 'post_measure' || inputs.mode == 'post_format' || inputs.mode == 'warrant_audit' || inputs.mode == 'warrant_measure' || inputs.mode == 'planned_audit' || inputs.mode == 'planned_measure' || inputs.mode == 'exposure_audit' || inputs.mode == 'exposure_measure'
         run: python -u measurement_poc/bootstrap.py
       - name: Assess unchanged published assertions
         id: experiment
@@ -102,7 +102,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          if [ "$MODE" = replay_audit ]; then
+          if [ "$MODE" = exposure_audit ]; then
+            python -u postcondition_poc/exposure_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = exposure_measure ]; then
+            python -u postcondition_poc/exposure_runner.py --seed "$SEED" --shard "$SHARD" 2>&1 | tee ci-logs/measurement-run.log
+          elif [ "$MODE" = replay_audit ]; then
             python -u postcondition_poc/replay_audit.py 2>&1 | tee ci-logs/measurement-run.log
           elif [ "$MODE" = planned_audit ]; then
             python -u postcondition_poc/planned_audit.py --seed "$SEED" 2>&1 | tee ci-logs/measurement-run.log

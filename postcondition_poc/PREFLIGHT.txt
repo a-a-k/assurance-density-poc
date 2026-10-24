@@ -753,4 +753,14 @@ subset; retain with-reference top1/top3 rankings, triple union and diversity as
 additional controls. Charge each subset only its relevant measured preparation.
 The published study supports GPT4 provenance; reference visibility alone was not
 a significant correctness advantage (RQ1,p=.42). Do not imply it was.
-https://people.cs.umass.edu/~mendres/papers/CanPostconditions.pdf
+https://arxiv.org/pdf/2310.01831
+
+2026-10-24 07:00 UTC: root and independent skeptic give explicit CODE GO for
+Actions validate_only invariant checks of the exposure implementation. The six
+model methods and41 cheap controls retain the external criterion and all guards.
+Subset source costs use their own SUM for model shards and conservative MIN
+credit for cheap controls; full raw-member bytes and hashes remain archived.
+Adequate targets stop acquisition; partial may remain useful without adequacy;
+both adaptive methods may stop early. Invalid target sources are excluded without
+renumbering or semantic feedback. No local experiment/model/checker/test execution.
+Assigned-copy/cost audit and semantic execution require their separate review.

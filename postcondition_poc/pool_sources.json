@@ -1,0 +1,62 @@
+[
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT3.5/BasePromptNoRef/gpt3_base_no_ref.zip",
+    "bytes": 8629075,
+    "sha256": "28bd1ad51c96f9885927b6aef0649c0089cb07442947fdcc0e59e44b3d3a867c"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT3.5/BasePromptWithRef/gpt3_base_with_ref.zip",
+    "bytes": 8901472,
+    "sha256": "b4561f649f0cf8bfa06770ad43ba202a75ec3822fd17b63e0640c1961f7f8b87"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT3.5/SimplePromptNoRef/gpt3_simple_no_ref.zip",
+    "bytes": 9813812,
+    "sha256": "cfa3082490f3f3002212783ef148a9fab656e9ffe9c3b2cfd58fa9bd1b88d46b"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT3.5/SimplePromptWithRef/gpt3_simple_with_ref.zip",
+    "bytes": 9928242,
+    "sha256": "d09a9df5ce63fb4a65468aefcbdff73c5234de3d4e327a230e0f782126c999a9"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT4/BasePromptNoRef/gpt4_base_no_ref.zip",
+    "bytes": 12415397,
+    "sha256": "c729e1fec35592874729342486cc17102c89fe7e74ec2ad0b27a44df9db41987"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT4/BasePromptWithRef/gpt4_base_with_ref.zip",
+    "bytes": 11516571,
+    "sha256": "c0f242cbb111444ca49c93a992136934ed9ed8279767ee19b7a2e256c3587638"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT4/SimplePromptNoRef/gpt4_simple_no_ref.zip",
+    "bytes": 12196391,
+    "sha256": "57a951cd1768e73258e780ed6c40451c0b7d4c0d3615b6a254048b78cdcf0fc0"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/GPT4/SimplePromptWithRef/gpt4_simple_with_ref.zip",
+    "bytes": 12593587,
+    "sha256": "32f1f743cbe29811191ff35c112476584a5e5915332192a8f2e3b34ead92d742"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/StarChat/BasePromptNoRef/starchat_base_no_ref.zip",
+    "bytes": 7200406,
+    "sha256": "2eff47a3f33494f143a7318e6b785311aa7fda9bb40d06cc3c7b1376b25f5de3"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/StarChat/BasePromptWithRef/starchat_base_with_ref.zip",
+    "bytes": 7203922,
+    "sha256": "31f242e281965a9d6688649590044a3c614764bcd27f5ddec678e0337f3e5187"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/StarChat/SimplePromptNoRef/starchat_simple_no_ref.zip",
+    "bytes": 7276273,
+    "sha256": "b9bcf68d3c2bb6a185f4babb352525c5ae2eda02da45f75f99aa3712203e8b5a"
+  },
+  {
+    "path": "nl2postcondition-fse2024/GeneratedPostconditions/EvalPlus/StarChat/SimplePromptWithRef/starchat_simple_with_ref.zip",
+    "bytes": 7324104,
+    "sha256": "3ce2bf51f8f84f64ed080e8326f64d5bd32e2b6340bd4cd3d0044a3f5262ff62"
+  }
+]

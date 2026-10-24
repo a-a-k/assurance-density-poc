@@ -2,14 +2,14 @@
 import copy
 import unittest
 
-from controls import additional_selections, cheap_methods, needs_contrastive, partition
+from controls import additional_selections, cheap_methods, needs_contrastive, partition, source_field
 from interpret import PROTOCOLS, audit, merge_shards
 
 
 class ShardAccounting(unittest.TestCase):
-    def parts(self):
+    def parts(self, protocol='planned'):
         result = []
-        models = PROTOCOLS["planned"]
+        models = PROTOCOLS[protocol]
         for index in range(4):
             setup = {"cheap_control_version": "portfolios-v1", "evaluation_policy": "fixed-v1",
                      "task_partition": partition(index), "author_source_seconds": 1 + index,
@@ -17,6 +17,9 @@ class ShardAccounting(unittest.TestCase):
                      "cheap_source_seconds": 5 + index,
                      "wrapper_source_seconds": 2 + index,
                      "schema_smoke": {m: {"seconds": 3 + index, "tokens": 5 + index, "passed": True} for m in models}}
+            if protocol == 'exposure':
+                setup.update(cheap_control_version='exposure-v1', gpt4_source_seconds=3 + index,
+                             ref_source_seconds=2 + index, gpt4_assessment_source_seconds=7 + index)
             names = models + cheap_methods(setup)
             rows, methods = [], {}
             for method in names:
@@ -26,13 +29,15 @@ class ShardAccounting(unittest.TestCase):
                                  "cost": {"application_seconds": 2, "tokens": 10 if model else 0},
                                  "outcome": {"evaluation_policy": "fixed-v1", "canonical": {"status": "pass"},
                                              "usable_code_ids": [], "unknown_code_ids": [], "execution_seconds": 3}})
-                cold = (35 + 4 * index) if model else ((1 + index) if method == "author_tests" else (5 + index))
+                cold = setup[source_field(setup, method, models)]
+                if model:
+                    cold += setup['model_seconds'] + setup['wrapper_source_seconds'] + setup['schema_smoke'][method]['seconds']
                 methods[method] = {"tasks": 6, "natural": 0, "artificial": 0, "false_alarm_tasks": [],
                                    "unknown_ids": [], "detected_ids": [], "application_tokens": 60 if model else 0,
                                    "tokens": 65 + index if model else 0, "application_seconds": 12,
                                    "standalone_assessment_seconds": 12 + cold, "checker_execution_seconds": 18,
                                    "standalone_with_checker_seconds": 30 + cold, "format_failures": 0}
-            summary = {"seed": 11, "protocol": "planned", "source_commit": "a" * 40, "setup": setup, "methods": methods}
+            summary = {"seed": 11, "protocol": protocol, "source_commit": "a" * 40, "setup": setup, "methods": methods}
             meta = {"run_id": "123", "run_attempt": "1", "source_commit": "a" * 40, "experiment_step_outcome": "success",
                     "archive_path": f"runs/123-1/seed-11-shard-{index}/results.tar.gz"}
             provenance = {"downloads": [{"sha256": "model"}, {"sha256": "server"}],
@@ -63,6 +68,33 @@ class ShardAccounting(unittest.TestCase):
         _, summary, rows, _ = self.parts()[0]
         with self.assertRaisesRegex(ValueError, "Incomplete"):
             audit(summary, rows)
+
+    def test_exposure_scope_costs_merge_with_all47_methods(self):
+        summary, rows, _ = merge_shards(self.parts('exposure'), 11)
+        self.assertEqual(len(rows), 24 * 47)
+        self.assertEqual(len(audit(summary, rows)['cheap_controls']), 41)
+        methods, setup = summary['methods'], summary['setup']
+        self.assertEqual(methods['exposure_adaptive']['standalone_assessment_seconds'], 212)
+        self.assertEqual(methods['gpt4_review']['standalone_assessment_seconds'], 200)
+        self.assertEqual(methods['gpt4_review']['tokens'], 266)
+        self.assertEqual(setup['source_seconds_by_method']['gpt4_review'], 34)
+        self.assertEqual(methods['gpt4_shortest']['actual_duplicated_standalone_assessment_seconds'], 66)
+        self.assertEqual(methods['gpt4_shortest']['standalone_assessment_seconds'], 51)
+        self.assertEqual(methods['ref_shortest']['standalone_assessment_seconds'], 50)
+        setup['source_seconds_by_method']['gpt4_shortest'] = 0
+        with self.assertRaisesRegex(ValueError, 'credit'):
+            audit(summary, rows)
+
+    def test_exposure_protocol_and_subset_setup_cannot_be_mixed_or_omitted(self):
+        parts = self.parts('exposure')
+        parts[0] = self.parts('planned')[0]
+        with self.assertRaises(ValueError):
+            merge_shards(parts, 11)
+        for field in ('gpt4_source_seconds', 'ref_source_seconds', 'gpt4_assessment_source_seconds'):
+            parts = self.parts('exposure')
+            del parts[0][1]['setup'][field]
+            with self.subTest(field=field), self.assertRaises((ValueError, KeyError)):
+                merge_shards(parts, 11)
 
     def test_duplicate_gap_extra_row_and_missing_common_input_are_rejected(self):
         parts = self.parts()

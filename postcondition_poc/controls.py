@@ -12,6 +12,9 @@ EXTRA_CHEAP = tuple(f"{name}_top{k}" for name in RANKINGS for k in (2, 3)) + tup
 
 def cheap_methods(setup):
     version = setup.get("cheap_control_version", "legacy-v1")
+    if version == 'exposure-v1':
+        from exposure_pool import CHEAP
+        return CHEAP
     if version not in ("legacy-v1", "portfolios-v1"):
         raise ValueError("Unknown cheap-control version")
     return LEGACY_CHEAP + (EXTRA_CHEAP if version == "portfolios-v1" else ())
@@ -20,6 +23,13 @@ def cheap_methods(setup):
 def source_field(setup, method, models):
     if method == "author_tests":
         return "author_source_seconds"
+    if setup.get('cheap_control_version') == 'exposure-v1':
+        if method == 'gpt4_review':
+            return 'gpt4_assessment_source_seconds'
+        if method.startswith('gpt4_'):
+            return 'gpt4_source_seconds'
+        if method.startswith('ref_'):
+            return 'ref_source_seconds'
     if method not in models and "cheap_source_seconds" in setup:
         return "cheap_source_seconds"
     return "assessment_source_seconds"

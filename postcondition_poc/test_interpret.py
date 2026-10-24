@@ -191,6 +191,11 @@ class InterpretationInvariants(unittest.TestCase):
         result = aggregate(seeds)
         self.assertFalse(result["original_criterion_pass"])
         self.assertTrue(result["fewer_false_alarm_addendum"]["pass"])
+        for seed in seeds:
+            seed['protocol'] = 'exposure'
+        result = aggregate(seeds)
+        self.assertFalse(result['original_criterion_pass'])
+        self.assertTrue(result['fewer_false_alarm_addendum']['pass'])
         seeds[1]["treatment_replacements"]["author"]["possible_primary_replacement"] = True
         self.assertFalse(aggregate(seeds)["fewer_false_alarm_addendum"]["pass"])
         seeds[1]["treatment_replacements"]["author"]["possible_primary_replacement"] = False
